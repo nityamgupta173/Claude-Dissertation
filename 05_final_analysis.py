@@ -46,23 +46,39 @@ ROWS = {"Non-food credit": 9, "NBFCs (incl. HFCs)": 11, "HFCs": 12, "Housing": 1
         "Education": 16, "Vehicle loans": 17, "Gold loans": 18, "Other personal loans": 19}
 lev = pd.DataFrame({k: pd.to_numeric(raw.iloc[r, 3:], errors="coerce").values for k, r in ROWS.items()}, index=dates)
 lev["NBFCs ex-HFC"] = lev["NBFCs (incl. HFCs)"] - lev["HFCs"]
+# H2 benchmark excluding the treated group and the H1-treated categories (audit B8)
+lev["Non-food ex NBFC, cards, other PL"] = lev["Non-food credit"] - lev["NBFCs (incl. HFCs)"] - lev["Credit cards"] - lev["Other personal loans"]
 lev.index.name = "Date"
-g = 100 * np.log(lev).diff()                       # monthly log growth, pp
-MERGER = pd.Timestamp("2023-07-28")                # HDFC Ltd -> HDFC Bank merger month
-for c in ["Housing", "NBFCs (incl. HFCs)", "HFCs", "NBFCs ex-HFC", "Non-food credit"]:
+# RBI publishes figures excluding the HDFC merger (the numbers in parentheses, unlabelled rows of the sheet) for
+# 28-Jul-2023 to 27-Jun-2025. The merger is not only a level shift for housing, other personal loans and non-food
+# credit: afterwards their growth includes growth of the former HDFC Ltd book. We therefore use the ex-merger series
+# for growth in that period. Bank credit to NBFCs/HFCs has no ex-merger series: there the merger is a one-off
+# level drop (bank loans to HDFC Ltd extinguished), so only the merger month is excluded.
+EXR = {"Non-food credit": 10, "Housing": 14, "Other personal loans": 20}
+exm = pd.DataFrame({k: pd.to_numeric(raw.iloc[r, 3:], errors="coerce").values for k, r in EXR.items()}, index=dates)
+exm["Non-food ex NBFC, cards, other PL"] = exm["Non-food credit"] - lev["NBFCs (incl. HFCs)"] - lev["Credit cards"] - exm["Other personal loans"]
+g = 100 * np.log(lev).diff()                       # monthly log growth, pp (reported series)
+g_ex = 100 * np.log(exm).diff()
+MERGER = pd.Timestamp("2023-07-28")                # HDFC Ltd -> HDFC Bank merger (first affected observation)
+EX_END = exm["Housing"].last_valid_index()         # last ex-merger observation (27-Jun-2025)
+for c in exm.columns:
+    ok = (g.index > MERGER) & (g.index <= EX_END)
+    g.loc[ok, c] = g_ex.loc[ok, c]
+for c in ["Housing", "Other personal loans", "NBFCs (incl. HFCs)", "HFCs", "NBFCs ex-HFC", "Non-food credit", "Non-food ex NBFC, cards, other PL"]:
     g.loc[MERGER, c] = np.nan
 WIN = ("2021-04-01", "2025-01-31")                 # main window: ends before the Feb-2025 announcement
-POST = "2023-11-30"                                # first monthly observation after 16-Nov-2023
+POST = "2023-11-30"                                # first post-policy observation = 29-Dec-2023 (the Nov obs is 17-Nov-2023, one day after the circular)
+LAGS = 3                                           # Newey-West lags: rule of thumb floor(4(T/100)^(2/9)) = 3 for T ~ 46 (audit C1)
 TREAT = ["Credit cards", "Other personal loans"]
 CTRL = ["Housing", "Vehicle loans", "Education"]
 
 
-def its(gap, brk, lags=6):
+def its(gap, brk, lags=LAGS):
     gap = gap.dropna()
     X = sm.add_constant((gap.index >= brk).astype(float))
-    r = sm.OLS(gap.values, X).fit(cov_type="HAC", cov_kwds={"maxlags": lags})
+    r = sm.OLS(gap.values, X).fit(cov_type="HAC", cov_kwds={"maxlags": lags}, use_t=True)   # t(n-2) p-values (audit A2)
     return dict(pre_mean=r.params[0], change=r.params[1], se=r.bse[1], p=r.pvalues[1], n=int(len(gap)),
-                annualised_change=12 * r.params[1])
+                n_pre=int((X[:, 1] == 0).sum()), n_post=int((X[:, 1] == 1).sum()), annualised_change=12 * r.params[1])
 
 
 def panel(gg, tr, ct, brk):
@@ -71,42 +87,49 @@ def panel(gg, tr, ct, brk):
     L["Treat_x_Post"] = (L.series.isin(tr) & (L.date >= brk)).astype(float)
     p = L.set_index(["series", "date"])
     r = PanelOLS(p.g, p[["Treat_x_Post"]], entity_effects=True, time_effects=True).fit(
-        cov_type="kernel", kernel="bartlett", bandwidth=6)
+        cov_type="kernel", kernel="bartlett", bandwidth=LAGS, debiased=True)
     return dict(beta=float(r.params.iloc[0]), se=float(r.std_errors.iloc[0]), p=float(r.pvalues.iloc[0]),
                 n=int(r.nobs), annualised=12 * float(r.params.iloc[0]))
 
 
 W = g[WIN[0]:WIN[1]]
 gap1 = W[TREAT].mean(1) - W[CTRL].mean(1)
+PRE_END = "2023-11-17"
+PB = g["2021-07":PRE_END]; PA = g["2021-04":PRE_END]
 R["H1"] = dict(its=its(gap1, POST), panel=panel(W, TREAT, CTRL, POST),
-               placebo=its((g["2021-04":"2023-10"][TREAT].mean(1) - g["2021-04":"2023-10"][CTRL].mean(1)), "2022-11-30"),
-               placebo_panel=panel(g["2021-04":"2023-10"], TREAT, CTRL, "2022-11-30"))
+               placebo=its(PB[TREAT].mean(1) - PB[CTRL].mean(1), "2022-11-30"),
+               placebo_panel=panel(PB, TREAT, CTRL, "2022-11-30"),
+               placebo_from_apr21=its(PA[TREAT].mean(1) - PA[CTRL].mean(1), "2022-11-30"),
+               placebo_panel_from_apr21=panel(PA, TREAT, CTRL, "2022-11-30"))
 rob = []
 for lbl, tr, ct, w in [("Drop credit cards", ["Other personal loans"], CTRL, WIN),
                        ("Drop other personal loans", ["Credit cards"], CTRL, WIN),
                        ("Drop housing (merger-affected)", TREAT, ["Vehicle loans", "Education"], WIN),
                        ("Drop vehicle loans", TREAT, ["Housing", "Education"], WIN),
                        ("Drop education", TREAT, ["Housing", "Vehicle loans"], WIN),
-                       ("Add gold loans to control", TREAT, CTRL + ["Gold loans"], WIN),
                        ("Shorter pre-period (from Apr-2022)", TREAT, CTRL, ("2022-04-01", WIN[1])),
                        ("Shorter post-period (to Oct-2024)", TREAT, CTRL, (WIN[0], "2024-10-31"))]:
     rr = panel(g[w[0]:w[1]], tr, ct, POST)
     rob.append(dict(Specification=lbl, Coefficient=round(rr["beta"], 2), SE=round(rr["se"], 2), p=round(rr["p"], 3), N=rr["n"]))
 R["H1"]["robustness"] = rob
+gold = panel(W, TREAT, CTRL + ["Gold loans"], POST)   # not a valid control (gold-price surge, agri->retail reclassification): note only
+R["H1"]["gold_note"] = dict(beta=gold["beta"], p=gold["p"])
 pd.DataFrame(rob).to_csv(os.path.join(OUT, "h1_robustness.csv"), index=False)
 
 # H2 aggregate
 gap2 = W["NBFCs ex-HFC"] - W["Non-food credit"]
 R["H2"] = dict(its=its(gap2, POST),
-               placebo=its((g["2021-04":"2023-10"]["NBFCs ex-HFC"] - g["2021-04":"2023-10"]["Non-food credit"]), "2022-11-30"),
+               placebo=its(PB["NBFCs ex-HFC"] - PB["Non-food credit"], "2022-11-30"),
+               placebo_from_apr21=its(PA["NBFCs ex-HFC"] - PA["Non-food credit"], "2022-11-30"),
+               alt_core=its(W["NBFCs ex-HFC"] - W["Non-food ex NBFC, cards, other PL"], POST),
                alt_vs_hfc=its(W["NBFCs ex-HFC"] - W["HFCs"], POST),
                alt_all_nbfc=its(W["NBFCs (incl. HFCs)"] - W["Non-food credit"], POST),
                rollback=its((g["2023-12":]["NBFCs ex-HFC"] - g["2023-12":]["Non-food credit"]), "2025-04-30"))
 # growth tables (annualised average monthly log growth)
-PER = [("Pre-policy (Apr-21 to Oct-23)", "2021-04-01", "2023-10-31"), ("Post-policy (Dec-23 to Mar-25)", "2023-12-01", "2025-03-31"),
+PER = [("Pre-policy (Apr-21 to mid-Nov-23)", "2021-04-01", "2023-11-17"), ("Post-policy (Dec-23 to Mar-25)", "2023-12-01", "2025-03-31"),
        ("After rollback (Apr-25 to Jul-26)", "2025-04-01", "2026-07-31")]
 gt = pd.DataFrame({p: (g[a:b].mean() * 12).round(1) for p, a, b in PER})
-gt = gt.loc[TREAT + CTRL + ["Gold loans", "NBFCs ex-HFC", "HFCs", "NBFCs (incl. HFCs)", "Non-food credit"]]
+gt = gt.loc[TREAT + CTRL + ["Gold loans", "NBFCs ex-HFC", "HFCs", "NBFCs (incl. HFCs)", "Non-food credit", "Non-food ex NBFC, cards, other PL"]]
 gt.to_csv(os.path.join(OUT, "rbi_growth_table.csv"))
 R["growth_table"] = {k: v for k, v in gt.to_dict(orient="index").items()}
 
@@ -134,7 +157,7 @@ for name, gap, fn in [("H1", g[TREAT].mean(1) - g[CTRL].mean(1), "fig2_h1_gap.pn
     fig, ax = plt.subplots(figsize=(8, 3.4))
     ax.bar(q.index.to_timestamp(), q.values, width=60, color=[C_T if p.start_time >= pd.Timestamp("2023-12-01") else "#9ca3af" for p in q.index])
     ax.axhline(0, color=MUTED, lw=.8); ax.axvline(POLICY, color=MUTED, ls="--", lw=1)
-    pm = gap[WIN[0]:"2023-10-31"].mean(); ax.axhline(pm, color=C_C, lw=1, ls="-.")
+    pm = gap[WIN[0]:"2023-11-17"].mean(); ax.axhline(pm, color=C_C, lw=1, ls="-.")
     ax.text(pd.Timestamp("2021-04-01"), pm, " pre-policy average", color=C_C, fontsize=7.5, va="bottom")
     ax.set_ylabel("Growth gap, pp per month"); tidy(ax)
     ax.set_title(("Targeted minus exempt consumer credit" if name == "H1" else "Bank credit to NBFCs (ex-HFC) minus total non-food credit") + ": quarterly average of monthly growth gap", loc="left", fontsize=9, color=INK)
@@ -307,7 +330,7 @@ json.dump(R, open(os.path.join(OUT, "results.json"), "w"), indent=1, default=flo
 print(json.dumps({k: R[k] for k in ["H1", "H2", "firm_cof", "firm_bankshare", "firm_bankshare_rollback", "firm_bankshare_last", "firm_bankshare_placebo", "bajaj_within", "counts"]}, indent=1, default=lambda x: round(float(x), 4)))
 
 # =========================================================== 4. Magnitudes and firm descriptives (appended)
-end = lev.loc["2025-01"].iloc[-1]; m_post = 15          # Nov-2023 .. Jan-2025 monthly observations
+end = lev.loc["2025-01"].iloc[-1]; m_post = R["H1"]["its"]["n_post"]   # 14 post-policy observations: 29-Dec-2023 .. 31-Jan-2025
 tr_out = end[TREAT].sum(); nb_out = end["NBFCs ex-HFC"]
 d1, d2 = -R["H1"]["its"]["change"], -R["H2"]["its"]["change"]
 R["magnitudes"] = dict(
@@ -334,7 +357,7 @@ from statsmodels.stats.stattools import jarque_bera, durbin_watson
 SER = TREAT + CTRL + ["NBFCs ex-HFC", "HFCs", "Non-food credit"]
 ds = []
 for c in SER:
-    for per, a, b in [("Pre-policy", "2021-04-01", "2023-10-31"), ("Post-policy", "2023-12-01", "2025-01-31")]:
+    for per, a, b in [("Pre-policy", "2021-04-01", "2023-11-17"), ("Post-policy", "2023-12-01", "2025-01-31")]:
         x = g.loc[a:b, c].dropna()
         ds.append(dict(Series=c, Period=per, N=int(x.size), Mean=round(x.mean(), 3), SD=round(x.std(), 3), Min=round(x.min(), 3), Max=round(x.max(), 3)))
 R["rbi_desc"] = ds
@@ -342,12 +365,12 @@ corr = g.loc[WIN[0]:WIN[1], SER].corr().round(2)
 R["rbi_corr"] = {"cols": SER, "rows": corr.values.tolist()}
 
 
-def its_full(gap, brk, name, lags=6):
+def its_full(gap, brk, name, lags=LAGS):
     gap = gap.dropna()
     post = (gap.index >= brk).astype(float)
     X = sm.add_constant(post)
     ols = sm.OLS(gap.values, X).fit()
-    hac = sm.OLS(gap.values, X).fit(cov_type="HAC", cov_kwds={"maxlags": lags})
+    hac = sm.OLS(gap.values, X).fit(cov_type="HAC", cov_kwds={"maxlags": lags}, use_t=True)
     jb, jbp, skew, kurt = jarque_bera(ols.resid)
     bp = het_breuschpagan(ols.resid, X)
     lb = acorr_ljungbox(ols.resid, lags=[12], return_df=True)
@@ -376,6 +399,24 @@ for m_ in R["model_summary"]:
 print("VIF H1 panel", round(R["vif_h1_panel"], 2))
 
 # =========================================================== 6. Inference robustness (how sensitive is the p-value to the SE choice?)
+def fixed_b_p(gap_y, X, j, B=10000, seed=11):
+    """Kiefer-Vogelsang-Bunzel fixed-b test: Bartlett kernel, bandwidth = T (b = 1). The null distribution of the
+    t-ratio is simulated with the actual design and iid N(0,1) errors (pivotal under fixed-b asymptotics)."""
+    Xv = np.asarray(X, float); T = len(gap_y)
+    XtXi = np.linalg.inv(Xv.T @ Xv)
+    def tstat(y):
+        b = XtXi @ Xv.T @ y; e = y - Xv @ b
+        v = Xv * e[:, None]; S = v.T @ v
+        for l in range(1, T):
+            w = 1 - l / T; G = v[l:].T @ v[:-l]; S += w * (G + G.T)
+        V = XtXi @ S @ XtXi
+        return b[j] / np.sqrt(V[j, j])
+    t0 = tstat(np.asarray(gap_y, float))
+    rng = np.random.default_rng(seed)
+    ts = np.array([tstat(rng.standard_normal(T)) for _ in range(B)])
+    return float((np.abs(ts) >= abs(t0)).mean())
+
+
 def infer_table(gap, brk, B=10000, seed=7):
     gap = gap.dropna()
     post = pd.Series((gap.index >= brk).astype(float), index=gap.index, name="post")
@@ -386,12 +427,22 @@ def infer_table(gap, brk, B=10000, seed=7):
         f = sm.OLS(gap, X).fit(**kw)
         rows.append(dict(Method=lbl, delta=round(float(f.params["post"]), 3), p=round(float(f.pvalues["post"]), 3)))
     add("Classical OLS", X0, {})
-    add("White (HC1)", X0, dict(cov_type="HC1"))
+    add("White (HC1)", X0, dict(cov_type="HC1", use_t=True))
     for L_ in (1, 3, 6, 12):
-        add(f"Newey-West, {L_} lag{'s' if L_ > 1 else ''}" + (" (main)" if L_ == 6 else " (rule of thumb)" if L_ == 3 else ""), X0, dict(cov_type="HAC", cov_kwds={"maxlags": L_}))
+        add(f"Newey-West, {L_} lag{'s' if L_ > 1 else ''}" + (" (main: rule of thumb)" if L_ == 3 else ""), X0, dict(cov_type="HAC", cov_kwds={"maxlags": L_}, use_t=True))
+    rows.append(dict(Method="Fixed-b HAC (Kiefer-Vogelsang, Bartlett, b = 1)", delta=rows[0]["delta"], p=round(fixed_b_p(gap.values, X0.values, 1), 3)))
     add("Month dummies, classical OLS", XS, {})
-    add("Month dummies, White (HC1)", XS, dict(cov_type="HC1"))
-    add("Month dummies, Newey-West 3 lags", XS, dict(cov_type="HAC", cov_kwds={"maxlags": 3}))
+    add("Month dummies, White (HC1)", XS, dict(cov_type="HC1", use_t=True))
+    add("Month dummies, Newey-West 3 lags", XS, dict(cov_type="HAC", cov_kwds={"maxlags": 3}, use_t=True))
+    rows.append(dict(Method="Month dummies, fixed-b HAC (b = 1)", delta=round(float(sm.OLS(gap, XS).fit().params["post"]), 3),
+                     p=round(fixed_b_p(gap.values, XS.values, 1), 3)))
+    # quarterly averages: calendar quarters; 2023Q4 (Oct, 17-Nov pre; Dec post) dropped as a transition quarter;
+    # 2025Q1 has only January in the window and is dropped
+    q = gap.groupby(gap.index.to_period("Q")).mean()
+    q = q[(q.index != pd.Period("2023Q4")) & (q.index <= pd.Period("2024Q4"))]
+    Xq = sm.add_constant(pd.Series((q.index >= pd.Period("2024Q1")).astype(float), index=q.index, name="post"))
+    fq = sm.OLS(q.values, Xq.values).fit(cov_type="HC1", use_t=True)
+    rows.append(dict(Method=f"Quarterly averages (n = {len(q)}), White (HC1)", delta=round(float(fq.params[1]), 3), p=round(float(fq.pvalues[1]), 3)))
     rng = np.random.default_rng(seed)
     for lbl, X in [("Moving-block bootstrap (block 3)", X0), ("Month dummies, moving-block bootstrap", XS)]:
         d = sm.OLS(gap, X).fit().params["post"]
@@ -413,3 +464,144 @@ with pd.ExcelWriter(xl, engine="openpyxl", mode="a", if_sheet_exists="replace") 
     pd.DataFrame(R["inference"]["H1"]).merge(pd.DataFrame(R["inference"]["H2"]), on="Method", suffixes=("_H1", "_H2")).to_excel(w, sheet_name="Results_Inference", index=False)
     pd.DataFrame(R["rbi_desc"]).to_excel(w, sheet_name="RBI_Descriptives", index=False)
     pd.DataFrame(R["rbi_corr"]["rows"], index=SER, columns=SER).to_excel(w, sheet_name="RBI_Correlation")
+
+# =========================================================== 7. Audit additions: pre-trends, event study, firm-level re-specifications
+from scipy import stats as sstats
+AUD = {}
+# --- pre-trend tests on the pre-policy gap (linear time trend, NW 3 lags, t-based)
+def pretrend(gap, start):
+    y = gap[start:PRE_END].dropna()
+    t = np.arange(len(y)) / 12.0                      # years
+    f = sm.OLS(y.values, sm.add_constant(t)).fit(cov_type="HAC", cov_kwds={"maxlags": LAGS}, use_t=True)
+    return dict(slope_per_year=float(f.params[1]), se=float(f.bse[1]), p=float(f.pvalues[1]), n=int(len(y)),
+                first=str(y.index[0].date()), last=str(y.index[-1].date()))
+G1 = g[TREAT].mean(1) - g[CTRL].mean(1); G2 = g["NBFCs ex-HFC"] - g["Non-food credit"]
+AUD["pretrend"] = {k: dict(from_apr21=pretrend(G, "2021-04"), from_jul21=pretrend(G, "2021-07")) for k, G in [("H1", G1), ("H2", G2)]}
+# half-year means of the gap, for the text
+AUD["gap_quarter"] = {k: {str(p): round(float(v), 2) for p, v in G["2021-04":"2025-01"].groupby(G["2021-04":"2025-01"].index.to_period("Q")).mean().items()}
+                      for k, G in [("H1", G1), ("H2", G2)]}
+# counterfactual = pre-period linear trend extrapolated into the post period (mean reversion check, audit B1)
+def trend_cf(gap, start):
+    y = gap[start:WIN[1]].dropna(); t = np.arange(len(y)) / 12.0; post = y.index >= POST
+    f = sm.OLS(y.values[~post], sm.add_constant(t[~post])).fit()
+    dev = y.values[post] - (f.params[0] + f.params[1] * t[post])
+    return dict(delta=float(dev.mean()), slope_per_year=float(f.params[1]), n_pre=int((~post).sum()), n_post=int(post.sum()))
+AUD["trend_cf"] = {k: dict(from_apr21=trend_cf(G, "2021-04"), from_jul21=trend_cf(G, "2021-07")) for k, G in [("H1", gap1), ("H2", gap2)]}
+# --- trend-adjusted ITS: gap = a + b*t + delta*Post (pre-trend assumed to continue; audit B1)
+def its_trend(gap, brk):
+    y = gap.dropna(); t = np.arange(len(y)) / 12.0; post = (y.index >= brk).astype(float)
+    f = sm.OLS(y.values, sm.add_constant(np.column_stack([t, post]))).fit(cov_type="HAC", cov_kwds={"maxlags": LAGS}, use_t=True)
+    return dict(delta=float(f.params[2]), se=float(f.bse[2]), p=float(f.pvalues[2]), trend=float(f.params[1]))
+AUD["its_trend"] = dict(H1=its_trend(gap1, POST), H2=its_trend(gap2, POST))
+# --- event study: 3-month event-time blocks counted from the policy; block -1 (Sep/Oct/17-Nov 2023) = reference
+def event_study(gap):
+    y = gap.dropna()
+    k = np.array([(d.year - 2023) * 12 + d.month - 11 for d in y.index])   # months relative to Nov-2023 (Nov = 0)
+    blk = np.where(k <= 0, -((-k) // 3) - 1, (k - 1) // 3)                 # Sep,Oct,Nov23 -> -1 ; Dec23-Feb24 -> 0
+    D = pd.get_dummies(pd.Series(blk, index=y.index)).astype(float)
+    D = D.drop(columns=-1)
+    f = sm.OLS(y.values, sm.add_constant(D.values)).fit(cov_type="HAC", cov_kwds={"maxlags": LAGS}, use_t=True)
+    cols = list(D.columns)
+    out = pd.DataFrame(dict(block=cols, beta=f.params[1:], lo=f.conf_int()[1:, 0], hi=f.conf_int()[1:, 1], p=f.pvalues[1:]))
+    out = pd.concat([out, pd.DataFrame([dict(block=-1, beta=0, lo=0, hi=0, p=np.nan)])]).sort_values("block")
+    leads = [i + 1 for i, c in enumerate(cols) if c < -1]
+    Rm = np.zeros((len(leads), len(cols) + 1)); Rm[np.arange(len(leads)), leads] = 1
+    wt = f.f_test(Rm)
+    fc = sm.OLS(y.values, sm.add_constant(D.values)).fit(); wc = fc.f_test(Rm)            # classical F
+    lj = [i for i in leads if cols[i - 1] > -11]; Rj = np.zeros((len(lj), len(cols) + 1)); Rj[np.arange(len(lj)), lj] = 1
+    wj = fc.f_test(Rj)                                                                     # classical F, excluding Apr-2021 block
+    return out, dict(F=float(np.squeeze(wt.fvalue)), p=float(wt.pvalue), df=(int(wt.df_num), int(wt.df_denom)),
+                     F_classical=float(np.squeeze(wc.fvalue)), p_classical=float(wc.pvalue),
+                     F_classical_ex_apr21=float(np.squeeze(wj.fvalue)), p_classical_ex_apr21=float(wj.pvalue))
+ev1, ft1 = event_study(gap1); ev2, ft2 = event_study(gap2)
+AUD["event"] = dict(H1=dict(coef=ev1.round(3).to_dict(orient="records"), leads_F=ft1), H2=dict(coef=ev2.round(3).to_dict(orient="records"), leads_F=ft2))
+fig, axs = plt.subplots(1, 2, figsize=(10, 3.6))
+for ax, ev, ttl in [(axs[0], ev1, "H1: targeted minus exempt consumer credit"), (axs[1], ev2, "H2: NBFCs (ex-HFC) minus non-food credit")]:
+    x = ev.block.values
+    ax.axhline(0, color=MUTED, lw=.8); ax.axvline(-0.5, color=MUTED, ls="--", lw=1)
+    ax.vlines(x, ev.lo, ev.hi, color=C_C, lw=1.6); ax.plot(x, ev.beta, "o", color=C_C, ms=4)
+    ax.set_xlabel("3-month blocks relative to the policy (-1 = Sep to mid-Nov 2023, reference)", fontsize=7.5)
+    ax.set_ylabel("Gap relative to reference, pp/month", fontsize=8); ax.set_title(ttl, loc="left", fontsize=9, color=INK); tidy(ax)
+fig.tight_layout(); fig.savefig(os.path.join(OUT, "fig6_event_study.png"), dpi=200); plt.close(fig)
+
+# --- firm level: Model 3 as triple difference (HFCs exempt), exemption-based COF test (B12), Model 4 subsamples (B5, B9)
+cof["Post_x_NonHFC"] = cof.Post * cof.NonHFC
+cof["Post_x_Exp_x_NonHFC"] = cof.Post * cof.Exp * cof.NonHFC
+m = run("", cof, "COF_Pct", ["Post_x_Exp", "Post_x_NonHFC", "Post_x_Exp_x_NonHFC"], [], min_obs=8)
+AUD["cof_triple"] = dict(beta=m["res"][2]["beta"], se=m["res"][2]["se_cr1"], p=m["res"][2]["p_wcb"], n=m["n"], firms=m["firms"],
+                         beta_exp=m["res"][0]["beta"], p_exp=m["res"][0]["p_wcb"])
+MFI = ["CreditAccess", "Arman"]
+def bs_model(d, label):
+    m = run("", d[d.t < 20], "Bank_Share_Pct", ["NxPost"], [], min_obs=4)
+    return dict(label=label, beta=m["res"][0]["beta"], p=m["res"][0]["p_wcb"], n=m["n"], firms=m["firms"])
+AUD["bankshare_subsamples"] = [
+    bs_model(bsh, "All firms (main)"),
+    bs_model(bsh[~bsh.Company.str.contains("IIFL")], "Excluding IIFL Finance (gold-loan embargo Mar-Sep 2024)"),
+    bs_model(bsh[~bsh.Company.str.contains("|".join(MFI))], "Excluding NBFC-MFIs (CreditAccess, Arman: bank loans largely priority-sector, exempt)"),
+    bs_model(bsh[~bsh.Company.str.contains("|".join(MFI + ["IIFL"]))], "Excluding IIFL and NBFC-MFIs"),
+    bs_model(bsh[~bsh.Company.str.contains("|".join(MFI + ["IIFL", "Muthoot"]))], "Excluding IIFL, NBFC-MFIs and Muthoot"),
+    bs_model(bsh[~bsh.Company.str.contains("SBI Cards")], "Excluding SBI Cards"),
+]
+# raw firm-level changes in bank share (pre vs post-to-Mar-2025 means) for the narrative
+chg = bsh[bsh.t < 20].groupby(["Company", "Post"]).Bank_Share_Pct.mean().unstack()
+AUD["bankshare_firm_change"] = {c: dict(pre=round(r[0], 1), post=round(r[1], 1)) for c, r in chg.iterrows()}
+# balanced panel: firms observed in every half-year FY22H1 .. FY25H2 (h = 2..9)
+hh = bsh[(bsh.h >= 2) & (bsh.h <= 9)]
+full = hh.groupby("Company").h.nunique(); bal = full[full == 8].index
+grp_bal = bsh[bsh.Company.isin(bal)].groupby([bsh.t // 2, "NonHFC"]).Bank_Share_Pct.mean().unstack()
+AUD["balanced_firms"] = list(bal)
+AUD["bankshare_halfyear_raw"] = {f"FY{21 + h // 2}H{h % 2 + 1}": dict(nonhfc=round(r[1], 1), hfc=round(r[0], 1)) for h, r in grp.iterrows()}
+AUD["bankshare_halfyear_bal"] = {f"FY{21 + h // 2}H{h % 2 + 1}": dict(nonhfc=round(r[1], 1), hfc=round(r[0], 1)) for h, r in grp_bal.iterrows()}
+fig, ax = plt.subplots(figsize=(8, 3.6))
+lab = [f"FY{21 + h // 2}H{h % 2 + 1}" for h in grp.index]
+ax.plot(lab, grp[1], color=C_T, lw=2, marker="o", ms=4, label="Non-HFC NBFCs, all firms")
+ax.plot(lab, grp[0], color=C_C, lw=2, marker="o", ms=4, label="HFCs (exempt), all firms")
+lb = [f"FY{21 + h // 2}H{h % 2 + 1}" for h in grp_bal.index]
+ax.plot(lb, grp_bal[1], color=C_T, lw=1.4, ls="--", label=f"Non-HFC NBFCs, balanced panel ({int((bsh[bsh.Company.isin(bal)].groupby('Company').NonHFC.first() == 1).sum())} firms)")
+ax.plot(lb, grp_bal[0], color=C_C, lw=1.4, ls="--", label=f"HFCs, balanced panel ({int((bsh[bsh.Company.isin(bal)].groupby('Company').NonHFC.first() == 0).sum())} firms)")
+ax.axvline(5.5, color=MUTED, ls="--", lw=1); ax.legend(frameon=False, fontsize=7); tidy(ax)
+ax.set_ylabel("Bank share of borrowings (%)"); ax.tick_params(axis="x", labelsize=7.5)
+ax.set_title("Average bank share of borrowings (from investor presentations)", loc="left", fontsize=9, color=INK)
+fig.tight_layout(); fig.savefig(os.path.join(OUT, "fig5_bank_share.png"), dpi=200); plt.close(fig)
+# --- Bajaj: segment classification table, and Model 5 excluding the eCOM/Insta EMI Card embargo quarters (Q3 FY24 - Q1 FY25)
+AUD["bajaj_segments"] = sorted(s.Seg.unique().tolist())
+s2 = s[~s.t.isin([14, 15, 16])].copy()
+p2 = s2.set_index(["Seg", "t"])
+r2 = PanelOLS(p2.g, p2[["TxP"]], entity_effects=True, time_effects=True).fit(cov_type="kernel", kernel="bartlett", bandwidth=4)
+AUD["bajaj_ex_embargo"] = dict(beta=float(r2.params.iloc[0]), p=float(r2.pvalues.iloc[0]), n=int(r2.nobs))
+AUD["bajaj_share_series"] = R["bajaj_share"]
+# --- A8: automated re-check that each extracted value appears verbatim on the cited deck's text
+TXT = os.path.join(HERE, "quarterly_text")
+def deck_file(company, src):
+    m_ = re.match(r"(\d\d-\d)", str(src)); 
+    if not m_: return None
+    f = os.path.join(TXT, f"{company} {m_.group(1)}.txt")
+    return f if os.path.exists(f) else None
+def found(company, src, val):
+    f = deck_file(company, src)
+    if f is None: return None
+    t = open(f, errors="ignore").read()
+    cands = {f"{val:.2f}", f"{val:.1f}", f"{val:g}"}
+    return any(re.search(r"(?<![\d.])" + re.escape(c) + r"\s*%?", t) for c in cands)
+chk = []
+for nm, d, col in [("COF", cof, "COF_Pct"), ("Bank share", bsh, "Bank_Share_Pct")]:
+    for _, r in d.iterrows():
+        computed = "COMPUTED" in str(r.get("Note", "")) or "PROXY" in str(r.get("Note", "")) or "COMPUTED" in str(r.get("Definition", ""))
+        chk.append(dict(var=nm, company=r.Company, fy=r.FY, q=r.Q, value=r[col], source=r.Source_deck, computed=computed,
+                        found=None if computed else found(r.Company, r.Source_deck, float(r[col]))))
+chk = pd.DataFrame(chk)
+AUD["recheck"] = dict(total=int(len(chk)), computed=int(chk.computed.sum()),
+                      checkable=int(chk.found.notna().sum()), found=int((chk.found == True).sum()),
+                      no_text=int((~chk.computed & chk.found.isna()).sum()))
+chk.to_csv(os.path.join(OUT, "extraction_recheck.csv"), index=False)
+spot = chk.sample(40, random_state=2026).sort_values(["company", "fy", "q"])
+spot.assign(student_checked_value="", matches_source_YN="").to_csv(os.path.join(OUT, "manual_spot_check_sample.csv"), index=False)
+R["audit"] = AUD
+json.dump(R, open(os.path.join(OUT, "results.json"), "w"), indent=1, default=float)
+with pd.ExcelWriter(xl, engine="openpyxl", mode="a", if_sheet_exists="replace") as w:
+    chk.to_excel(w, sheet_name="Extraction_Recheck", index=False)
+    spot.assign(student_checked_value="", matches_source_YN="").to_excel(w, sheet_name="Manual_Spot_Check", index=False)
+    pd.DataFrame(AUD["bankshare_subsamples"]).to_excel(w, sheet_name="Results_BankShare_Subsamples", index=False)
+    ev1.to_excel(w, sheet_name="Results_EventStudy_H1", index=False); ev2.to_excel(w, sheet_name="Results_EventStudy_H2", index=False)
+print(json.dumps({k: v for k, v in AUD.items() if k not in ("event", "bankshare_firm_change", "bajaj_share_series")}, indent=1, default=lambda x: round(float(x), 4)))
+print("EVENT H1", ev1.round(2).to_string()); print("EVENT H2", ev2.round(2).to_string()); print(ft1, ft2)

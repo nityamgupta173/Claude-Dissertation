@@ -1,0 +1,1227 @@
+{
+ "H1": {
+  "its": {
+   "pre_mean": 0.6732466688588704,
+   "change": -0.6618429781209935,
+   "se": 0.21556120869578493,
+   "p": 0.002138259200481926,
+   "n": 46,
+   "annualised_change": -7.942115737451921
+  },
+  "panel": {
+   "beta": -0.6623544168358523,
+   "se": 0.24568146304341532,
+   "p": 0.007691373973614635,
+   "n": 229,
+   "annualised": -7.948253002030228
+  },
+  "placebo": {
+   "pre_mean": 0.5421613073857888,
+   "change": 0.4501621450198559,
+   "se": 0.3316603116528858,
+   "p": 0.174686286561484,
+   "n": 31,
+   "annualised_change": 5.401945740238271
+  },
+  "placebo_panel": {
+   "beta": 0.4551870427882085,
+   "se": 0.37769598435236396,
+   "p": 0.23054986779614017,
+   "n": 154,
+   "annualised": 5.462244513458502
+  },
+  "robustness": [
+   {
+    "Specification": "Drop credit cards",
+    "Coefficient": -0.79,
+    "SE": 0.19,
+    "p": 0.0,
+    "N": 183
+   },
+   {
+    "Specification": "Drop other personal loans",
+    "Coefficient": -0.53,
+    "SE": 0.38,
+    "p": 0.164,
+    "N": 183
+   },
+   {
+    "Specification": "Drop housing (merger-affected)",
+    "Coefficient": -0.71,
+    "SE": 0.26,
+    "p": 0.006,
+    "N": 184
+   },
+   {
+    "Specification": "Drop vehicle loans",
+    "Coefficient": -0.81,
+    "SE": 0.3,
+    "p": 0.008,
+    "N": 183
+   },
+   {
+    "Specification": "Drop education",
+    "Coefficient": -0.47,
+    "SE": 0.26,
+    "p": 0.078,
+    "N": 183
+   },
+   {
+    "Specification": "Add gold loans to control",
+    "Coefficient": -1.75,
+    "SE": 0.43,
+    "p": 0.0,
+    "N": 275
+   },
+   {
+    "Specification": "Shorter pre-period (from Apr-2022)",
+    "Coefficient": -0.78,
+    "SE": 0.21,
+    "p": 0.0,
+    "N": 169
+   },
+   {
+    "Specification": "Shorter post-period (to Oct-2024)",
+    "Coefficient": -0.67,
+    "SE": 0.27,
+    "p": 0.013,
+    "N": 214
+   }
+  ]
+ },
+ "H2": {
+  "its": {
+   "pre_mean": 0.8926193468508969,
+   "change": -0.9953243560871659,
+   "se": 0.5049012182476404,
+   "p": 0.04868672217907708,
+   "n": 45,
+   "annualised_change": -11.94389227304599
+  },
+  "placebo": {
+   "pre_mean": 0.7693043666687414,
+   "change": 0.2711193460130092,
+   "se": 0.6135559572492644,
+   "p": 0.658574581882807,
+   "n": 30,
+   "annualised_change": 3.25343215215611
+  },
+  "alt_vs_hfc": {
+   "pre_mean": 1.6613216411909704,
+   "change": -1.4109437660840816,
+   "se": 0.8803682259993008,
+   "p": 0.10900652123808148,
+   "n": 45,
+   "annualised_change": -16.93132519300898
+  },
+  "alt_all_nbfc": {
+   "pre_mean": 0.47581956978119816,
+   "change": -0.6296359551855752,
+   "se": 0.41602532651177976,
+   "p": 0.1301639131265593,
+   "n": 45,
+   "annualised_change": -7.555631462226903
+  },
+  "rollback": {
+   "pre_mean": -0.20602876693055455,
+   "change": 0.9521240606044625,
+   "se": 0.7202242222378273,
+   "p": 0.18617386613635967,
+   "n": 32,
+   "annualised_change": 11.425488727253551
+  }
+ },
+ "growth_table": {
+  "Credit cards": {
+   "Pre-policy (Apr-21 to Oct-23)": 23.3,
+   "Post-policy (Dec-23 to Mar-25)": 11.3,
+   "After rollback (Apr-25 to Jul-26)": 3.5
+  },
+  "Other personal loans": {
+   "Pre-policy (Apr-21 to Oct-23)": 21.6,
+   "Post-policy (Dec-23 to Mar-25)": 10.0,
+   "After rollback (Apr-25 to Jul-26)": 11.3
+  },
+  "Housing": {
+   "Pre-policy (Apr-21 to Oct-23)": 13.9,
+   "Post-policy (Dec-23 to Mar-25)": 11.2,
+   "After rollback (Apr-25 to Jul-26)": 9.8
+  },
+  "Vehicle loans": {
+   "Pre-policy (Apr-21 to Oct-23)": 14.6,
+   "Post-policy (Dec-23 to Mar-25)": 9.5,
+   "After rollback (Apr-25 to Jul-26)": 15.4
+  },
+  "Education": {
+   "Pre-policy (Apr-21 to Oct-23)": 13.5,
+   "Post-policy (Dec-23 to Mar-25)": 15.3,
+   "After rollback (Apr-25 to Jul-26)": 11.8
+  },
+  "Gold loans": {
+   "Pre-policy (Apr-21 to Oct-23)": 6.8,
+   "Post-policy (Dec-23 to Mar-25)": 62.4,
+   "After rollback (Apr-25 to Jul-26)": 73.9
+  },
+  "NBFCs ex-HFC": {
+   "Pre-policy (Apr-21 to Oct-23)": 23.5,
+   "Post-policy (Dec-23 to Mar-25)": 9.1,
+   "After rollback (Apr-25 to Jul-26)": 21.4
+  },
+  "HFCs": {
+   "Pre-policy (Apr-21 to Oct-23)": 7.1,
+   "Post-policy (Dec-23 to Mar-25)": 4.8,
+   "After rollback (Apr-25 to Jul-26)": 12.6
+  },
+  "NBFCs (incl. HFCs)": {
+   "Pre-policy (Apr-21 to Oct-23)": 19.2,
+   "Post-policy (Dec-23 to Mar-25)": 8.2,
+   "After rollback (Apr-25 to Jul-26)": 19.7
+  },
+  "Non-food credit": {
+   "Pre-policy (Apr-21 to Oct-23)": 13.2,
+   "Post-policy (Dec-23 to Mar-25)": 11.4,
+   "After rollback (Apr-25 to Jul-26)": 13.4
+  }
+ },
+ "firm_cof": {
+  "beta": 0.007634883581027703,
+  "se": 0.004951461920046312,
+  "p": 0.2825641282064103,
+  "n": 366,
+  "firms": 16
+ },
+ "firm_cof_hfc": {
+  "beta": -0.18121828502115808,
+  "se": 0.16517906010325958,
+  "p": 0.2917645882294115,
+  "n": 366,
+  "firms": 16
+ },
+ "firm_bankshare": {
+  "beta": -3.293171437825413,
+  "se": 2.934328464955277,
+  "p": 0.27996399819990997,
+  "n": 235,
+  "firms": 15
+ },
+ "firm_bankshare_rollback": {
+  "beta_post": -3.306214680244257,
+  "p_post": 0.2814140707035352,
+  "beta_rev": -2.9442423312173,
+  "p_rev": 0.14760738036901844,
+  "n": 286,
+  "firms": 15
+ },
+ "firm_bankshare_last": {
+  "beta": -6.088088676963234,
+  "p": 0.11855592779638982
+ },
+ "firm_bankshare_placebo": {
+  "beta": -1.618392784713566,
+  "p": 0.5653282664133207
+ },
+ "bajaj_within": {
+  "beta": 0.5796679290507915,
+  "se": 1.810111229026278,
+  "p": 0.749254727137296,
+  "n": 171,
+  "segments": 9
+ },
+ "bajaj_share": {
+  "FY21Q1": 36.8,
+  "FY21Q2": 35.2,
+  "FY21Q3": 36.7,
+  "FY21Q4": 37.1,
+  "FY22Q1": 36.5,
+  "FY22Q2": 37.7,
+  "FY22Q3": 38.4,
+  "FY22Q4": 37.1,
+  "FY23Q1": 38.7,
+  "FY23Q2": 37.8,
+  "FY23Q3": 37.5,
+  "FY23Q4": 37.2,
+  "FY24Q1": 38.1,
+  "FY24Q2": 37.1,
+  "FY24Q3": 36.6,
+  "FY24Q4": 35.7,
+  "FY25Q1": 36.6,
+  "FY25Q2": 36.6,
+  "FY25Q3": 37.1,
+  "FY25Q4": 37.1,
+  "FY26Q1": 37.5,
+  "FY26Q2": 37.5,
+  "FY26Q3": 37.7,
+  "FY26Q4": 38.3
+ },
+ "counts": {
+  "decks": 382,
+  "firms": 16,
+  "cof_obs": 366,
+  "bankshare_obs": 286,
+  "bankshare_firms": 15,
+  "rbi_months": 91,
+  "rbi_first": "2019-01-18",
+  "rbi_last": "2026-07-31"
+ },
+ "magnitudes": {
+  "h1_outstanding_jan25": 1802669.7256,
+  "h1_shortfall": 188147.44647878318,
+  "h2_outstanding_jan25": 1292215.9079999998,
+  "h2_shortfall": 208072.19190194007,
+  "months": 15,
+  "cards_oct23": 240635.4718,
+  "pl_oct23": 1332708.57,
+  "nbfc_oct23": 1123954.6787,
+  "nonfood_oct23": 15561722.13
+ },
+ "firm_desc": [
+  {
+   "Variable": "Cost of funds (%)",
+   "Group": "Non-HFC NBFCs",
+   "Period": "Pre (to Q2 FY24)",
+   "N": 124,
+   "Mean": 8.13,
+   "SD": 1.73,
+   "Min": 4.9,
+   "Max": 14.87
+  },
+  {
+   "Variable": "Cost of funds (%)",
+   "Group": "Non-HFC NBFCs",
+   "Period": "Post (Q3 FY24 on)",
+   "N": 98,
+   "Mean": 8.57,
+   "SD": 1.42,
+   "Min": 6.4,
+   "Max": 12.7
+  },
+  {
+   "Variable": "Cost of funds (%)",
+   "Group": "HFCs",
+   "Period": "Pre (to Q2 FY24)",
+   "N": 84,
+   "Mean": 7.3,
+   "SD": 0.65,
+   "Min": 5.56,
+   "Max": 8.5
+  },
+  {
+   "Variable": "Cost of funds (%)",
+   "Group": "HFCs",
+   "Period": "Post (Q3 FY24 on)",
+   "N": 60,
+   "Mean": 7.93,
+   "SD": 0.45,
+   "Min": 7.07,
+   "Max": 8.9
+  },
+  {
+   "Variable": "Bank share of borrowings (%)",
+   "Group": "Non-HFC NBFCs",
+   "Period": "Pre (to Q2 FY24)",
+   "N": 99,
+   "Mean": 48.46,
+   "SD": 14.95,
+   "Min": 24.0,
+   "Max": 77.0
+  },
+  {
+   "Variable": "Bank share of borrowings (%)",
+   "Group": "Non-HFC NBFCs",
+   "Period": "Post (Q3 FY24 on)",
+   "N": 83,
+   "Mean": 49.49,
+   "SD": 19.28,
+   "Min": 17.37,
+   "Max": 86.0
+  },
+  {
+   "Variable": "Bank share of borrowings (%)",
+   "Group": "HFCs",
+   "Period": "Pre (to Q2 FY24)",
+   "N": 59,
+   "Mean": 47.52,
+   "SD": 16.59,
+   "Min": 20.0,
+   "Max": 75.5
+  },
+  {
+   "Variable": "Bank share of borrowings (%)",
+   "Group": "HFCs",
+   "Period": "Post (Q3 FY24 on)",
+   "N": 45,
+   "Mean": 54.64,
+   "SD": 17.88,
+   "Min": 31.0,
+   "Max": 85.5
+  }
+ ],
+ "rbi_desc": [
+  {
+   "Series": "Credit cards",
+   "Period": "Pre-policy",
+   "N": 31,
+   "Mean": 1.944,
+   "SD": 3.07,
+   "Min": -7.575,
+   "Max": 7.983
+  },
+  {
+   "Series": "Credit cards",
+   "Period": "Post-policy",
+   "N": 14,
+   "Mean": 1.265,
+   "SD": 1.55,
+   "Min": -1.737,
+   "Max": 3.464
+  },
+  {
+   "Series": "Other personal loans",
+   "Period": "Pre-policy",
+   "N": 31,
+   "Mean": 1.8,
+   "SD": 1.194,
+   "Min": -0.795,
+   "Max": 4.038
+  },
+  {
+   "Series": "Other personal loans",
+   "Period": "Post-policy",
+   "N": 14,
+   "Mean": 0.838,
+   "SD": 0.867,
+   "Min": -0.775,
+   "Max": 2.612
+  },
+  {
+   "Series": "Housing",
+   "Period": "Pre-policy",
+   "N": 30,
+   "Mean": 1.157,
+   "SD": 0.859,
+   "Min": -0.43,
+   "Max": 3.488
+  },
+  {
+   "Series": "Housing",
+   "Period": "Post-policy",
+   "N": 14,
+   "Mean": 0.928,
+   "SD": 0.436,
+   "Min": 0.412,
+   "Max": 1.771
+  },
+  {
+   "Series": "Vehicle loans",
+   "Period": "Pre-policy",
+   "N": 31,
+   "Mean": 1.217,
+   "SD": 1.359,
+   "Min": -1.61,
+   "Max": 4.137
+  },
+  {
+   "Series": "Vehicle loans",
+   "Period": "Post-policy",
+   "N": 14,
+   "Mean": 0.816,
+   "SD": 0.753,
+   "Min": -0.446,
+   "Max": 2.639
+  },
+  {
+   "Series": "Education",
+   "Period": "Pre-policy",
+   "N": 31,
+   "Mean": 1.129,
+   "SD": 1.224,
+   "Min": -0.861,
+   "Max": 4.218
+  },
+  {
+   "Series": "Education",
+   "Period": "Post-policy",
+   "N": 14,
+   "Mean": 1.377,
+   "SD": 0.812,
+   "Min": -0.214,
+   "Max": 2.564
+  },
+  {
+   "Series": "NBFCs ex-HFC",
+   "Period": "Pre-policy",
+   "N": 30,
+   "Mean": 1.956,
+   "SD": 3.143,
+   "Min": -4.379,
+   "Max": 9.28
+  },
+  {
+   "Series": "NBFCs ex-HFC",
+   "Period": "Post-policy",
+   "N": 14,
+   "Mean": 0.761,
+   "SD": 1.927,
+   "Min": -2.876,
+   "Max": 3.814
+  },
+  {
+   "Series": "HFCs",
+   "Period": "Pre-policy",
+   "N": 30,
+   "Mean": 0.588,
+   "SD": 2.431,
+   "Min": -3.453,
+   "Max": 7.223
+  },
+  {
+   "Series": "HFCs",
+   "Period": "Post-policy",
+   "N": 14,
+   "Mean": 0.511,
+   "SD": 2.468,
+   "Min": -2.586,
+   "Max": 7.388
+  },
+  {
+   "Series": "Non-food credit",
+   "Period": "Pre-policy",
+   "N": 30,
+   "Mean": 1.096,
+   "SD": 1.11,
+   "Min": -0.934,
+   "Max": 3.665
+  },
+  {
+   "Series": "Non-food credit",
+   "Period": "Post-policy",
+   "N": 14,
+   "Mean": 0.864,
+   "SD": 0.772,
+   "Min": -0.546,
+   "Max": 2.385
+  }
+ ],
+ "rbi_corr": {
+  "cols": [
+   "Credit cards",
+   "Other personal loans",
+   "Housing",
+   "Vehicle loans",
+   "Education",
+   "NBFCs ex-HFC",
+   "HFCs",
+   "Non-food credit"
+  ],
+  "rows": [
+   [
+    1.0,
+    0.5,
+    0.26,
+    0.36,
+    0.19,
+    0.33,
+    0.37,
+    0.18
+   ],
+   [
+    0.5,
+    1.0,
+    0.51,
+    0.19,
+    0.26,
+    0.53,
+    0.49,
+    0.53
+   ],
+   [
+    0.26,
+    0.51,
+    1.0,
+    0.31,
+    0.25,
+    0.44,
+    0.27,
+    0.41
+   ],
+   [
+    0.36,
+    0.19,
+    0.31,
+    1.0,
+    0.27,
+    0.38,
+    0.13,
+    0.11
+   ],
+   [
+    0.19,
+    0.26,
+    0.25,
+    0.27,
+    1.0,
+    0.23,
+    0.14,
+    0.27
+   ],
+   [
+    0.33,
+    0.53,
+    0.44,
+    0.38,
+    0.23,
+    1.0,
+    0.28,
+    0.66
+   ],
+   [
+    0.37,
+    0.49,
+    0.27,
+    0.13,
+    0.14,
+    0.28,
+    1.0,
+    0.14
+   ],
+   [
+    0.18,
+    0.53,
+    0.41,
+    0.11,
+    0.27,
+    0.66,
+    0.14,
+    1.0
+   ]
+  ]
+ },
+ "model_summary": [
+  {
+   "name": "H1",
+   "n": 46,
+   "r2": 0.040329111211473645,
+   "adj_r2": 0.018518409193552632,
+   "f": 1.8490514967531415,
+   "f_p": 0.18082129264356356,
+   "ss_model": 4.266090982701172,
+   "ss_resid": 101.51583315470613,
+   "df_model": 1.0,
+   "df_resid": 44.0,
+   "const": 0.6732466688588704,
+   "const_se": 0.17012838975611125,
+   "const_p": 7.58061971222136e-05,
+   "delta": -0.6618429781209935,
+   "delta_se": 0.21556120869578493,
+   "delta_p": 0.002138259200481926,
+   "jb": 2.267582475777944,
+   "jb_p": 0.3218108791268169,
+   "skew": 0.438273227430507,
+   "kurt": 3.6440130600943776,
+   "dw": 2.2143871806306423,
+   "lb12": 19.61158395988117,
+   "lb12_p": 0.07479954999683637,
+   "bp": 3.1531952772354757,
+   "bp_p": 0.07577844036809317,
+   "vif": 1.0
+  },
+  {
+   "name": "H2",
+   "n": 45,
+   "r2": 0.04146083876401463,
+   "adj_r2": 0.019169230363177747,
+   "f": 1.8599303387394044,
+   "f_p": 0.17972993300979295,
+   "ss_model": 9.554467311956103,
+   "ss_resid": 220.89111933760208,
+   "df_model": 1.0,
+   "df_resid": 43.0,
+   "const": 0.8926193468508969,
+   "const_se": 0.4288328828267325,
+   "const_p": 0.03738737492155869,
+   "delta": -0.9953243560871659,
+   "delta_se": 0.5049012182476404,
+   "delta_p": 0.04868672217907708,
+   "jb": 3.413223841842864,
+   "jb_p": 0.18147961948492056,
+   "skew": 0.6609938005408814,
+   "kurt": 3.2696939590887175,
+   "dw": 2.0070411338603007,
+   "lb12": 8.175037173169034,
+   "lb12_p": 0.771306551651752,
+   "bp": 1.4678077846363742,
+   "bp_p": 0.22569189464443795,
+   "vif": 1.0
+  }
+ ],
+ "vif_h1_panel": 2.104166666666668,
+ "app_cof": {
+  "index": [
+   0,
+   1,
+   2,
+   3,
+   4,
+   5,
+   6,
+   7,
+   8,
+   9,
+   10,
+   11,
+   12,
+   13,
+   14,
+   15
+  ],
+  "columns": [
+   "Company",
+   "FY21",
+   "FY22",
+   "FY23",
+   "FY24",
+   "FY25",
+   "FY26"
+  ],
+  "data": [
+   [
+    "AAVAS Financiers Ltd.",
+    7.77,
+    7.08,
+    7.19,
+    7.88,
+    8.18,
+    7.79
+   ],
+   [
+    "Arman Financial Services Ltd.",
+    10.96,
+    10.6,
+    12.16,
+    12.2,
+    11.94,
+    11.49
+   ],
+   [
+    "Bajaj Finance Ltd.",
+    7.39,
+    6.83,
+    7.02,
+    7.72,
+    7.96,
+    7.54
+   ],
+   [
+    "Can Fin Homes Ltd.",
+    7.0,
+    5.59,
+    6.25,
+    7.41,
+    7.55,
+    7.21
+   ],
+   [
+    "Cholamandalam Investment & Finance Company Ltd.",
+    6.7,
+    5.82,
+    6.12,
+    6.93,
+    7.07,
+    6.78
+   ],
+   [
+    "CreditAccess Grameen Ltd.",
+    9.32,
+    9.35,
+    9.32,
+    9.75,
+    9.8,
+    9.48
+   ],
+   [
+    "Home First Finance Company India Ltd.",
+    8.05,
+    7.18,
+    7.32,
+    8.15,
+    8.38,
+    8.12
+   ],
+   [
+    "IIFL Finance Ltd.",
+    9.05,
+    8.72,
+    8.75,
+    9.07,
+    9.22,
+    9.39
+   ],
+   [
+    "LIC Housing Finance Ltd.",
+    7.42,
+    6.71,
+    7.21,
+    7.68,
+    7.75,
+    7.37
+   ],
+   [
+    "Mahindra & Mahindra Financial Services Ltd.",
+    7.82,
+    6.93,
+    6.91,
+    7.65,
+    7.74,
+    7.46
+   ],
+   [
+    "Muthoot Finance Ltd.",
+    9.1,
+    8.3,
+    8.23,
+    8.78,
+    8.92,
+    8.78
+   ],
+   [
+    "PNB Housing Finance Ltd.",
+    7.86,
+    7.28,
+    7.46,
+    8.0,
+    7.86,
+    7.58
+   ],
+   [
+    "Poonawalla Fincorp Ltd.",
+    "",
+    8.23,
+    7.39,
+    8.04,
+    8.1,
+    7.75
+   ],
+   [
+    "Repco Home Finance Ltd.",
+    7.92,
+    7.02,
+    7.42,
+    8.32,
+    8.8,
+    8.52
+   ],
+   [
+    "SBI Cards and Payment Services Ltd.",
+    6.2,
+    5.25,
+    5.88,
+    7.3,
+    7.38,
+    6.6
+   ],
+   [
+    "Shriram Finance Ltd.",
+    "",
+    "",
+    8.2,
+    8.85,
+    8.93,
+    8.94
+   ]
+  ]
+ },
+ "app_bsh": {
+  "index": [
+   0,
+   1,
+   2,
+   3,
+   4,
+   5,
+   6,
+   7,
+   8,
+   9,
+   10,
+   11,
+   12,
+   13,
+   14
+  ],
+  "columns": [
+   "Company",
+   "FY21",
+   "FY22",
+   "FY23",
+   "FY24",
+   "FY25",
+   "FY26"
+  ],
+  "data": [
+   [
+    "AAVAS Financiers Ltd.",
+    35.2,
+    37.3,
+    43.4,
+    48.6,
+    50.8,
+    ""
+   ],
+   [
+    "Arman Financial Services Ltd.",
+    29.0,
+    29.1,
+    28.3,
+    35.8,
+    35.6,
+    27.2
+   ],
+   [
+    "Bajaj Finance Ltd.",
+    35.8,
+    29.2,
+    31.5,
+    31.5,
+    29.0,
+    27.8
+   ],
+   [
+    "Can Fin Homes Ltd.",
+    55.5,
+    49.0,
+    54.0,
+    58.0,
+    56.0,
+    60.0
+   ],
+   [
+    "Cholamandalam Investment & Finance Company Ltd.",
+    66.0,
+    66.2,
+    65.2,
+    60.0,
+    58.5,
+    58.2
+   ],
+   [
+    "CreditAccess Grameen Ltd.",
+    53.6,
+    53.6,
+    59.1,
+    54.1,
+    58.5,
+    57.0
+   ],
+   [
+    "Home First Finance Company India Ltd.",
+    44.0,
+    45.0,
+    53.2,
+    56.0,
+    59.5,
+    59.0
+   ],
+   [
+    "IIFL Finance Ltd.",
+    28.0,
+    35.0,
+    45.0,
+    51.0,
+    35.0,
+    42.0
+   ],
+   [
+    "LIC Housing Finance Ltd.",
+    23.1,
+    27.6,
+    33.7,
+    33.2,
+    33.2,
+    35.8
+   ],
+   [
+    "Mahindra & Mahindra Financial Services Ltd.",
+    50.5,
+    47.0,
+    54.8,
+    57.6,
+    60.6,
+    64.1
+   ],
+   [
+    "Muthoot Finance Ltd.",
+    41.8,
+    49.6,
+    57.3,
+    62.4,
+    55.2,
+    49.7
+   ],
+   [
+    "PNB Housing Finance Ltd.",
+    26.7,
+    32.2,
+    34.1,
+    40.2,
+    38.7,
+    37.0
+   ],
+   [
+    "Repco Home Finance Ltd.",
+    72.0,
+    68.5,
+    72.2,
+    76.5,
+    81.6,
+    84.1
+   ],
+   [
+    "SBI Cards and Payment Services Ltd.",
+    58.5,
+    60.5,
+    68.2,
+    78.5,
+    83.8,
+    84.8
+   ],
+   [
+    "Shriram Finance Ltd.",
+    "",
+    "",
+    26.3,
+    25.1,
+    22.4,
+    19.7
+   ]
+  ]
+ },
+ "app_rbi": {
+  "index": [
+   0,
+   1,
+   2,
+   3,
+   4,
+   5,
+   6,
+   7
+  ],
+  "columns": [
+   "Date",
+   "Credit cards",
+   "Other personal loans",
+   "Housing",
+   "Vehicle loans",
+   "Education",
+   "NBFCs ex-HFC",
+   "HFCs",
+   "Non-food credit"
+  ],
+  "data": [
+   [
+    "Mar-2019",
+    0.88,
+    5.53,
+    11.77,
+    2.85,
+    0.76,
+    5.26,
+    2.26,
+    97.3
+   ],
+   [
+    "Mar-2020",
+    1.2,
+    6.94,
+    13.62,
+    3.4,
+    0.78,
+    7.01,
+    2.49,
+    103.19
+   ],
+   [
+    "Mar-2021",
+    1.32,
+    7.63,
+    14.92,
+    3.68,
+    0.78,
+    6.64,
+    2.84,
+    108.88
+   ],
+   [
+    "Mar-2022",
+    1.55,
+    9.02,
+    17.38,
+    4.05,
+    0.84,
+    7.47,
+    2.86,
+    118.36
+   ],
+   [
+    "Mar-2023",
+    2.05,
+    11.62,
+    19.91,
+    4.88,
+    0.96,
+    10.24,
+    3.19,
+    136.55
+   ],
+   [
+    "Mar-2024",
+    2.57,
+    14.28,
+    27.19,
+    5.73,
+    1.19,
+    12.02,
+    3.21,
+    165.64
+   ],
+   [
+    "Mar-2025",
+    2.84,
+    15.35,
+    30.1,
+    6.23,
+    1.37,
+    13.12,
+    3.23,
+    183.72
+   ],
+   [
+    "Mar-2026",
+    2.94,
+    17.32,
+    33.56,
+    7.39,
+    1.56,
+    16.96,
+    3.73,
+    212.91
+   ]
+  ]
+ },
+ "inference": {
+  "H1": [
+   {
+    "Method": "Classical OLS",
+    "delta": -0.662,
+    "p": 0.181
+   },
+   {
+    "Method": "White (HC1)",
+    "delta": -0.662,
+    "p": 0.089
+   },
+   {
+    "Method": "Newey-West, 1 lag",
+    "delta": -0.662,
+    "p": 0.076
+   },
+   {
+    "Method": "Newey-West, 3 lags (rule of thumb)",
+    "delta": -0.662,
+    "p": 0.01
+   },
+   {
+    "Method": "Newey-West, 6 lags (main)",
+    "delta": -0.662,
+    "p": 0.002
+   },
+   {
+    "Method": "Newey-West, 12 lags",
+    "delta": -0.662,
+    "p": 0.0
+   },
+   {
+    "Method": "Month dummies, classical OLS",
+    "delta": -0.691,
+    "p": 0.107
+   },
+   {
+    "Method": "Month dummies, White (HC1)",
+    "delta": -0.691,
+    "p": 0.102
+   },
+   {
+    "Method": "Month dummies, Newey-West 3 lags",
+    "delta": -0.691,
+    "p": 0.007
+   },
+   {
+    "Method": "Moving-block bootstrap (block 3)",
+    "delta": -0.662,
+    "p": 0.106
+   },
+   {
+    "Method": "Month dummies, moving-block bootstrap",
+    "delta": -0.691,
+    "p": 0.064
+   }
+  ],
+  "H2": [
+   {
+    "Method": "Classical OLS",
+    "delta": -0.995,
+    "p": 0.18
+   },
+   {
+    "Method": "White (HC1)",
+    "delta": -0.995,
+    "p": 0.122
+   },
+   {
+    "Method": "Newey-West, 1 lag",
+    "delta": -0.995,
+    "p": 0.104
+   },
+   {
+    "Method": "Newey-West, 3 lags (rule of thumb)",
+    "delta": -0.995,
+    "p": 0.086
+   },
+   {
+    "Method": "Newey-West, 6 lags (main)",
+    "delta": -0.995,
+    "p": 0.049
+   },
+   {
+    "Method": "Newey-West, 12 lags",
+    "delta": -0.995,
+    "p": 0.026
+   },
+   {
+    "Method": "Month dummies, classical OLS",
+    "delta": -1.18,
+    "p": 0.065
+   },
+   {
+    "Method": "Month dummies, White (HC1)",
+    "delta": -1.18,
+    "p": 0.043
+   },
+   {
+    "Method": "Month dummies, Newey-West 3 lags",
+    "delta": -1.18,
+    "p": 0.012
+   },
+   {
+    "Method": "Moving-block bootstrap (block 3)",
+    "delta": -0.995,
+    "p": 0.18
+   },
+   {
+    "Method": "Month dummies, moving-block bootstrap",
+    "delta": -1.18,
+    "p": 0.047
+   }
+  ]
+ }
+}

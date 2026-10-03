@@ -1,186 +1,239 @@
 {
  "H1": {
   "its": {
-   "pre_mean": 0.6732466688588704,
-   "change": -0.6618429781209935,
-   "se": 0.21556120869578493,
-   "p": 0.002138259200481926,
+   "pre_mean": 0.6581731180454083,
+   "change": -0.7522590720503977,
+   "se": 0.255831878869348,
+   "p": 0.005207441010690031,
    "n": 46,
-   "annualised_change": -7.942115737451921
+   "n_pre": 32,
+   "n_post": 14,
+   "annualised_change": -9.027108864604772
   },
   "panel": {
-   "beta": -0.6623544168358523,
-   "se": 0.24568146304341532,
-   "p": 0.007691373973614635,
-   "n": 229,
-   "annualised": -7.948253002030228
+   "beta": -0.7498931162811613,
+   "se": 0.29279757354277675,
+   "p": 0.011267314367207959,
+   "n": 228,
+   "annualised": -8.998717395373935
   },
   "placebo": {
-   "pre_mean": 0.5421613073857888,
-   "change": 0.4501621450198559,
-   "se": 0.3316603116528858,
-   "p": 0.174686286561484,
-   "n": 31,
-   "annualised_change": 5.401945740238271
+   "pre_mean": 0.94210176369732,
+   "change": -0.09057562788587926,
+   "se": 0.3946949955953965,
+   "p": 0.8202234168632219,
+   "n": 29,
+   "n_pre": 17,
+   "n_post": 12,
+   "annualised_change": -1.0869075346305512
   },
   "placebo_panel": {
-   "beta": 0.4551870427882085,
-   "se": 0.37769598435236396,
-   "p": 0.23054986779614017,
-   "n": 154,
-   "annualised": 5.462244513458502
+   "beta": -0.091312436743514,
+   "se": 0.46434457532620993,
+   "p": 0.8444691869160605,
+   "n": 143,
+   "annualised": -1.095749240922168
+  },
+  "placebo_from_apr21": {
+   "pre_mean": 0.542161307385789,
+   "change": 0.30936482842565194,
+   "se": 0.4083724086040595,
+   "p": 0.45462668321028044,
+   "n": 32,
+   "n_pre": 20,
+   "n_post": 12,
+   "annualised_change": 3.7123779411078233
+  },
+  "placebo_panel_from_apr21": {
+   "beta": 0.312994601291813,
+   "se": 0.4759586205740328,
+   "p": 0.512038563953856,
+   "n": 158,
+   "annualised": 3.755935215501756
   },
   "robustness": [
    {
     "Specification": "Drop credit cards",
-    "Coefficient": -0.79,
-    "SE": 0.19,
+    "Coefficient": -0.86,
+    "SE": 0.22,
     "p": 0.0,
-    "N": 183
+    "N": 182
    },
    {
     "Specification": "Drop other personal loans",
-    "Coefficient": -0.53,
-    "SE": 0.38,
-    "p": 0.164,
+    "Coefficient": -0.64,
+    "SE": 0.49,
+    "p": 0.2,
     "N": 183
    },
    {
     "Specification": "Drop housing (merger-affected)",
-    "Coefficient": -0.71,
-    "SE": 0.26,
-    "p": 0.006,
-    "N": 184
+    "Coefficient": -0.69,
+    "SE": 0.31,
+    "p": 0.028,
+    "N": 183
    },
    {
     "Specification": "Drop vehicle loans",
-    "Coefficient": -0.81,
-    "SE": 0.3,
-    "p": 0.008,
-    "N": 183
+    "Coefficient": -0.95,
+    "SE": 0.34,
+    "p": 0.006,
+    "N": 182
    },
    {
     "Specification": "Drop education",
-    "Coefficient": -0.47,
-    "SE": 0.26,
-    "p": 0.078,
-    "N": 183
-   },
-   {
-    "Specification": "Add gold loans to control",
-    "Coefficient": -1.75,
-    "SE": 0.43,
-    "p": 0.0,
-    "N": 275
+    "Coefficient": -0.61,
+    "SE": 0.31,
+    "p": 0.055,
+    "N": 182
    },
    {
     "Specification": "Shorter pre-period (from Apr-2022)",
-    "Coefficient": -0.78,
-    "SE": 0.21,
-    "p": 0.0,
-    "N": 169
+    "Coefficient": -0.85,
+    "SE": 0.26,
+    "p": 0.002,
+    "N": 168
    },
    {
     "Specification": "Shorter post-period (to Oct-2024)",
-    "Coefficient": -0.67,
-    "SE": 0.27,
-    "p": 0.013,
-    "N": 214
+    "Coefficient": -0.77,
+    "SE": 0.32,
+    "p": 0.016,
+    "N": 213
    }
-  ]
+  ],
+  "gold_note": {
+   "beta": -1.8127892848943195,
+   "p": 0.0002543334265181496
+  }
  },
  "H2": {
   "its": {
-   "pre_mean": 0.8926193468508969,
-   "change": -0.9953243560871659,
-   "se": 0.5049012182476404,
-   "p": 0.04868672217907708,
+   "pre_mean": 0.876852588014133,
+   "change": -1.069397031646027,
+   "se": 0.5797811492396571,
+   "p": 0.0720086029829464,
    "n": 45,
-   "annualised_change": -11.94389227304599
+   "n_pre": 31,
+   "n_post": 14,
+   "annualised_change": -12.832764379752325
   },
   "placebo": {
-   "pre_mean": 0.7693043666687414,
-   "change": 0.2711193460130092,
-   "se": 0.6135559572492644,
-   "p": 0.658574581882807,
-   "n": 30,
-   "annualised_change": 3.25343215215611
+   "pre_mean": 1.1985544711873597,
+   "change": -0.12615966254524247,
+   "se": 0.6341252877965736,
+   "p": 0.8438489429145377,
+   "n": 28,
+   "n_pre": 17,
+   "n_post": 11,
+   "annualised_change": -1.5139159505429096
+  },
+  "placebo_from_apr21": {
+   "pre_mean": 0.7693043666687416,
+   "change": 0.3030904419733747,
+   "se": 0.6969371132586343,
+   "p": 0.6668620906336972,
+   "n": 31,
+   "n_pre": 20,
+   "n_post": 11,
+   "annualised_change": 3.6370853036804967
+  },
+  "alt_core": {
+   "pre_mean": 1.0050363807949747,
+   "change": -1.227752568828153,
+   "se": 0.628022874567457,
+   "p": 0.05710951814244677,
+   "n": 45,
+   "n_pre": 31,
+   "n_post": 14,
+   "annualised_change": -14.733030825937835
   },
   "alt_vs_hfc": {
    "pre_mean": 1.6613216411909704,
    "change": -1.4109437660840816,
-   "se": 0.8803682259993008,
-   "p": 0.10900652123808148,
+   "se": 1.0130806278119528,
+   "p": 0.17086244101201348,
    "n": 45,
+   "n_pre": 31,
+   "n_post": 14,
    "annualised_change": -16.93132519300898
   },
   "alt_all_nbfc": {
-   "pre_mean": 0.47581956978119816,
-   "change": -0.6296359551855752,
-   "se": 0.41602532651177976,
-   "p": 0.1301639131265593,
+   "pre_mean": 0.46005281094443423,
+   "change": -0.7037086307444367,
+   "se": 0.4601342639026401,
+   "p": 0.13350035403162855,
    "n": 45,
-   "annualised_change": -7.555631462226903
+   "n_pre": 31,
+   "n_post": 14,
+   "annualised_change": -8.44450356893324
   },
   "rollback": {
-   "pre_mean": -0.20602876693055455,
-   "change": 0.9521240606044625,
-   "se": 0.7202242222378273,
-   "p": 0.18617386613635967,
+   "pre_mean": -0.26797376407941687,
+   "change": 0.980932291380135,
+   "se": 0.7966875004650681,
+   "p": 0.22778976498589984,
    "n": 32,
-   "annualised_change": 11.425488727253551
+   "n_pre": 17,
+   "n_post": 15,
+   "annualised_change": 11.77118749656162
   }
  },
  "growth_table": {
   "Credit cards": {
-   "Pre-policy (Apr-21 to Oct-23)": 23.3,
+   "Pre-policy (Apr-21 to mid-Nov-23)": 23.2,
    "Post-policy (Dec-23 to Mar-25)": 11.3,
    "After rollback (Apr-25 to Jul-26)": 3.5
   },
   "Other personal loans": {
-   "Pre-policy (Apr-21 to Oct-23)": 21.6,
-   "Post-policy (Dec-23 to Mar-25)": 10.0,
-   "After rollback (Apr-25 to Jul-26)": 11.3
+   "Pre-policy (Apr-21 to mid-Nov-23)": 21.2,
+   "Post-policy (Dec-23 to Mar-25)": 10.5,
+   "After rollback (Apr-25 to Jul-26)": 11.4
   },
   "Housing": {
-   "Pre-policy (Apr-21 to Oct-23)": 13.9,
-   "Post-policy (Dec-23 to Mar-25)": 11.2,
-   "After rollback (Apr-25 to Jul-26)": 9.8
+   "Pre-policy (Apr-21 to mid-Nov-23)": 14.6,
+   "Post-policy (Dec-23 to Mar-25)": 15.8,
+   "After rollback (Apr-25 to Jul-26)": 10.7
   },
   "Vehicle loans": {
-   "Pre-policy (Apr-21 to Oct-23)": 14.6,
+   "Pre-policy (Apr-21 to mid-Nov-23)": 14.9,
    "Post-policy (Dec-23 to Mar-25)": 9.5,
    "After rollback (Apr-25 to Jul-26)": 15.4
   },
   "Education": {
-   "Pre-policy (Apr-21 to Oct-23)": 13.5,
+   "Pre-policy (Apr-21 to mid-Nov-23)": 13.5,
    "Post-policy (Dec-23 to Mar-25)": 15.3,
    "After rollback (Apr-25 to Jul-26)": 11.8
   },
   "Gold loans": {
-   "Pre-policy (Apr-21 to Oct-23)": 6.8,
+   "Pre-policy (Apr-21 to mid-Nov-23)": 6.7,
    "Post-policy (Dec-23 to Mar-25)": 62.4,
    "After rollback (Apr-25 to Jul-26)": 73.9
   },
   "NBFCs ex-HFC": {
-   "Pre-policy (Apr-21 to Oct-23)": 23.5,
+   "Pre-policy (Apr-21 to mid-Nov-23)": 24.0,
    "Post-policy (Dec-23 to Mar-25)": 9.1,
    "After rollback (Apr-25 to Jul-26)": 21.4
   },
   "HFCs": {
-   "Pre-policy (Apr-21 to Oct-23)": 7.1,
+   "Pre-policy (Apr-21 to mid-Nov-23)": 4.1,
    "Post-policy (Dec-23 to Mar-25)": 4.8,
    "After rollback (Apr-25 to Jul-26)": 12.6
   },
   "NBFCs (incl. HFCs)": {
-   "Pre-policy (Apr-21 to Oct-23)": 19.2,
+   "Pre-policy (Apr-21 to mid-Nov-23)": 19.0,
    "Post-policy (Dec-23 to Mar-25)": 8.2,
    "After rollback (Apr-25 to Jul-26)": 19.7
   },
   "Non-food credit": {
-   "Pre-policy (Apr-21 to Oct-23)": 13.2,
-   "Post-policy (Dec-23 to Mar-25)": 11.4,
-   "After rollback (Apr-25 to Jul-26)": 13.4
+   "Pre-policy (Apr-21 to mid-Nov-23)": 13.5,
+   "Post-policy (Dec-23 to Mar-25)": 11.8,
+   "After rollback (Apr-25 to Jul-26)": 14.2
+  },
+  "Non-food ex NBFC, cards, other PL": {
+   "Pre-policy (Apr-21 to mid-Nov-23)": 11.9,
+   "Post-policy (Dec-23 to Mar-25)": 12.3,
+   "After rollback (Apr-25 to Jul-26)": 14.0
   }
  },
  "firm_cof": {
@@ -265,10 +318,10 @@
  },
  "magnitudes": {
   "h1_outstanding_jan25": 1802669.7256,
-  "h1_shortfall": 188147.44647878318,
+  "h1_shortfall": 200208.01574841188,
   "h2_outstanding_jan25": 1292215.9079999998,
-  "h2_shortfall": 208072.19190194007,
-  "months": 15,
+  "h2_shortfall": 208697.83896254838,
+  "months": 14,
   "cards_oct23": 240635.4718,
   "pl_oct23": 1332708.57,
   "nbfc_oct23": 1123954.6787,
@@ -360,9 +413,9 @@
   {
    "Series": "Credit cards",
    "Period": "Pre-policy",
-   "N": 31,
-   "Mean": 1.944,
-   "SD": 3.07,
+   "N": 32,
+   "Mean": 1.935,
+   "SD": 3.02,
    "Min": -7.575,
    "Max": 7.983
   },
@@ -379,26 +432,26 @@
    "Series": "Other personal loans",
    "Period": "Pre-policy",
    "N": 31,
-   "Mean": 1.8,
-   "SD": 1.194,
+   "Mean": 1.77,
+   "SD": 1.207,
    "Min": -0.795,
-   "Max": 4.038
+   "Max": 4.101
   },
   {
    "Series": "Other personal loans",
    "Period": "Post-policy",
    "N": 14,
-   "Mean": 0.838,
-   "SD": 0.867,
-   "Min": -0.775,
-   "Max": 2.612
+   "Mean": 0.881,
+   "SD": 0.888,
+   "Min": -0.761,
+   "Max": 2.703
   },
   {
    "Series": "Housing",
    "Period": "Pre-policy",
-   "N": 30,
-   "Mean": 1.157,
-   "SD": 0.859,
+   "N": 31,
+   "Mean": 1.219,
+   "SD": 0.845,
    "Min": -0.43,
    "Max": 3.488
   },
@@ -406,17 +459,17 @@
    "Series": "Housing",
    "Period": "Post-policy",
    "N": 14,
-   "Mean": 0.928,
-   "SD": 0.436,
-   "Min": 0.412,
-   "Max": 1.771
+   "Mean": 1.308,
+   "SD": 0.553,
+   "Min": 0.506,
+   "Max": 2.336
   },
   {
    "Series": "Vehicle loans",
    "Period": "Pre-policy",
-   "N": 31,
-   "Mean": 1.217,
-   "SD": 1.359,
+   "N": 32,
+   "Mean": 1.245,
+   "SD": 1.346,
    "Min": -1.61,
    "Max": 4.137
   },
@@ -432,9 +485,9 @@
   {
    "Series": "Education",
    "Period": "Pre-policy",
-   "N": 31,
-   "Mean": 1.129,
-   "SD": 1.224,
+   "N": 32,
+   "Mean": 1.127,
+   "SD": 1.204,
    "Min": -0.861,
    "Max": 4.218
   },
@@ -450,9 +503,9 @@
   {
    "Series": "NBFCs ex-HFC",
    "Period": "Pre-policy",
-   "N": 30,
-   "Mean": 1.956,
-   "SD": 3.143,
+   "N": 31,
+   "Mean": 1.999,
+   "SD": 3.1,
    "Min": -4.379,
    "Max": 9.28
   },
@@ -468,10 +521,10 @@
   {
    "Series": "HFCs",
    "Period": "Pre-policy",
-   "N": 30,
-   "Mean": 0.588,
-   "SD": 2.431,
-   "Min": -3.453,
+   "N": 31,
+   "Mean": 0.338,
+   "SD": 2.764,
+   "Min": -7.146,
    "Max": 7.223
   },
   {
@@ -486,9 +539,9 @@
   {
    "Series": "Non-food credit",
    "Period": "Pre-policy",
-   "N": 30,
-   "Mean": 1.096,
-   "SD": 1.11,
+   "N": 31,
+   "Mean": 1.123,
+   "SD": 1.104,
    "Min": -0.934,
    "Max": 3.665
   },
@@ -496,10 +549,10 @@
    "Series": "Non-food credit",
    "Period": "Post-policy",
    "N": 14,
-   "Mean": 0.864,
-   "SD": 0.772,
-   "Min": -0.546,
-   "Max": 2.385
+   "Mean": 0.953,
+   "SD": 0.595,
+   "Min": -0.366,
+   "Max": 1.816
   }
  ],
  "rbi_corr": {
@@ -522,42 +575,42 @@
     0.19,
     0.33,
     0.37,
-    0.18
+    0.19
    ],
    [
     0.5,
     1.0,
-    0.51,
+    0.45,
     0.19,
-    0.26,
+    0.27,
     0.53,
     0.49,
-    0.53
+    0.51
    ],
    [
     0.26,
-    0.51,
+    0.45,
     1.0,
-    0.31,
     0.25,
-    0.44,
-    0.27,
-    0.41
+    0.33,
+    0.4,
+    0.25,
+    0.42
    ],
    [
     0.36,
     0.19,
-    0.31,
+    0.25,
     1.0,
     0.27,
     0.38,
     0.13,
-    0.11
+    0.09
    ],
    [
     0.19,
-    0.26,
-    0.25,
+    0.27,
+    0.33,
     0.27,
     1.0,
     0.23,
@@ -567,31 +620,31 @@
    [
     0.33,
     0.53,
-    0.44,
+    0.4,
     0.38,
     0.23,
     1.0,
     0.28,
-    0.66
+    0.67
    ],
    [
     0.37,
     0.49,
-    0.27,
+    0.25,
     0.13,
     0.14,
     0.28,
     1.0,
-    0.14
+    0.16
    ],
    [
-    0.18,
-    0.53,
-    0.41,
-    0.11,
+    0.19,
+    0.51,
+    0.42,
+    0.09,
     0.27,
-    0.66,
-    0.14,
+    0.67,
+    0.16,
     1.0
    ]
   ]
@@ -600,57 +653,57 @@
   {
    "name": "H1",
    "n": 46,
-   "r2": 0.040329111211473645,
-   "adj_r2": 0.018518409193552632,
-   "f": 1.8490514967531415,
-   "f_p": 0.18082129264356356,
-   "ss_model": 4.266090982701172,
-   "ss_resid": 101.51583315470613,
+   "r2": 0.05172767677333312,
+   "adj_r2": 0.030176033063636143,
+   "f": 2.4001731594170077,
+   "f_p": 0.1284853641301093,
+   "ss_model": 5.511312668347685,
+   "ss_resid": 101.03344271469142,
    "df_model": 1.0,
    "df_resid": 44.0,
-   "const": 0.6732466688588704,
-   "const_se": 0.17012838975611125,
-   "const_p": 7.58061971222136e-05,
-   "delta": -0.6618429781209935,
-   "delta_se": 0.21556120869578493,
-   "delta_p": 0.002138259200481926,
-   "jb": 2.267582475777944,
-   "jb_p": 0.3218108791268169,
-   "skew": 0.438273227430507,
-   "kurt": 3.6440130600943776,
-   "dw": 2.2143871806306423,
-   "lb12": 19.61158395988117,
-   "lb12_p": 0.07479954999683637,
-   "bp": 3.1531952772354757,
-   "bp_p": 0.07577844036809317,
+   "const": 0.6581731180454083,
+   "const_se": 0.21986717537157932,
+   "const_p": 0.004511746627032338,
+   "delta": -0.7522590720503977,
+   "delta_se": 0.255831878869348,
+   "delta_p": 0.005207441010690031,
+   "jb": 2.3042754928637628,
+   "jb_p": 0.31596060324848146,
+   "skew": 0.4407047940365821,
+   "kurt": 3.652186959377152,
+   "dw": 2.21887371186134,
+   "lb12": 19.71362682813443,
+   "lb12_p": 0.0727008267040711,
+   "bp": 3.3489149054386758,
+   "bp_p": 0.06724932986737364,
    "vif": 1.0
   },
   {
    "name": "H2",
    "n": 45,
-   "r2": 0.04146083876401463,
-   "adj_r2": 0.019169230363177747,
-   "f": 1.8599303387394044,
-   "f_p": 0.17972993300979295,
-   "ss_model": 9.554467311956103,
-   "ss_resid": 220.89111933760208,
+   "r2": 0.04750605114891182,
+   "adj_r2": 0.02535502908260745,
+   "f": 2.144643755340616,
+   "f_p": 0.15034158736143108,
+   "ss_model": 11.029483220028965,
+   "ss_resid": 221.14058676655202,
    "df_model": 1.0,
    "df_resid": 43.0,
-   "const": 0.8926193468508969,
-   "const_se": 0.4288328828267325,
-   "const_p": 0.03738737492155869,
-   "delta": -0.9953243560871659,
-   "delta_se": 0.5049012182476404,
-   "delta_p": 0.04868672217907708,
-   "jb": 3.413223841842864,
-   "jb_p": 0.18147961948492056,
-   "skew": 0.6609938005408814,
-   "kurt": 3.2696939590887175,
-   "dw": 2.0070411338603007,
-   "lb12": 8.175037173169034,
-   "lb12_p": 0.771306551651752,
-   "bp": 1.4678077846363742,
-   "bp_p": 0.22569189464443795,
+   "const": 0.876852588014133,
+   "const_se": 0.45006796127495646,
+   "const_p": 0.057928761646322165,
+   "delta": -1.069397031646027,
+   "delta_se": 0.5797811492396571,
+   "delta_p": 0.0720086029829464,
+   "jb": 3.559077179791926,
+   "jb_p": 0.16871597656790305,
+   "skew": 0.6734560826132655,
+   "kurt": 3.2898311837152883,
+   "dw": 2.0115561999434717,
+   "lb12": 8.014473368964294,
+   "lb12_p": 0.7839983199736271,
+   "bp": 1.4130245703221562,
+   "bp_p": 0.23455494560695325,
    "vif": 1.0
   }
  ],
@@ -1112,116 +1165,804 @@
   "H1": [
    {
     "Method": "Classical OLS",
-    "delta": -0.662,
-    "p": 0.181
+    "delta": -0.752,
+    "p": 0.128
    },
    {
     "Method": "White (HC1)",
-    "delta": -0.662,
-    "p": 0.089
+    "delta": -0.752,
+    "p": 0.057
    },
    {
     "Method": "Newey-West, 1 lag",
-    "delta": -0.662,
-    "p": 0.076
+    "delta": -0.752,
+    "p": 0.046
    },
    {
-    "Method": "Newey-West, 3 lags (rule of thumb)",
-    "delta": -0.662,
-    "p": 0.01
+    "Method": "Newey-West, 3 lags (main: rule of thumb)",
+    "delta": -0.752,
+    "p": 0.005
    },
    {
-    "Method": "Newey-West, 6 lags (main)",
-    "delta": -0.662,
-    "p": 0.002
+    "Method": "Newey-West, 6 lags",
+    "delta": -0.752,
+    "p": 0.001
    },
    {
     "Method": "Newey-West, 12 lags",
-    "delta": -0.662,
+    "delta": -0.752,
     "p": 0.0
    },
    {
+    "Method": "Fixed-b HAC (Kiefer-Vogelsang, Bartlett, b = 1)",
+    "delta": -0.752,
+    "p": 0.028
+   },
+   {
     "Method": "Month dummies, classical OLS",
-    "delta": -0.691,
-    "p": 0.107
+    "delta": -0.783,
+    "p": 0.069
    },
    {
     "Method": "Month dummies, White (HC1)",
-    "delta": -0.691,
-    "p": 0.102
+    "delta": -0.783,
+    "p": 0.071
    },
    {
     "Method": "Month dummies, Newey-West 3 lags",
-    "delta": -0.691,
-    "p": 0.007
+    "delta": -0.783,
+    "p": 0.004
+   },
+   {
+    "Method": "Month dummies, fixed-b HAC (b = 1)",
+    "delta": -0.783,
+    "p": 0.025
+   },
+   {
+    "Method": "Quarterly averages (n = 14), White (HC1)",
+    "delta": -0.686,
+    "p": 0.157
    },
    {
     "Method": "Moving-block bootstrap (block 3)",
-    "delta": -0.662,
-    "p": 0.106
+    "delta": -0.752,
+    "p": 0.072
    },
    {
     "Method": "Month dummies, moving-block bootstrap",
-    "delta": -0.691,
-    "p": 0.064
+    "delta": -0.783,
+    "p": 0.041
    }
   ],
   "H2": [
    {
     "Method": "Classical OLS",
-    "delta": -0.995,
-    "p": 0.18
+    "delta": -1.069,
+    "p": 0.15
    },
    {
     "Method": "White (HC1)",
-    "delta": -0.995,
-    "p": 0.122
+    "delta": -1.069,
+    "p": 0.105
    },
    {
     "Method": "Newey-West, 1 lag",
-    "delta": -0.995,
-    "p": 0.104
+    "delta": -1.069,
+    "p": 0.089
    },
    {
-    "Method": "Newey-West, 3 lags (rule of thumb)",
-    "delta": -0.995,
-    "p": 0.086
+    "Method": "Newey-West, 3 lags (main: rule of thumb)",
+    "delta": -1.069,
+    "p": 0.072
    },
    {
-    "Method": "Newey-West, 6 lags (main)",
-    "delta": -0.995,
-    "p": 0.049
+    "Method": "Newey-West, 6 lags",
+    "delta": -1.069,
+    "p": 0.041
    },
    {
     "Method": "Newey-West, 12 lags",
-    "delta": -0.995,
-    "p": 0.026
+    "delta": -1.069,
+    "p": 0.02
+   },
+   {
+    "Method": "Fixed-b HAC (Kiefer-Vogelsang, Bartlett, b = 1)",
+    "delta": -1.069,
+    "p": 0.19
    },
    {
     "Method": "Month dummies, classical OLS",
-    "delta": -1.18,
-    "p": 0.065
+    "delta": -1.264,
+    "p": 0.047
    },
    {
     "Method": "Month dummies, White (HC1)",
-    "delta": -1.18,
-    "p": 0.043
+    "delta": -1.264,
+    "p": 0.033
    },
    {
     "Method": "Month dummies, Newey-West 3 lags",
-    "delta": -1.18,
-    "p": 0.012
+    "delta": -1.264,
+    "p": 0.009
+   },
+   {
+    "Method": "Month dummies, fixed-b HAC (b = 1)",
+    "delta": -1.264,
+    "p": 0.071
+   },
+   {
+    "Method": "Quarterly averages (n = 14), White (HC1)",
+    "delta": -1.14,
+    "p": 0.189
    },
    {
     "Method": "Moving-block bootstrap (block 3)",
-    "delta": -0.995,
-    "p": 0.18
+    "delta": -1.069,
+    "p": 0.15
    },
    {
     "Method": "Month dummies, moving-block bootstrap",
-    "delta": -1.18,
-    "p": 0.047
+    "delta": -1.264,
+    "p": 0.036
    }
   ]
+ },
+ "audit": {
+  "pretrend": {
+   "H1": {
+    "from_apr21": {
+     "slope_per_year": 0.22894117675495523,
+     "se": 0.3709483048150058,
+     "p": 0.5417736116273798,
+     "n": 32,
+     "first": "2021-04-23",
+     "last": "2023-11-17"
+    },
+    "from_jul21": {
+     "slope_per_year": -0.3699986098022734,
+     "se": 0.3345561730698156,
+     "p": 0.27851027754634056,
+     "n": 29,
+     "first": "2021-07-30",
+     "last": "2023-11-17"
+    }
+   },
+   "H2": {
+    "from_apr21": {
+     "slope_per_year": 0.7517527617254143,
+     "se": 0.5210744647972447,
+     "p": 0.159820555688401,
+     "n": 31,
+     "first": "2021-04-23",
+     "last": "2023-11-17"
+    },
+    "from_jul21": {
+     "slope_per_year": 0.22356600100959167,
+     "se": 0.5117159007094932,
+     "p": 0.6657947969626109,
+     "n": 28,
+     "first": "2021-07-30",
+     "last": "2023-11-17"
+    }
+   }
+  },
+  "gap_quarter": {
+   "H1": {
+    "2021Q2": -1.72,
+    "2021Q3": 1.78,
+    "2021Q4": 1.27,
+    "2022Q1": 0.62,
+    "2022Q2": 0.43,
+    "2022Q3": 0.78,
+    "2022Q4": 0.76,
+    "2023Q1": 1.79,
+    "2023Q2": 0.35,
+    "2023Q3": -0.19,
+    "2023Q4": 1.25,
+    "2024Q1": -0.17,
+    "2024Q2": 0.25,
+    "2024Q3": -1.0,
+    "2024Q4": 0.52,
+    "2025Q1": -0.41
+   },
+   "H2": {
+    "2021Q2": -1.66,
+    "2021Q3": -0.87,
+    "2021Q4": 3.14,
+    "2022Q1": 0.54,
+    "2022Q2": -0.39,
+    "2022Q3": 1.92,
+    "2022Q4": 4.63,
+    "2023Q1": -0.43,
+    "2023Q2": 0.74,
+    "2023Q3": 1.11,
+    "2023Q4": 1.33,
+    "2024Q1": -0.95,
+    "2024Q2": -0.37,
+    "2024Q3": -1.11,
+    "2024Q4": 1.36,
+    "2025Q1": -1.42
+   }
+  },
+  "trend_cf": {
+   "H1": {
+    "from_apr21": {
+     "delta": -1.1910629941640618,
+     "slope_per_year": 0.22894117675495523,
+     "n_pre": 32,
+     "n_post": 14
+    },
+    "from_jul21": {
+     "delta": -0.3357939716468951,
+     "slope_per_year": -0.3699986098022734,
+     "n_pre": 29,
+     "n_post": 14
+    }
+   },
+   "H2": {
+    "from_apr21": {
+     "delta": -2.4789334598811785,
+     "slope_per_year": 0.7517527617254143,
+     "n_pre": 31,
+     "n_post": 14
+    },
+    "from_jul21": {
+     "delta": -1.7327766920146932,
+     "slope_per_year": 0.22356600100959167,
+     "n_pre": 28,
+     "n_post": 14
+    }
+   }
+  },
+  "its_trend": {
+   "H1": {
+    "delta": -1.1169112698584365,
+    "se": 0.5779839706365844,
+    "p": 0.05991150822237546,
+    "trend": 0.1902533205954981
+   },
+   "H2": {
+    "delta": -2.4762906810595555,
+    "se": 0.9661925497136093,
+    "p": 0.01405181295078709,
+    "trend": 0.7503432796872154
+   }
+  },
+  "event": {
+   "H1": {
+    "coef": [
+     {
+      "block": -11,
+      "beta": -2.968,
+      "lo": -4.191,
+      "hi": -1.745,
+      "p": 0.0
+     },
+     {
+      "block": -10,
+      "beta": 0.927,
+      "lo": -0.733,
+      "hi": 2.587,
+      "p": 0.263
+     },
+     {
+      "block": -9,
+      "beta": -0.043,
+      "lo": -1.376,
+      "hi": 1.289,
+      "p": 0.948
+     },
+     {
+      "block": -8,
+      "beta": -0.654,
+      "lo": -1.699,
+      "hi": 0.392,
+      "p": 0.211
+     },
+     {
+      "block": -7,
+      "beta": 0.632,
+      "lo": -0.536,
+      "hi": 1.799,
+      "p": 0.278
+     },
+     {
+      "block": -6,
+      "beta": -0.32,
+      "lo": -1.669,
+      "hi": 1.028,
+      "p": 0.631
+     },
+     {
+      "block": -5,
+      "beta": -0.545,
+      "lo": -1.929,
+      "hi": 0.84,
+      "p": 0.428
+     },
+     {
+      "block": -4,
+      "beta": 0.135,
+      "lo": -0.909,
+      "hi": 1.179,
+      "p": 0.793
+     },
+     {
+      "block": -3,
+      "beta": 0.373,
+      "lo": -1.138,
+      "hi": 1.883,
+      "p": 0.618
+     },
+     {
+      "block": -2,
+      "beta": -0.46,
+      "lo": -1.596,
+      "hi": 0.676,
+      "p": 0.415
+     },
+     {
+      "block": -1,
+      "beta": 0.0,
+      "lo": 0.0,
+      "hi": 0.0,
+      "p": NaN
+     },
+     {
+      "block": 0,
+      "beta": -0.629,
+      "lo": -1.56,
+      "hi": 0.303,
+      "p": 0.178
+     },
+     {
+      "block": 1,
+      "beta": -0.995,
+      "lo": -2.182,
+      "hi": 0.191,
+      "p": 0.097
+     },
+     {
+      "block": 2,
+      "beta": -1.127,
+      "lo": -2.26,
+      "hi": 0.007,
+      "p": 0.051
+     },
+     {
+      "block": 3,
+      "beta": -0.695,
+      "lo": -2.137,
+      "hi": 0.747,
+      "p": 0.333
+     },
+     {
+      "block": 4,
+      "beta": -1.367,
+      "lo": -2.394,
+      "hi": -0.341,
+      "p": 0.011
+     }
+    ],
+    "leads_F": {
+     "F": 10.867410931476684,
+     "p": 1.6679536113102792e-07,
+     "df": [
+      10,
+      30
+     ],
+     "F_classical": 0.9429380740422619,
+     "p_classical": 0.5099086220877118,
+     "F_classical_ex_apr21": 0.32240051362090105,
+     "p_classical_ex_apr21": 0.9609759387424833
+    }
+   },
+   "H2": {
+    "coef": [
+     {
+      "block": -11,
+      "beta": -3.663,
+      "lo": -4.656,
+      "hi": -2.669,
+      "p": 0.0
+     },
+     {
+      "block": -10,
+      "beta": -2.238,
+      "lo": -3.051,
+      "hi": -1.425,
+      "p": 0.0
+     },
+     {
+      "block": -9,
+      "beta": 0.24,
+      "lo": -0.883,
+      "hi": 1.362,
+      "p": 0.666
+     },
+     {
+      "block": -8,
+      "beta": 0.278,
+      "lo": -1.553,
+      "hi": 2.108,
+      "p": 0.759
+     },
+     {
+      "block": -7,
+      "beta": -1.005,
+      "lo": -1.602,
+      "hi": -0.408,
+      "p": 0.002
+     },
+     {
+      "block": -6,
+      "beta": -0.045,
+      "lo": -1.58,
+      "hi": 1.49,
+      "p": 0.953
+     },
+     {
+      "block": -5,
+      "beta": 1.323,
+      "lo": 0.041,
+      "hi": 2.604,
+      "p": 0.043
+     },
+     {
+      "block": -4,
+      "beta": 0.491,
+      "lo": -1.823,
+      "hi": 2.804,
+      "p": 0.668
+     },
+     {
+      "block": -3,
+      "beta": -1.942,
+      "lo": -2.701,
+      "hi": -1.182,
+      "p": 0.0
+     },
+     {
+      "block": -2,
+      "beta": 0.634,
+      "lo": -0.683,
+      "hi": 1.951,
+      "p": 0.333
+     },
+     {
+      "block": -1,
+      "beta": 0.0,
+      "lo": 0.0,
+      "hi": 0.0,
+      "p": NaN
+     },
+     {
+      "block": 0,
+      "beta": -2.19,
+      "lo": -3.573,
+      "hi": -0.807,
+      "p": 0.003
+     },
+     {
+      "block": 1,
+      "beta": -1.003,
+      "lo": -2.046,
+      "hi": 0.041,
+      "p": 0.059
+     },
+     {
+      "block": 2,
+      "beta": -2.504,
+      "lo": -3.042,
+      "hi": -1.966,
+      "p": 0.0
+     },
+     {
+      "block": 3,
+      "beta": -0.92,
+      "lo": -2.134,
+      "hi": 0.295,
+      "p": 0.132
+     },
+     {
+      "block": 4,
+      "beta": -0.893,
+      "lo": -2.305,
+      "hi": 0.519,
+      "p": 0.206
+     }
+    ],
+    "leads_F": {
+     "F": 10.825120182056303,
+     "p": 2.3265238694580446e-07,
+     "df": [
+      10,
+      29
+     ],
+     "F_classical": 1.0352122374296369,
+     "p_classical": 0.44003725784019776,
+     "F_classical_ex_apr21": 0.7070868891641374,
+     "p_classical_ex_apr21": 0.6976045869629359
+    }
+   }
+  },
+  "cof_triple": {
+   "beta": -0.015869991803339825,
+   "se": 0.008083261768755387,
+   "p": 0.1446572328616431,
+   "n": 366,
+   "firms": 16,
+   "beta_exp": 0.01894792919723068,
+   "p_exp": 0.056752837641882097
+  },
+  "bankshare_subsamples": [
+   {
+    "label": "All firms (main)",
+    "beta": -3.293171437825413,
+    "p": 0.27996399819990997,
+    "n": 235,
+    "firms": 15
+   },
+   {
+    "label": "Excluding IIFL Finance (gold-loan embargo Mar-Sep 2024)",
+    "beta": -3.405794303008516,
+    "p": 0.28466423321166057,
+    "n": 230,
+    "firms": 14
+   },
+   {
+    "label": "Excluding NBFC-MFIs (CreditAccess, Arman: bank loans largely priority-sector, exempt)",
+    "beta": -3.35146571290758,
+    "p": 0.39081954097704885,
+    "n": 198,
+    "firms": 13
+   },
+   {
+    "label": "Excluding IIFL and NBFC-MFIs",
+    "beta": -3.5045985331929947,
+    "p": 0.3929696484824241,
+    "n": 193,
+    "firms": 12
+   },
+   {
+    "label": "Excluding IIFL, NBFC-MFIs and Muthoot",
+    "beta": -4.037947254891492,
+    "p": 0.40362018100905045,
+    "n": 173,
+    "firms": 11
+   },
+   {
+    "label": "Excluding SBI Cards",
+    "beta": -5.153058134140627,
+    "p": 0.05610280514025701,
+    "n": 217,
+    "firms": 14
+   }
+  ],
+  "bankshare_firm_change": {
+   "AAVAS Financiers Ltd.": {
+    "pre": 40.2,
+    "post": 49.7
+   },
+   "Arman Financial Services Ltd.": {
+    "pre": 29.5,
+    "post": 36.5
+   },
+   "Bajaj Finance Ltd.": {
+    "pre": 32.1,
+    "post": 29.8
+   },
+   "Can Fin Homes Ltd.": {
+    "pre": 53.4,
+    "post": 57.0
+   },
+   "Cholamandalam Investment & Finance Company Ltd.": {
+    "pre": 65.1,
+    "post": 58.7
+   },
+   "CreditAccess Grameen Ltd.": {
+    "pre": 55.3,
+    "post": 56.9
+   },
+   "Home First Finance Company India Ltd.": {
+    "pre": 49.5,
+    "post": 59.0
+   },
+   "IIFL Finance Ltd.": {
+    "pre": 36.0,
+    "post": 43.0
+   },
+   "LIC Housing Finance Ltd.": {
+    "pre": 28.7,
+    "post": 33.7
+   },
+   "Mahindra & Mahindra Financial Services Ltd.": {
+    "pre": 51.8,
+    "post": 60.1
+   },
+   "Muthoot Finance Ltd.": {
+    "pre": 51.4,
+    "post": 57.6
+   },
+   "PNB Housing Finance Ltd.": {
+    "pre": 33.6,
+    "post": 38.7
+   },
+   "Repco Home Finance Ltd.": {
+    "pre": 71.4,
+    "post": 80.5
+   },
+   "SBI Cards and Payment Services Ltd.": {
+    "pre": 65.4,
+    "post": 82.7
+   },
+   "Shriram Finance Ltd.": {
+    "pre": 25.8,
+    "post": 23.4
+   }
+  },
+  "balanced_firms": [
+   "AAVAS Financiers Ltd.",
+   "Arman Financial Services Ltd.",
+   "Bajaj Finance Ltd.",
+   "Can Fin Homes Ltd.",
+   "Cholamandalam Investment & Finance Company Ltd.",
+   "CreditAccess Grameen Ltd.",
+   "Home First Finance Company India Ltd.",
+   "LIC Housing Finance Ltd.",
+   "Mahindra & Mahindra Financial Services Ltd.",
+   "Muthoot Finance Ltd.",
+   "Repco Home Finance Ltd.",
+   "SBI Cards and Payment Services Ltd."
+  ],
+  "bankshare_halfyear_raw": {
+   "FY21H1": {
+    "nonhfc": 48.8,
+    "hfc": 47.6
+   },
+   "FY21H2": {
+    "nonhfc": 46.2,
+    "hfc": 43.4
+   },
+   "FY22H1": {
+    "nonhfc": 47.5,
+    "hfc": 45.3
+   },
+   "FY22H2": {
+    "nonhfc": 48.6,
+    "hfc": 45.2
+   },
+   "FY23H1": {
+    "nonhfc": 47.8,
+    "hfc": 46.5
+   },
+   "FY23H2": {
+    "nonhfc": 49.6,
+    "hfc": 52.1
+   },
+   "FY24H1": {
+    "nonhfc": 50.0,
+    "hfc": 52.0
+   },
+   "FY24H2": {
+    "nonhfc": 51.2,
+    "hfc": 56.0
+   },
+   "FY25H1": {
+    "nonhfc": 50.5,
+    "hfc": 53.8
+   },
+   "FY25H2": {
+    "nonhfc": 49.5,
+    "hfc": 54.4
+   },
+   "FY26H1": {
+    "nonhfc": 48.6,
+    "hfc": 53.5
+   },
+   "FY26H2": {
+    "nonhfc": 47.6,
+    "hfc": 55.7
+   }
+  },
+  "bankshare_halfyear_bal": {
+   "FY21H1": {
+    "nonhfc": 48.8,
+    "hfc": 47.6
+   },
+   "FY21H2": {
+    "nonhfc": 47.9,
+    "hfc": 45.8
+   },
+   "FY22H1": {
+    "nonhfc": 47.5,
+    "hfc": 45.3
+   },
+   "FY22H2": {
+    "nonhfc": 49.6,
+    "hfc": 46.8
+   },
+   "FY23H1": {
+    "nonhfc": 50.9,
+    "hfc": 50.6
+   },
+   "FY23H2": {
+    "nonhfc": 53.2,
+    "hfc": 53.4
+   },
+   "FY24H1": {
+    "nonhfc": 53.6,
+    "hfc": 53.5
+   },
+   "FY24H2": {
+    "nonhfc": 54.9,
+    "hfc": 56.0
+   },
+   "FY25H1": {
+    "nonhfc": 54.4,
+    "hfc": 57.4
+   },
+   "FY25H2": {
+    "nonhfc": 54.5,
+    "hfc": 56.5
+   },
+   "FY26H1": {
+    "nonhfc": 52.9,
+    "hfc": 58.6
+   },
+   "FY26H2": {
+    "nonhfc": 52.7,
+    "hfc": 60.8
+   }
+  },
+  "bajaj_segments": [
+   "Commercial Lending",
+   "Loan Against Securities",
+   "Mortgages",
+   "Rural B2C",
+   "Rural Sales Finance",
+   "SME Lending",
+   "Two & Three wheeler Finance",
+   "Urban B2C",
+   "Urban Sales Finance"
+  ],
+  "bajaj_ex_embargo": {
+   "beta": 1.2170137909263146,
+   "p": 0.43028673112414406,
+   "n": 144
+  },
+  "bajaj_share_series": {
+   "FY21Q1": 36.8,
+   "FY21Q2": 35.2,
+   "FY21Q3": 36.7,
+   "FY21Q4": 37.1,
+   "FY22Q1": 36.5,
+   "FY22Q2": 37.7,
+   "FY22Q3": 38.4,
+   "FY22Q4": 37.1,
+   "FY23Q1": 38.7,
+   "FY23Q2": 37.8,
+   "FY23Q3": 37.5,
+   "FY23Q4": 37.2,
+   "FY24Q1": 38.1,
+   "FY24Q2": 37.1,
+   "FY24Q3": 36.6,
+   "FY24Q4": 35.7,
+   "FY25Q1": 36.6,
+   "FY25Q2": 36.6,
+   "FY25Q3": 37.1,
+   "FY25Q4": 37.1,
+   "FY26Q1": 37.5,
+   "FY26Q2": 37.5,
+   "FY26Q3": 37.7,
+   "FY26Q4": 38.3
+  },
+  "recheck": {
+   "total": 652,
+   "computed": 88,
+   "checkable": 474,
+   "found": 434,
+   "no_text": 90
+  }
  }
 }
