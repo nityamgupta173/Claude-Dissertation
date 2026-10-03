@@ -1,4 +1,4 @@
-"""Dissertation.docx -> Dissertation.pdf with the table of contents updated (LibreOffice UNO).
+"""Dissertation.docx -> Dissertation.pdf, and Dissertation.docx re-saved with the table of contents and page numbers filled in (LibreOffice UNO).
 Run: python3 tools_pdf.py"""
 import os, subprocess, time, uno
 from com.sun.star.beans import PropertyValue
@@ -28,6 +28,8 @@ for _ in range(2):  # second pass picks up page shifts caused by the first
         idx.getByIndex(i).update()
     doc.refresh()
 doc.storeToURL(uno.systemPathToFileUrl(OUT), (prop("FilterName", "writer_pdf_Export"),))
+# re-save the Word file so it carries the generated TOC entries and cached page numbers
+doc.storeToURL(uno.systemPathToFileUrl(SRC), (prop("FilterName", "MS Word 2007 XML"), prop("Overwrite", True)))
 doc.close(True)
 try:
     desktop.terminate()

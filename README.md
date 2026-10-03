@@ -2,7 +2,7 @@
 
 ## Deliverables
 * **Dissertation.pdf** – final printable version (TOC filled in). Rebuild with `node 06_build_dissertation.js && python3 tools_pdf.py`.
-* **Dissertation.docx** – editable Word version (Word asks to update fields on opening; click Yes to fill the TOC).
+* **Dissertation.docx** – editable Word version (saved by tools_pdf.py with the table of contents and page numbers already filled in).
 * **Dissertation_Data.xlsx** – every dataset used, with sources (README sheet explains each sheet), plus all regression results.
 
 ## Hypotheses and headline results
