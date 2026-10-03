@@ -25,6 +25,32 @@ df["Date_End"] = pd.to_datetime(df["Date_End"], format="%d-%m-%Y")
 df["FQ"] = df["Fiscal_Year"] + "-" + df["Quarter"]
 log(f"Loaded raw panel: {df.Company.nunique()} firms, {len(df)} rows")
 
+# ---------------------------------------------------------------- 0. Verified corrections (company filings)
+# Shriram Finance: the CSV 'unsecured' series is 9.00% x total AUM in most quarters (an assumed share) and
+# the actual Personal Loans figure in two quarters (Q3 FY24, Q3 FY25). Filings (investor presentations,
+# see data_corrections/shriram_filings.csv) give real Personal Loans for Q2 FY24-Q1 FY26 only. A consistent
+# series is therefore not available: Unsecured and Secured AUM are set to NA for Shriram (kept in
+# Verified_PersonalLoan_Cr where filed), and Total AUM is replaced by the filed figure where available.
+# Flag series that are a constant % of total AUM (assumed split, not reported data)
+_r = (df.Unsecured_Consumer_AUM_Cr / df.Total_AUM_Cr).round(3)
+qual = _r.groupby(df.Company).agg(lambda x: x.dropna().nunique())
+nonzero = df.groupby("Company").Unsecured_Consumer_AUM_Cr.max() > 0
+df["Unsecured_Series_Flag"] = df.Company.map(lambda c: "no unsecured book" if not nonzero[c] else
+                                            ("by definition (cards = 100%)" if "SBI Cards" in c else
+                                             ("MIXED (9% assumed + 2 actual quarters) -> set to NA" if "Shriram" in c else
+                                             ("ASSUMED constant share of AUM" if qual[c] <= 2 else "varies (reported?)"))))
+log("Unsecured series flags: " + str(df.drop_duplicates("Company").set_index("Company").Unsecured_Series_Flag.to_dict()))
+
+df["Verified_PersonalLoan_Cr"] = np.nan
+corr = pd.read_csv(os.path.join(HERE, "data_corrections", "shriram_filings.csv"))
+sh = df.Company.str.contains("Shriram")
+for _, r in corr.iterrows():
+    m = sh & (df.Fiscal_Year == r.Fiscal_Year) & (df.Quarter == r.Quarter)
+    df.loc[m, "Total_AUM_Cr"] = round(r.Total_AUM_Rs_mn / 10, 1)
+    df.loc[m, "Verified_PersonalLoan_Cr"] = round(r.Personal_Loans_Rs_mn / 10, 1)
+df.loc[sh, ["Unsecured_Consumer_AUM_Cr", "Secured_AUM_Cr"]] = np.nan
+log("Shriram corrected from filings: Total AUM replaced for 8 quarters; Unsecured/Secured set to NA (assumed-share series).")
+
 # ---------------------------------------------------------------- 1. Screener patch
 # Screener.in 'Data Sheet' exports: quarterly block covers only the latest ~9-10 quarters (Mar-2024 on);
 # annual P&L / balance sheet cover FY17-FY26.

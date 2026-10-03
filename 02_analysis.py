@@ -225,6 +225,16 @@ m2_note = ("Model 2 (H2) estimated on the ANNUAL Screener panel (16 firms, FY21-
            "expense exists only from Mar-2024.")
 print(m2_note)
 
+# Unsecured-series quality: for 'assumed share' firms, unsecured growth == total growth by construction
+qrows = []
+for f, g in raw.groupby("Company"):
+    x = g[["g_Unsecured", "g_Total"]].dropna()
+    if len(x) > 5:
+        qrows.append(dict(Company=f, flag=g.Unsecured_Series_Flag.iloc[0], n=len(x),
+                          corr_unsecured_vs_total_growth=x.corr().iloc[0, 1],
+                          max_abs_diff_pp=(x.g_Unsecured - x.g_Total).abs().max()))
+pd.DataFrame(qrows).to_csv(os.path.join(OUT, "unsecured_series_quality.csv"), index=False)
+
 # ================= Robustness =================
 core = ALL["P2_core"]["sample"]
 loo = []

@@ -1,0 +1,8 @@
+Company,flag,n,corr_unsecured_vs_total_growth,max_abs_diff_pp
+Arman Financial Services Ltd.,varies (reported?),23,0.405879264572173,27.93211300253011
+Bajaj Finance Ltd.,ASSUMED constant share of AUM,23,0.9999999997456536,9.49147656497118e-05
+Cholamandalam Investment & Finance Company Ltd.,ASSUMED constant share of AUM,23,0.9999999967490992,0.001744427392049941
+IIFL Finance Ltd.,ASSUMED constant share of AUM,23,0.9999999955017296,0.0012050142416306642
+Mahindra & Mahindra Financial Services Ltd.,ASSUMED constant share of AUM,23,0.9999999817138585,0.0008161066812597539
+Poonawalla Fincorp Ltd.,ASSUMED constant share of AUM,23,0.9911126418081689,4.260568878166989
+SBI Cards and Payment Services Ltd.,by definition (cards = 100%),23,1.0,0.0
