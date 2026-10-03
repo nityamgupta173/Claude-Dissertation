@@ -133,7 +133,7 @@ ann["Assets_avg"] = ann.groupby("Company").TotalAssets.transform(lambda x: (x + 
 ann["Interest_Expense_Ratio_Pct"] = ann.Interest / ann.Borrowings_avg * 100
 ann["RoA_annual_Pct"] = ann.NetProfit / ann.Assets_avg * 100
 ann["FY"] = ann.FY_End.dt.year
-ann = ann[ann.FY.between(2021, 2026)]
+ann = ann[ann.FY.between(2020, 2026)]   # FY20 kept only to build lags
 ann.to_csv(os.path.join(HERE, "screener_annual_panel.csv"), index=False)
 log(f"Saved screener_annual_panel.csv ({len(ann)} firm-years)")
 

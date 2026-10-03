@@ -1,0 +1,6 @@
+Specification,Term,Coefficient,CR1_SE,WCB_p,Stars,CI95_low,CI95_high,N,Firms,Adj_R2,Within_R2
+Event year FY21,Exposure_x_FY21,-0.0024,0.0234,0.9,,-0.044,0.0392,96,16,0.863,0.241
+Event year FY22,Exposure_x_FY22,-0.0192,0.0126,0.094,*,-0.0408,0.0025,96,16,0.863,0.241
+Event year FY24,Exposure_x_FY24,0.0245,0.0119,0.012,**,0.0045,0.0445,96,16,0.863,0.241
+Event year FY25,Exposure_x_FY25,0.0281,0.0137,0.015,**,0.0037,0.0526,96,16,0.863,0.241
+Event year FY26,Exposure_x_FY26,0.0157,0.0102,0.108,,-0.0019,0.0332,96,16,0.863,0.241

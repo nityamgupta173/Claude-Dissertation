@@ -1,15 +1,15 @@
 ,(M2) FY24+ = post,"(M2b) FY24 dropped, FY25+ = post"
-Post (FY24+) x Bank exposure,0.030**,
-,(0.012),
-,[0.015],
-Post (FY25+) x Bank exposure,,0.030**
-,,(0.012)
-,,[0.017]
+Post (FY24+) x Bank exposure,0.029*,
+,(0.015),
+,[0.067],
+Post (FY25+) x Bank exposure,,0.029*
+,,(0.015)
+,,[0.072]
 Firm FE,Yes,Yes
 Year FE,Yes,Yes
 "Macro controls (repo, 5Y yield, GDP)",n/a (absorbed by time FE),n/a (absorbed by time FE)
 Firm controls,"Yes (lag RoA, ln lag borrowings)","Yes (lag RoA, ln lag borrowings)"
-Observations,80,64
+Observations,96,80
 Firms (clusters),16,16
-Adj. R-squared (LSDV),0.923,0.906
-Within R-squared,0.327,0.297
+Adj. R-squared (LSDV),0.866,0.839
+Within R-squared,0.216,0.172

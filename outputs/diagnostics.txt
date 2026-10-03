@@ -15,7 +15,7 @@ Dep. Variable:            g_Unsecured   R-squared:                        0.0004
 Estimator:                   PanelOLS   R-squared (Between):              0.1347
 No. Observations:                 161   R-squared (Within):              -0.0020
 Date:                Sat, Oct 03 2026   R-squared (Overall):              0.0540
-Time:                        07:55:26   Log-likelihood                   -507.18
+Time:                        08:04:38   Log-likelihood                   -507.18
 Cov. Estimator:             Clustered                                           
                                         F-statistic:                      0.0582
 Entities:                           7   P-value                           0.8098

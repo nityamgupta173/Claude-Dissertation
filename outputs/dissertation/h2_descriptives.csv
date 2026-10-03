@@ -1,0 +1,15 @@
+Variable,Period,N,Mean,SD,Min,Max
+Interest expense / avg borrowings (%),Pre (FY21-FY23),48,7.64,1.57,4.97,13.27
+Interest expense / avg borrowings (%),Post (FY24-FY26),48,8.42,1.94,6.9,16.22
+"Bank borrowing share, Sep-2023 (%)",Pre (FY21-FY23),48,51.04,15.43,23.0,74.0
+"Bank borrowing share, Sep-2023 (%)",Post (FY24-FY26),48,51.04,15.43,23.0,74.0
+Return on assets (%),Pre (FY21-FY23),48,2.7,1.69,-3.93,6.16
+Return on assets (%),Post (FY24-FY26),48,3.07,1.51,-0.33,7.43
+Borrowings (Rs cr),Pre (FY21-FY23),48,56949.24,65329.55,721.43,244912.88
+Borrowings (Rs cr),Post (FY24-FY26),48,96057.64,107289.37,1232.32,435112.49
+Total AUM (Rs cr),Pre (FY21-FY23),48,66629.61,73366.07,784.8,275047.0
+Total AUM (Rs cr),Post (FY24-FY26),48,110667.5,121117.73,2639.0,509975.0
+AUM growth (100 x log diff),Pre (FY21-FY23),32,18.08,14.49,-12.11,49.74
+AUM growth (100 x log diff),Post (FY24-FY26),48,16.79,11.28,-3.09,52.69
+"Repo rate, FY average (%)",Pre (FY21-FY23),48,4.52,0.7,4.0,5.5
+"Repo rate, FY average (%)",Post (FY24-FY26),48,6.16,0.46,5.52,6.5
