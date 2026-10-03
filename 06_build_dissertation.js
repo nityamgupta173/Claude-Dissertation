@@ -4,7 +4,7 @@ const path = require("path");
 const {
   Document, Packer, Paragraph, TextRun, HeadingLevel, AlignmentType, Table, TableRow, TableCell,
   WidthType, ShadingType, BorderStyle, ImageRun, TableOfContents, Footer, PageNumber, LevelFormat, PageBreak,
-  Header, PageBorderDisplay, PageBorderOffsetFrom, PageBorderZOrder, TabStopType,
+  NumberFormat, Header, PageBorderDisplay, PageBorderOffsetFrom, PageBorderZOrder, TabStopType,
 } = require("docx");
 
 const R = JSON.parse(fs.readFileSync("outputs/final/results.json", "utf8"));
@@ -23,8 +23,8 @@ const P = (text, opts = {}) => new Paragraph({
 });
 const B = (t) => new TextRun({ text: t, bold: true });
 const I = (t) => new TextRun({ text: t, italics: true });
-const Hd = (text, level) => new Paragraph({ heading: level, spacing: { before: 240, after: 120 },
-  alignment: level === HeadingLevel.HEADING_1 ? AlignmentType.CENTER : undefined, pageBreakBefore: level === HeadingLevel.HEADING_1,
+const Hd = (text, level, noBreak = false) => new Paragraph({ heading: level, spacing: { before: 240, after: 120 },
+  alignment: level === HeadingLevel.HEADING_1 ? AlignmentType.CENTER : undefined, pageBreakBefore: level === HeadingLevel.HEADING_1 && !noBreak,
   children: [new TextRun(level === HeadingLevel.HEADING_1 ? text.toUpperCase() : text)] });
 const bullet = (text) => new Paragraph({ numbering: { reference: "bul", level: 0 }, spacing: { after: 80, line: 340 },
   children: (Array.isArray(text) ? text : [text]).map((t) => (typeof t === "string" ? new TextRun(t) : t)) });
@@ -98,36 +98,42 @@ function modelBlock(M, k, tab0, depName) {
 // ---------------------------------------------------------------- content
 const C = [];
 
-// Cover page (template layout; details in brackets to be filled in by the student)
+// Student and guide details
+const ST = { name: "Nityam Gupta", prog: "MBA (Full-Time)", batch: "2025–27", roll: "FT-25-235", date: "03/10/2026" };
+const GD = { name: "Dr. Dezy Kumari", desig: "Assistant Professor, Finance", fac: "Faculty of Management Studies", uni: "University of Delhi" };
 const TITLE = "Capital Requirements and Credit Supply: The Effect of the RBI's November 2023 Risk-Weight Measures on Consumer Credit and Bank Funding of Indian NBFCs, FY2021–FY2026";
-C.push(new Paragraph({ alignment: AlignmentType.CENTER, spacing: { before: 600, after: 600 }, children: [new TextRun({ text: "[Institution logo]", color: "7F7F7F", size: 22 })] }));
+
+// Cover page (template layout)
+C.push(new Paragraph({ alignment: AlignmentType.CENTER, spacing: { before: 360, after: 480 },
+  children: [new ImageRun({ type: "png", data: fs.readFileSync("assets/fms_logo.png"), transformation: { width: 250, height: 121 } })] }));
 C.push(new Paragraph({ alignment: AlignmentType.CENTER, spacing: { after: 360 }, children: [new TextRun({ text: "FINAL YEAR DISSERTATION", bold: true, size: 28 })] }));
 C.push(new Paragraph({ alignment: AlignmentType.CENTER, spacing: { after: 720, line: 360 }, children: [new TextRun({ text: `“${TITLE}”`, bold: true, italics: true, size: 30 })] }));
-C.push(new Paragraph({ alignment: AlignmentType.JUSTIFIED, spacing: { after: 1200, line: 360 }, children: [new TextRun({ text: "A project report submitted in partial fulfilment of the requirements for the degree of Master of Business Administration (Full time) from [Institution, City].", bold: true })] }));
-C.push(twoCol(["Submitted by:", "[Student Name]", "[Programme], Batch of [Year]", "Roll no: [Number]", "Date: [DD/MM/YYYY]"],
-  ["Under guidance of:", "[Guide Name]", "[Department / Faculty]", "[University]"], { boldFirst: true }));
-
-// Table of contents (second page, as in the template)
-C.push(new Paragraph({ pageBreakBefore: true, alignment: AlignmentType.CENTER, spacing: { before: 240, after: 480 }, children: [new TextRun({ text: "Table of Contents", bold: true, size: 26 })] }));
-C.push(new TableOfContents("Table of Contents", { hyperlink: true, headingStyleRange: "1-3" }));
-C.push(note("Right-click the table above and choose “Update Field” in Word to refresh page numbers."));
+C.push(new Paragraph({ alignment: AlignmentType.JUSTIFIED, spacing: { after: 1200, line: 360 }, children: [new TextRun({ text: "A project report submitted in partial fulfilment of the requirements for the degree of Master of Business Administration (Full-Time) from the Faculty of Management Studies (FMS), University of Delhi.", bold: true })] }));
+C.push(twoCol(["Submitted by:", ST.name, `${ST.prog}, Batch ${ST.batch}`, `Roll no: ${ST.roll}`, `Date: ${ST.date}`],
+  ["Under guidance of:", GD.name, GD.desig, GD.fac, GD.uni], { boldFirst: true }));
+const COVER_END = C.length;
 
 // Certificate
-C.push(Hd("Certificate", HeadingLevel.HEADING_1));
-C.push(P(`Certified that the dissertation entitled “${TITLE}”, submitted by [Student Name], [Programme, Batch], Roll no. [Number], in partial fulfilment of the requirements for the degree of Master of Business Administration of [Institution], is a bona fide record of research carried out by the student under my supervision. The analysis, data collection and writing are the student's own, and all sources of data and published work used have been cited. The work has not been submitted for any other degree or diploma.`));
-C.push(P("Date: [DD/MM/YYYY]", { p: { spacing: { before: 480, after: 960 } } }));
-C.push(twoCol(["[Guide Name]", "(Project Guide)", "[Department / Faculty]", "[University]"],
-  ["[Student Name]", "[Programme, Batch]", "Roll no: [Number]"], { rightAlign: true }));
+C.push(Hd("Certificate", HeadingLevel.HEADING_1, true));
+C.push(P(`Certified that the dissertation entitled “${TITLE}”, submitted by ${ST.name}, ${ST.prog}, Batch ${ST.batch}, Roll no. ${ST.roll}, in partial fulfilment of the requirements for the degree of Master of Business Administration of the Faculty of Management Studies, University of Delhi, is a bona fide record of research carried out by the student under my supervision. All sources of data and published work used have been cited. The work has not been submitted for any other degree or diploma.`));
+C.push(P(`Date: ${ST.date}`, { p: { spacing: { before: 480, after: 1200 } } }));
+C.push(twoCol([GD.name, "(Project Guide)", GD.desig, GD.fac, GD.uni],
+  [ST.name, `${ST.prog}, ${ST.batch}`, `Roll no: ${ST.roll}`], { rightAlign: true }));
 
 // Declaration & acknowledgement placeholders
 C.push(Hd("Declaration", HeadingLevel.HEADING_1));
-C.push(P("I hereby declare that this dissertation titled “Capital Requirements and Credit Supply: The Effect of the RBI's November 2023 Risk-Weight Measures on Consumer Credit and Bank Funding of Indian NBFCs, FY2021–FY2026” is my original work carried out under the guidance of [Guide Name]. It has not been submitted elsewhere for any degree or diploma. [Add any statement on the use of software tools or AI assistance required by your institution's policy.]"));
-C.push(P("[Signature]", { align: AlignmentType.LEFT, p: { spacing: { before: 480, after: 120 } } }));
-C.push(P("[Student Name]    Date: [DD/MM/YYYY]", { align: AlignmentType.LEFT }));
+C.push(P("I hereby declare that this dissertation titled “Capital Requirements and Credit Supply: The Effect of the RBI's November 2023 Risk-Weight Measures on Consumer Credit and Bank Funding of Indian NBFCs, FY2021–FY2026” is my original work carried out under the guidance of Dr. Dezy Kumari, Assistant Professor (Finance), Faculty of Management Studies, University of Delhi. It has not been submitted elsewhere for any degree or diploma. All sources of data and published work used have been acknowledged."));
+C.push(P([B("Use of AI tools. "), "Artificial intelligence (AI) tools were used for data scraping, that is, extracting figures from the companies' quarterly investor presentations, and for the Python-based data analysis. Every extracted value is recorded with the document and page it came from, so that it can be checked against the original source."]));
+C.push(P("Signature: ____________________", { align: AlignmentType.LEFT, p: { spacing: { before: 720, after: 120 } } }));
+for (const t of [ST.name, `${ST.prog}, Batch ${ST.batch}`, `Roll no: ${ST.roll}`, `Date: ${ST.date}`])
+  C.push(new Paragraph({ alignment: AlignmentType.LEFT, spacing: { after: 80 }, children: [new TextRun(t)] }));
 C.push(Hd("Acknowledgement", HeadingLevel.HEADING_1));
-C.push(P("[Student to write: thanks to the guide, faculty, family and others who supported the work.]"));
-for (const t of ["[Student Name]", "[Programme], [Batch]", "Roll no: [Number]"])
-  C.push(new Paragraph({ alignment: AlignmentType.LEFT, spacing: { before: t.startsWith("[Student") ? 960 : 0, after: 80 }, children: [new TextRun(t)] }));
+C.push(P("I would like to express my sincere gratitude to my guide, Dr. Dezy Kumari, Assistant Professor (Finance), Faculty of Management Studies, University of Delhi, for her guidance throughout this dissertation. Her advice to focus the study on a small number of well-defined hypotheses shaped the final form of this work, and her feedback at each stage helped me turn a broad question into a focused piece of research."));
+C.push(P("I am grateful to the faculty members of the Faculty of Management Studies, whose teaching in finance, economics and research methods gave me the foundation for this study, and to the administrative and library staff for their support."));
+C.push(P("I thank my batchmates for the many discussions, suggestions and words of encouragement during the long months of collecting and analysing the data. Their company made the work lighter."));
+C.push(P("Above all, I thank my parents and my sister, whose patience, encouragement and constant belief in me kept me going. This work would not have been possible without their support."));
+for (const t of [ST.name, `${ST.prog}, Batch ${ST.batch}`, `Roll no: ${ST.roll}`])
+  C.push(new Paragraph({ alignment: AlignmentType.LEFT, spacing: { before: t === ST.name ? 720 : 0, after: 80 }, children: [new TextRun(t)] }));
 
 // Abstract
 C.push(Hd("Abstract", HeadingLevel.HEADING_1));
@@ -155,8 +161,12 @@ C.push(num([B("A clean natural experiment. "), "The circular changed capital req
 C.push(num([B("Managerial relevance. "), "For NBFC managers the episode shows how exposure to a single funding source translates into regulatory risk, and how capital, pricing and funding mix can be used to absorb such a shock."]));
 C.push(num([B("Gap in evidence. "), "Existing discussion of the measures is largely descriptive. There is little formal evidence that separates the consumer-credit and bank-funding channels or that uses NBFCs' own disclosures to trace their response."]));
 
+C.push(new Paragraph({ pageBreakBefore: true, alignment: AlignmentType.CENTER, spacing: { before: 240, after: 480 }, children: [new TextRun({ text: "Table of Contents", bold: true, size: 26 })] }));
+C.push(new TableOfContents("Table of Contents", { hyperlink: true, headingStyleRange: "1-3" }));
+const FRONT_END = C.length;
+
 // ================= Chapter 1
-C.push(Hd("1. Introduction", HeadingLevel.HEADING_1));
+C.push(Hd("1. Introduction", HeadingLevel.HEADING_1, true));
 C.push(Hd("1.1 Background and motivation", HeadingLevel.HEADING_2));
 C.push(P("Non-banking financial companies (NBFCs) have become one of the main channels of retail credit in India. Between 2021 and 2023, unsecured consumer lending — personal loans and credit cards — grew far faster than overall credit, and NBFCs both lent directly to households and borrowed heavily from banks to fund that lending. The Reserve Bank of India (RBI) viewed this combination as a build-up of risk: rapid unsecured lending on the asset side, and growing interdependence between banks and NBFCs on the funding side."));
 C.push(P("On 16 November 2023 the RBI responded with a single circular that raised capital requirements on both channels. First, it increased the risk weight on consumer credit — excluding housing, education, vehicle, gold-backed and microfinance loans — from 100 per cent to 125 per cent for banks and NBFCs, and raised risk weights on credit card receivables. Second, it increased by 25 percentage points the risk weight that banks attach to their loans to most NBFCs, while exempting housing finance companies (HFCs). Because a higher risk weight requires a lender to hold more capital against the same loan, both measures made the targeted credit more expensive to supply. In February 2025 the RBI partially reversed course, withdrawing the higher risk weight on bank loans to NBFCs from 1 April 2025, but leaving the consumer-credit measures in place."));
@@ -523,8 +533,15 @@ C.push(note("Source: RBI DBIE Table 15. Figures from July 2023 include the effec
 
 // ---------------------------------------------------------------- document
 const PB = { style: BorderStyle.SINGLE, size: 6, color: "000000", space: 24 };
+const SECT = { page: { size: { width: 12240, height: 15840 }, margin: { top: 1440, right: 1440, bottom: 1440, left: 1440, header: 600, footer: 600 },
+  borders: { pageBorders: { display: PageBorderDisplay.ALL_PAGES, offsetFrom: PageBorderOffsetFrom.PAGE, zOrder: PageBorderZOrder.FRONT },
+    pageBorderTop: PB, pageBorderBottom: PB, pageBorderLeft: PB, pageBorderRight: PB } } };
+const FOOT = () => new Footer({ children: [new Paragraph({ alignment: AlignmentType.LEFT,
+  border: { top: { style: BorderStyle.SINGLE, size: 4, color: "D9D9D9", space: 4 } },
+  children: [new TextRun({ children: [PageNumber.CURRENT], size: 20, bold: true }), new TextRun({ text: " | ", size: 20 }),
+    new TextRun({ text: "Page", size: 20, color: "7F7F7F", characterSpacing: 60 })] })] });
 const doc = new Document({
-  creator: "[Student Name]", title: "Capital Requirements and Credit Supply",
+  creator: "Nityam Gupta", title: "Capital Requirements and Credit Supply",
   styles: {
     default: { document: { run: { font: FONT, size: 24 } } },
     paragraphStyles: [
@@ -536,18 +553,11 @@ const doc = new Document({
     { reference: "bul", levels: [{ level: 0, format: LevelFormat.BULLET, text: "•", alignment: AlignmentType.LEFT, style: { paragraph: { indent: { left: 720, hanging: 360 } } } }] },
     { reference: "num", levels: [{ level: 0, format: LevelFormat.DECIMAL, text: "%1.", alignment: AlignmentType.LEFT, style: { paragraph: { indent: { left: 720, hanging: 360 } } } }] },
   ] },
-  sections: [{
-    properties: { page: { size: { width: 12240, height: 15840 }, margin: { top: 1440, right: 1440, bottom: 1440, left: 1440, header: 600, footer: 600 },
-      borders: { pageBorders: { display: PageBorderDisplay.ALL_PAGES, offsetFrom: PageBorderOffsetFrom.PAGE, zOrder: PageBorderZOrder.FRONT },
-        pageBorderTop: PB, pageBorderBottom: PB, pageBorderLeft: PB, pageBorderRight: PB } } },
-    headers: { default: new Header({ children: [new Paragraph({ alignment: AlignmentType.CENTER, spacing: { after: 120 },
-      border: { bottom: { style: BorderStyle.THICK_THIN_SMALL_GAP, size: 24, color: "843C0C", space: 4 } },
-      children: [new TextRun({ text: "Final Year Dissertation Report", font: "Calibri Light", size: 22, color: "404040" })] })] }) },
-    footers: { default: new Footer({ children: [new Paragraph({ alignment: AlignmentType.LEFT,
-      border: { top: { style: BorderStyle.SINGLE, size: 4, color: "D9D9D9", space: 4 } },
-      children: [new TextRun({ children: [PageNumber.CURRENT], size: 20, bold: true }), new TextRun({ text: " | ", size: 20 }),
-        new TextRun({ text: "Page", size: 20, color: "7F7F7F", characterSpacing: 60 })] })] }) },
-    children: C,
-  }],
+  features: { updateFields: true },
+  sections: [
+    { properties: { ...SECT, page: { ...SECT.page, pageNumbers: { start: 1, formatType: NumberFormat.LOWER_ROMAN } } }, children: C.slice(0, COVER_END) },
+    { properties: { ...SECT, page: { ...SECT.page, pageNumbers: { formatType: NumberFormat.LOWER_ROMAN } } }, footers: { default: FOOT() }, children: C.slice(COVER_END, FRONT_END) },
+    { properties: { ...SECT, page: { ...SECT.page, pageNumbers: { start: 1, formatType: NumberFormat.DECIMAL } } }, footers: { default: FOOT() }, children: C.slice(FRONT_END) },
+  ],
 });
 Packer.toBuffer(doc).then((buf) => { fs.writeFileSync("Dissertation.docx", buf); console.log("Dissertation.docx written", buf.length, "bytes"); });

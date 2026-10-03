@@ -1,7 +1,8 @@
 # Dissertation: RBI November 2023 risk-weight measures, consumer credit and NBFC bank funding
 
 ## Deliverables
-* **Dissertation.docx** – the dissertation (Word). Open in Word, right-click the Table of Contents → *Update Field*. Fill in the bracketed placeholders (logo, name, guide, roll no, dates, acknowledgement). Layout follows the institution's report template (US Letter, page border, running header, “N | Page” footer, centred upper-case section titles, certificate, executive summary, rationale, theoretical framework, ANOVA/model summary, diagnostics, bibliography, appendices).
+* **Dissertation.pdf** – final printable version (TOC filled in). Rebuild with `node 06_build_dissertation.js && python3 tools_pdf.py`.
+* **Dissertation.docx** – editable Word version (Word asks to update fields on opening; click Yes to fill the TOC).
 * **Dissertation_Data.xlsx** – every dataset used, with sources (README sheet explains each sheet), plus all regression results.
 
 ## Hypotheses and headline results
