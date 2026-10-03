@@ -1,0 +1,359 @@
+{
+ "H1": {
+  "its": {
+   "pre_mean": 0.6732466688588704,
+   "change": -0.6618429781209935,
+   "se": 0.21556120869578493,
+   "p": 0.002138259200481926,
+   "n": 46,
+   "annualised_change": -7.942115737451921
+  },
+  "panel": {
+   "beta": -0.6623544168358523,
+   "se": 0.24568146304341532,
+   "p": 0.007691373973614635,
+   "n": 229,
+   "annualised": -7.948253002030228
+  },
+  "placebo": {
+   "pre_mean": 0.5421613073857888,
+   "change": 0.4501621450198559,
+   "se": 0.3316603116528858,
+   "p": 0.174686286561484,
+   "n": 31,
+   "annualised_change": 5.401945740238271
+  },
+  "placebo_panel": {
+   "beta": 0.4551870427882085,
+   "se": 0.37769598435236396,
+   "p": 0.23054986779614017,
+   "n": 154,
+   "annualised": 5.462244513458502
+  },
+  "robustness": [
+   {
+    "Specification": "Drop credit cards",
+    "Coefficient": -0.79,
+    "SE": 0.19,
+    "p": 0.0,
+    "N": 183
+   },
+   {
+    "Specification": "Drop other personal loans",
+    "Coefficient": -0.53,
+    "SE": 0.38,
+    "p": 0.164,
+    "N": 183
+   },
+   {
+    "Specification": "Drop housing (merger-affected)",
+    "Coefficient": -0.71,
+    "SE": 0.26,
+    "p": 0.006,
+    "N": 184
+   },
+   {
+    "Specification": "Drop vehicle loans",
+    "Coefficient": -0.81,
+    "SE": 0.3,
+    "p": 0.008,
+    "N": 183
+   },
+   {
+    "Specification": "Drop education",
+    "Coefficient": -0.47,
+    "SE": 0.26,
+    "p": 0.078,
+    "N": 183
+   },
+   {
+    "Specification": "Add gold loans to control",
+    "Coefficient": -1.75,
+    "SE": 0.43,
+    "p": 0.0,
+    "N": 275
+   },
+   {
+    "Specification": "Shorter pre-period (from Apr-2022)",
+    "Coefficient": -0.78,
+    "SE": 0.21,
+    "p": 0.0,
+    "N": 169
+   },
+   {
+    "Specification": "Shorter post-period (to Oct-2024)",
+    "Coefficient": -0.67,
+    "SE": 0.27,
+    "p": 0.013,
+    "N": 214
+   }
+  ]
+ },
+ "H2": {
+  "its": {
+   "pre_mean": 0.8926193468508969,
+   "change": -0.9953243560871659,
+   "se": 0.5049012182476404,
+   "p": 0.04868672217907708,
+   "n": 45,
+   "annualised_change": -11.94389227304599
+  },
+  "placebo": {
+   "pre_mean": 0.7693043666687414,
+   "change": 0.2711193460130092,
+   "se": 0.6135559572492644,
+   "p": 0.658574581882807,
+   "n": 30,
+   "annualised_change": 3.25343215215611
+  },
+  "alt_vs_hfc": {
+   "pre_mean": 1.6613216411909704,
+   "change": -1.4109437660840816,
+   "se": 0.8803682259993008,
+   "p": 0.10900652123808148,
+   "n": 45,
+   "annualised_change": -16.93132519300898
+  },
+  "alt_all_nbfc": {
+   "pre_mean": 0.47581956978119816,
+   "change": -0.6296359551855752,
+   "se": 0.41602532651177976,
+   "p": 0.1301639131265593,
+   "n": 45,
+   "annualised_change": -7.555631462226903
+  },
+  "rollback": {
+   "pre_mean": -0.20602876693055455,
+   "change": 0.9521240606044625,
+   "se": 0.7202242222378273,
+   "p": 0.18617386613635967,
+   "n": 32,
+   "annualised_change": 11.425488727253551
+  }
+ },
+ "growth_table": {
+  "Credit cards": {
+   "Pre-policy (Apr-21 to Oct-23)": 23.3,
+   "Post-policy (Dec-23 to Mar-25)": 11.3,
+   "After rollback (Apr-25 to Jul-26)": 3.5
+  },
+  "Other personal loans": {
+   "Pre-policy (Apr-21 to Oct-23)": 21.6,
+   "Post-policy (Dec-23 to Mar-25)": 10.0,
+   "After rollback (Apr-25 to Jul-26)": 11.3
+  },
+  "Housing": {
+   "Pre-policy (Apr-21 to Oct-23)": 13.9,
+   "Post-policy (Dec-23 to Mar-25)": 11.2,
+   "After rollback (Apr-25 to Jul-26)": 9.8
+  },
+  "Vehicle loans": {
+   "Pre-policy (Apr-21 to Oct-23)": 14.6,
+   "Post-policy (Dec-23 to Mar-25)": 9.5,
+   "After rollback (Apr-25 to Jul-26)": 15.4
+  },
+  "Education": {
+   "Pre-policy (Apr-21 to Oct-23)": 13.5,
+   "Post-policy (Dec-23 to Mar-25)": 15.3,
+   "After rollback (Apr-25 to Jul-26)": 11.8
+  },
+  "Gold loans": {
+   "Pre-policy (Apr-21 to Oct-23)": 6.8,
+   "Post-policy (Dec-23 to Mar-25)": 62.4,
+   "After rollback (Apr-25 to Jul-26)": 73.9
+  },
+  "NBFCs ex-HFC": {
+   "Pre-policy (Apr-21 to Oct-23)": 23.5,
+   "Post-policy (Dec-23 to Mar-25)": 9.1,
+   "After rollback (Apr-25 to Jul-26)": 21.4
+  },
+  "HFCs": {
+   "Pre-policy (Apr-21 to Oct-23)": 7.1,
+   "Post-policy (Dec-23 to Mar-25)": 4.8,
+   "After rollback (Apr-25 to Jul-26)": 12.6
+  },
+  "NBFCs (incl. HFCs)": {
+   "Pre-policy (Apr-21 to Oct-23)": 19.2,
+   "Post-policy (Dec-23 to Mar-25)": 8.2,
+   "After rollback (Apr-25 to Jul-26)": 19.7
+  },
+  "Non-food credit": {
+   "Pre-policy (Apr-21 to Oct-23)": 13.2,
+   "Post-policy (Dec-23 to Mar-25)": 11.4,
+   "After rollback (Apr-25 to Jul-26)": 13.4
+  }
+ },
+ "firm_cof": {
+  "beta": 0.007634883581027703,
+  "se": 0.004951461920046312,
+  "p": 0.2825641282064103,
+  "n": 366,
+  "firms": 16
+ },
+ "firm_cof_hfc": {
+  "beta": -0.18121828502115808,
+  "se": 0.16517906010325958,
+  "p": 0.2917645882294115,
+  "n": 366,
+  "firms": 16
+ },
+ "firm_bankshare": {
+  "beta": -3.293171437825413,
+  "se": 2.934328464955277,
+  "p": 0.27996399819990997,
+  "n": 235,
+  "firms": 15
+ },
+ "firm_bankshare_rollback": {
+  "beta_post": -3.306214680244257,
+  "p_post": 0.2814140707035352,
+  "beta_rev": -2.9442423312173,
+  "p_rev": 0.14760738036901844,
+  "n": 286,
+  "firms": 15
+ },
+ "firm_bankshare_last": {
+  "beta": -6.088088676963234,
+  "p": 0.11855592779638982
+ },
+ "firm_bankshare_placebo": {
+  "beta": -1.618392784713566,
+  "p": 0.5653282664133207
+ },
+ "bajaj_within": {
+  "beta": 0.5796679290507915,
+  "se": 1.810111229026278,
+  "p": 0.749254727137296,
+  "n": 171,
+  "segments": 9
+ },
+ "bajaj_share": {
+  "FY21Q1": 36.8,
+  "FY21Q2": 35.2,
+  "FY21Q3": 36.7,
+  "FY21Q4": 37.1,
+  "FY22Q1": 36.5,
+  "FY22Q2": 37.7,
+  "FY22Q3": 38.4,
+  "FY22Q4": 37.1,
+  "FY23Q1": 38.7,
+  "FY23Q2": 37.8,
+  "FY23Q3": 37.5,
+  "FY23Q4": 37.2,
+  "FY24Q1": 38.1,
+  "FY24Q2": 37.1,
+  "FY24Q3": 36.6,
+  "FY24Q4": 35.7,
+  "FY25Q1": 36.6,
+  "FY25Q2": 36.6,
+  "FY25Q3": 37.1,
+  "FY25Q4": 37.1,
+  "FY26Q1": 37.5,
+  "FY26Q2": 37.5,
+  "FY26Q3": 37.7,
+  "FY26Q4": 38.3
+ },
+ "counts": {
+  "decks": 382,
+  "firms": 16,
+  "cof_obs": 366,
+  "bankshare_obs": 286,
+  "bankshare_firms": 15,
+  "rbi_months": 91,
+  "rbi_first": "2019-01-18",
+  "rbi_last": "2026-07-31"
+ },
+ "magnitudes": {
+  "h1_outstanding_jan25": 1802669.7256,
+  "h1_shortfall": 188147.44647878318,
+  "h2_outstanding_jan25": 1292215.9079999998,
+  "h2_shortfall": 208072.19190194007,
+  "months": 15,
+  "cards_oct23": 240635.4718,
+  "pl_oct23": 1332708.57,
+  "nbfc_oct23": 1123954.6787,
+  "nonfood_oct23": 15561722.13
+ },
+ "firm_desc": [
+  {
+   "Variable": "Cost of funds (%)",
+   "Group": "Non-HFC NBFCs",
+   "Period": "Pre (to Q2 FY24)",
+   "N": 124,
+   "Mean": 8.13,
+   "SD": 1.73,
+   "Min": 4.9,
+   "Max": 14.87
+  },
+  {
+   "Variable": "Cost of funds (%)",
+   "Group": "Non-HFC NBFCs",
+   "Period": "Post (Q3 FY24 on)",
+   "N": 98,
+   "Mean": 8.57,
+   "SD": 1.42,
+   "Min": 6.4,
+   "Max": 12.7
+  },
+  {
+   "Variable": "Cost of funds (%)",
+   "Group": "HFCs",
+   "Period": "Pre (to Q2 FY24)",
+   "N": 84,
+   "Mean": 7.3,
+   "SD": 0.65,
+   "Min": 5.56,
+   "Max": 8.5
+  },
+  {
+   "Variable": "Cost of funds (%)",
+   "Group": "HFCs",
+   "Period": "Post (Q3 FY24 on)",
+   "N": 60,
+   "Mean": 7.93,
+   "SD": 0.45,
+   "Min": 7.07,
+   "Max": 8.9
+  },
+  {
+   "Variable": "Bank share of borrowings (%)",
+   "Group": "Non-HFC NBFCs",
+   "Period": "Pre (to Q2 FY24)",
+   "N": 99,
+   "Mean": 48.46,
+   "SD": 14.95,
+   "Min": 24.0,
+   "Max": 77.0
+  },
+  {
+   "Variable": "Bank share of borrowings (%)",
+   "Group": "Non-HFC NBFCs",
+   "Period": "Post (Q3 FY24 on)",
+   "N": 83,
+   "Mean": 49.49,
+   "SD": 19.28,
+   "Min": 17.37,
+   "Max": 86.0
+  },
+  {
+   "Variable": "Bank share of borrowings (%)",
+   "Group": "HFCs",
+   "Period": "Pre (to Q2 FY24)",
+   "N": 59,
+   "Mean": 47.52,
+   "SD": 16.59,
+   "Min": 20.0,
+   "Max": 75.5
+  },
+  {
+   "Variable": "Bank share of borrowings (%)",
+   "Group": "HFCs",
+   "Period": "Post (Q3 FY24 on)",
+   "N": 45,
+   "Mean": 54.64,
+   "SD": 17.88,
+   "Min": 31.0,
+   "Max": 85.5
+  }
+ ]
+}
