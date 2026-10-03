@@ -1,14 +1,14 @@
 # Dissertation: RBI November 2023 risk-weight measures, consumer credit and NBFC bank funding
 
 ## Deliverables
-* **Dissertation.docx** – the dissertation (Word). Open in Word, right-click the Table of Contents → *Update Field*. Fill in the bracketed placeholders (name, guide, declaration, acknowledgements).
+* **Dissertation.docx** – the dissertation (Word). Open in Word, right-click the Table of Contents → *Update Field*. Fill in the bracketed placeholders (logo, name, guide, roll no, dates, acknowledgement). Layout follows the institution's report template (US Letter, page border, running header, “N | Page” footer, centred upper-case section titles, certificate, executive summary, rationale, theoretical framework, ANOVA/model summary, diagnostics, bibliography, appendices).
 * **Dissertation_Data.xlsx** – every dataset used, with sources (README sheet explains each sheet), plus all regression results.
 
 ## Hypotheses and headline results
 | | Test | Result |
 |---|---|---|
-| H1 | Bank credit to cards + personal loans vs exempt household credit (RBI monthly data) | −0.66 pp/month (≈ −7.9 pp a year), p = 0.002; placebo null |
-| H2 | Bank credit to NBFCs ex-HFC vs total non-food credit | −1.00 pp/month (≈ −11.9 pp a year), p = 0.049; placebo null |
+| H1 | Bank credit to cards + personal loans vs exempt household credit (RBI monthly data) | −0.66 pp/month (≈ −7.9 pp a year), Newey–West p = 0.002, panel p = 0.008; placebo null. Moderate: p ≈ 0.06–0.11 with White SE / block bootstrap, 0.18 with classical OLS |
+| H2 | Bank credit to NBFCs ex-HFC vs total non-food credit | −1.00 pp/month (≈ −11.9 pp a year), p = 0.049; placebo null. With month-of-year dummies p = 0.01–0.05 under White, Newey–West and block bootstrap |
 | Firm level | 382 hand-read investor presentations, 16 firms | Disclosed CRAR hits (Bajaj −290 bps, SBI Cards ~−400 bps); cost-of-funds and bank-share effects in expected direction but not significant |
 
 ## How to reproduce

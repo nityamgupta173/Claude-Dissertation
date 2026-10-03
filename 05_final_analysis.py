@@ -271,7 +271,8 @@ dict_rows = [
     ("Bank_Exposure_Sep2023", "Bank share of borrowings at 30-Sep-2023 verified against each Q2 FY24 presentation (pre-policy exposure)", "Company investor presentations"),
     ("Bajaj_Segments", "Bajaj Finance consolidated AUM by business segment (Rs crore) per quarter", "Bajaj Finance investor presentations"),
     ("Company_Disclosures", "Verbatim statements quantifying the effect of the RBI risk-weight change", "Company investor presentations"),
-    ("Results_*", "All regression results reported in the dissertation", "This study"),
+    ("Results_*", "All regression results reported in the dissertation (Results_ModelSummary: R2, ANOVA, coefficients and diagnostics of Models 1-2; Results_Inference: p-values under alternative standard errors)", "This study"),
+    ("RBI_Descriptives / RBI_Correlation", "Descriptive statistics and correlation matrix of monthly growth rates (Tables 4.4-4.5)", "This study"),
 ]
 xl = os.path.join(HERE, "Dissertation_Data.xlsx")
 with pd.ExcelWriter(xl, engine="openpyxl") as w:
@@ -325,3 +326,90 @@ pd.DataFrame(desc).to_csv(os.path.join(OUT, "firm_descriptives.csv"), index=Fals
 json.dump(R, open(os.path.join(OUT, "results.json"), "w"), indent=1, default=float)
 print("MAGNITUDES", {k: round(v, 1) for k, v in R["magnitudes"].items()})
 print(pd.DataFrame(desc).to_string())
+
+# =========================================================== 5. Template-required statistics (appended)
+from statsmodels.stats.diagnostic import het_breuschpagan, acorr_ljungbox
+from statsmodels.stats.stattools import jarque_bera, durbin_watson
+
+SER = TREAT + CTRL + ["NBFCs ex-HFC", "HFCs", "Non-food credit"]
+ds = []
+for c in SER:
+    for per, a, b in [("Pre-policy", "2021-04-01", "2023-10-31"), ("Post-policy", "2023-12-01", "2025-01-31")]:
+        x = g.loc[a:b, c].dropna()
+        ds.append(dict(Series=c, Period=per, N=int(x.size), Mean=round(x.mean(), 3), SD=round(x.std(), 3), Min=round(x.min(), 3), Max=round(x.max(), 3)))
+R["rbi_desc"] = ds
+corr = g.loc[WIN[0]:WIN[1], SER].corr().round(2)
+R["rbi_corr"] = {"cols": SER, "rows": corr.values.tolist()}
+
+
+def its_full(gap, brk, name, lags=6):
+    gap = gap.dropna()
+    post = (gap.index >= brk).astype(float)
+    X = sm.add_constant(post)
+    ols = sm.OLS(gap.values, X).fit()
+    hac = sm.OLS(gap.values, X).fit(cov_type="HAC", cov_kwds={"maxlags": lags})
+    jb, jbp, skew, kurt = jarque_bera(ols.resid)
+    bp = het_breuschpagan(ols.resid, X)
+    lb = acorr_ljungbox(ols.resid, lags=[12], return_df=True)
+    return dict(name=name, n=int(ols.nobs), r2=ols.rsquared, adj_r2=ols.rsquared_adj, f=ols.fvalue, f_p=ols.f_pvalue,
+                ss_model=ols.ess, ss_resid=ols.ssr, df_model=ols.df_model, df_resid=ols.df_resid,
+                const=hac.params[0], const_se=hac.bse[0], const_p=hac.pvalues[0], delta=hac.params[1], delta_se=hac.bse[1], delta_p=hac.pvalues[1],
+                jb=jb, jb_p=jbp, skew=skew, kurt=kurt, dw=durbin_watson(ols.resid), lb12=float(lb.lb_stat.iloc[0]), lb12_p=float(lb.lb_pvalue.iloc[0]),
+                bp=bp[0], bp_p=bp[1], vif=1.0)
+
+
+R["model_summary"] = [its_full(gap1, POST, "H1"), its_full(gap2, POST, "H2")]
+# multicollinearity for the H1 panel design: VIF of Treated x Post given series and month fixed effects
+L = W[TREAT + CTRL].stack().rename("g").reset_index(); L.columns = ["date", "series", "g"]
+L["TxP"] = (L.series.isin(TREAT) & (L.date >= POST)).astype(float)
+Z = pd.get_dummies(L[["series"]].astype(str), drop_first=True).join(pd.get_dummies(L.date.astype(str), drop_first=True)).astype(float)
+aux = sm.OLS(L.TxP, sm.add_constant(Z)).fit()
+R["vif_h1_panel"] = float(1 / (1 - aux.rsquared))
+# appendix data: annual averages of hand-collected series
+cof["FYn"] = cof.FY; bsh["FYn"] = bsh.FY
+R["app_cof"] = cof.pivot_table(index="Company", columns="FYn", values="COF_Pct", aggfunc="mean").round(2).reset_index().fillna("").to_dict(orient="split")
+R["app_bsh"] = bsh.pivot_table(index="Company", columns="FYn", values="Bank_Share_Pct", aggfunc="mean").round(1).reset_index().fillna("").to_dict(orient="split")
+R["app_rbi"] = (lev.loc[lev.index.month == 3, SER] / 100000).round(2).reset_index().assign(Date=lambda x: x.Date.dt.strftime("%b-%Y")).to_dict(orient="split")
+json.dump(R, open(os.path.join(OUT, "results.json"), "w"), indent=1, default=float)
+for m_ in R["model_summary"]:
+    print({k: (round(v, 3) if isinstance(v, float) else v) for k, v in m_.items()})
+print("VIF H1 panel", round(R["vif_h1_panel"], 2))
+
+# =========================================================== 6. Inference robustness (how sensitive is the p-value to the SE choice?)
+def infer_table(gap, brk, B=10000, seed=7):
+    gap = gap.dropna()
+    post = pd.Series((gap.index >= brk).astype(float), index=gap.index, name="post")
+    md = pd.get_dummies(gap.index.month, prefix="m", drop_first=True).astype(float); md.index = gap.index
+    X0, XS = sm.add_constant(post), sm.add_constant(pd.concat([post, md], axis=1))
+    rows = []
+    def add(lbl, X, kw):
+        f = sm.OLS(gap, X).fit(**kw)
+        rows.append(dict(Method=lbl, delta=round(float(f.params["post"]), 3), p=round(float(f.pvalues["post"]), 3)))
+    add("Classical OLS", X0, {})
+    add("White (HC1)", X0, dict(cov_type="HC1"))
+    for L_ in (1, 3, 6, 12):
+        add(f"Newey-West, {L_} lag{'s' if L_ > 1 else ''}" + (" (main)" if L_ == 6 else " (rule of thumb)" if L_ == 3 else ""), X0, dict(cov_type="HAC", cov_kwds={"maxlags": L_}))
+    add("Month dummies, classical OLS", XS, {})
+    add("Month dummies, White (HC1)", XS, dict(cov_type="HC1"))
+    add("Month dummies, Newey-West 3 lags", XS, dict(cov_type="HAC", cov_kwds={"maxlags": 3}))
+    rng = np.random.default_rng(seed)
+    for lbl, X in [("Moving-block bootstrap (block 3)", X0), ("Month dummies, moving-block bootstrap", XS)]:
+        d = sm.OLS(gap, X).fit().params["post"]
+        f0 = sm.OLS(gap, X.drop(columns="post")).fit(); fit0, r0 = f0.fittedvalues.values, f0.resid.values; n = len(r0)
+        Xv, j = X.values, list(X.columns).index("post"); cnt = 0
+        for _ in range(B):
+            idx = np.concatenate([np.arange(s, s + 3) for s in rng.integers(0, n - 2, size=n // 3 + 1)])[:n]
+            cnt += abs(np.linalg.lstsq(Xv, fit0 + r0[idx], rcond=None)[0][j]) >= abs(d)
+        rows.append(dict(Method=lbl, delta=round(float(d), 3), p=round(cnt / B, 3)))
+    return rows
+
+
+R["inference"] = dict(H1=infer_table(gap1, POST), H2=infer_table(gap2, POST))
+json.dump(R, open(os.path.join(OUT, "results.json"), "w"), indent=1, default=float)
+print(pd.DataFrame(R["inference"]["H1"]).merge(pd.DataFrame(R["inference"]["H2"]), on="Method", suffixes=("_H1", "_H2")).to_string())
+# add model statistics to the data workbook
+with pd.ExcelWriter(xl, engine="openpyxl", mode="a", if_sheet_exists="replace") as w:
+    pd.DataFrame(R["model_summary"]).to_excel(w, sheet_name="Results_ModelSummary", index=False)
+    pd.DataFrame(R["inference"]["H1"]).merge(pd.DataFrame(R["inference"]["H2"]), on="Method", suffixes=("_H1", "_H2")).to_excel(w, sheet_name="Results_Inference", index=False)
+    pd.DataFrame(R["rbi_desc"]).to_excel(w, sheet_name="RBI_Descriptives", index=False)
+    pd.DataFrame(R["rbi_corr"]["rows"], index=SER, columns=SER).to_excel(w, sheet_name="RBI_Correlation")
