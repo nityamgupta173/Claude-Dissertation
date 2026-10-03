@@ -26,52 +26,90 @@ df["FQ"] = df["Fiscal_Year"] + "-" + df["Quarter"]
 log(f"Loaded raw panel: {df.Company.nunique()} firms, {len(df)} rows")
 
 # ---------------------------------------------------------------- 1. Screener patch
-PATCH_COLS = ["Interest_Income_Cr", "Operating_Expenses_Cr", "Net_Profit_PAT_Cr", "Net_Worth_Cr"]
+# Screener.in 'Data Sheet' exports: quarterly block covers only the latest ~9-10 quarters (Mar-2024 on);
+# annual P&L / balance sheet cover FY17-FY26.
+# Definition check against the existing CSV (overlapping non-NA cells):
+#   Screener 'Interest'   == CSV Interest_Expense_Cr  (exact)   -> used to patch NAs
+#   Screener 'Net profit' ~= CSV Net_Profit_PAT_Cr     (<2%)    -> used to patch NAs
+#   Screener 'Sales'      != CSV Interest_Income_Cr    (Sales includes fee/other income, ~10-15% higher)
+#   Screener 'Expenses'   != CSV Operating_Expenses_Cr (different definition)
+# so Sales/Expenses are NOT written into the CSV's columns (mixing definitions inside one firm's series would
+# be wrong); they are added as separate Screener_* columns instead.
+SCREENER_FILES = {"AAVAS": "AAVAS Financiers", "Arman": "Arman Financial", "Bajaj": "Bajaj Finance",
+                  "Can Fin": "Can Fin Homes", "Cholamandalam": "Cholaman.Inv.&Fn", "CreditAccess": "CreditAcc. Gram",
+                  "Home First": "Home First Finan", "IIFL": "IIFL Finance", "LIC": "LIC Housing Fin",
+                  "Mahindra": "M & M Fin. Serv", "Muthoot": "Muthoot Finance", "PNB": "PNB Housing",
+                  "Poonawalla": "Poonawalla Fin", "Repco": "Repco Home Fin", "SBI": "SBI Cards",
+                  "Shriram": "Shriram Finance"}
+PATCH_COLS = ["Interest_Income_Cr", "Operating_Expenses_Cr", "Net_Profit_PAT_Cr", "Net_Worth_Cr", "Interest_Expense_Cr"]
 log("NA counts before patch: " + str({c: int(df[c].isna().sum()) for c in PATCH_COLS}))
-SCREENER_MAP = {"Sales": "Interest_Income_Cr", "Expenses": "Operating_Expenses_Cr",
-                "Net profit": "Net_Profit_PAT_Cr"}
+for c in ["Screener_Revenue_Cr", "Screener_Expenses_Cr", "Screener_Interest_Cr", "Screener_NetProfit_Cr"]:
+    df[c] = np.nan
 
 
-def read_screener_quarters(path):
-    """Best-effort parser for a Screener.in export ('Data Sheet', quarterly block).
-    Returns DataFrame indexed by quarter-end date with the mapped columns."""
-    raw = pd.read_excel(path, sheet_name="Data Sheet", header=None)
-    start = raw.index[raw[0].astype(str).str.strip().eq("Quarters")]
-    if len(start) == 0:
-        return None
-    blk = raw.iloc[start[0] + 1: start[0] + 16].set_index(0)
-    dates = pd.to_datetime(blk.loc["Report Date"].dropna(), errors="coerce")
-    out = {}
-    for src, dst in SCREENER_MAP.items():
-        if src in blk.index:
-            out[dst] = pd.to_numeric(blk.loc[src].reindex(dates.index), errors="coerce").values
-    res = pd.DataFrame(out, index=dates.values)
-    return res
+def block(raw, title, nrows):
+    i = raw.index[raw[0].astype(str).str.strip() == title][0]
+    b = raw.iloc[i + 1: i + 1 + nrows].set_index(0)
+    dates = pd.to_datetime(b.loc["Report Date"], errors="coerce").dropna()
+    return b.drop(index="Report Date"), dates
 
 
-screener_files = glob.glob(os.path.join(HERE, "screener", "*.xls*")) + \
-    glob.glob(os.path.join(HERE, "*Screener*.xls*")) + glob.glob(os.path.join(HERE, "*screener*.xls*"))
-if not screener_files:
-    log("!! No Screener.in Excel files found (looked in ./screener/ and repo root). "
-        "P&L NAs were NOT patched. Drop the 16 files in ./screener/ and re-run.")
-else:
-    filled = 0
-    for f in screener_files:
-        name = os.path.basename(f).lower()
-        firm = next((c for c in df.Company.unique() if c.lower().split()[0] in name), None)
-        scr = read_screener_quarters(f)
-        if firm is None or scr is None:
-            log(f"   could not match/parse {f}")
+annual_rows = []
+filled = {"Net_Profit_PAT_Cr": 0, "Interest_Expense_Cr": 0}
+mism = []
+for key, fn in SCREENER_FILES.items():
+    firm = next(c for c in df.Company.unique() if key.lower() in c.lower())
+    raw = pd.read_excel(os.path.join(HERE, fn + ".xlsx"), sheet_name="Data Sheet", header=None)
+    qb, qd = block(raw, "Quarters", 9)
+    q = lambda r: pd.to_numeric(qb.loc[r, qd.index], errors="coerce").values
+    sq = pd.DataFrame({"rev": q("Sales"), "exp": q("Expenses"), "int": q("Interest"), "np": q("Net profit")},
+                      index=qd.values)
+    for dt, r in sq.iterrows():
+        m = (df.Company == firm) & (df.Date_End == dt)
+        if not m.any():
             continue
-        for dt, row in scr.iterrows():
-            m = (df.Company == firm) & (df.Date_End == dt)
-            for col, val in row.items():
-                if pd.notna(val):
-                    idx = df.index[m & df[col].isna()]
-                    df.loc[idx, col] = val
-                    filled += len(idx)
-    log(f"Screener patch filled {filled} cells (only NA cells; nothing overwritten).")
+        df.loc[m, ["Screener_Revenue_Cr", "Screener_Expenses_Cr", "Screener_Interest_Cr", "Screener_NetProfit_Cr"]] = \
+            [r["rev"], r["exp"], r["int"], r["np"]]
+        for col, v in [("Net_Profit_PAT_Cr", r["np"]), ("Interest_Expense_Cr", r["int"])]:
+            idx = df.index[m & df[col].isna()]
+            if pd.notna(v) and len(idx):
+                df.loc[idx, col] = v
+                filled[col] += len(idx)
+            elif pd.notna(v) and abs(df.loc[m, col].iloc[0] - v) > 0.03 * abs(v) + 1:
+                mism.append((firm, str(dt.date()), col, float(df.loc[m, col].iloc[0]), float(v)))
+    # annual panel (for Model 2)
+    ab, ad = block(raw, "PROFIT & LOSS", 16)
+    bb, bd = block(raw, "BALANCE SHEET", 12)
+    for dt in ad.values:
+        yr = pd.Timestamp(dt)
+        g = lambda blk, r, d_: pd.to_numeric(blk.loc[r, d_ == d_], errors="coerce") if False else None
+    A = pd.DataFrame({"Sales": pd.to_numeric(ab.loc["Sales", ad.index], errors="coerce").values,
+                      "Interest": pd.to_numeric(ab.loc["Interest", ad.index], errors="coerce").values,
+                      "NetProfit": pd.to_numeric(ab.loc["Net profit", ad.index], errors="coerce").values},
+                     index=pd.DatetimeIndex(ad.values))
+    Bs = pd.DataFrame({"Borrowings": pd.to_numeric(bb.loc["Borrowings", bd.index], errors="coerce").values,
+                       "Equity": (pd.to_numeric(bb.loc["Equity Share Capital", bd.index], errors="coerce") +
+                                  pd.to_numeric(bb.loc["Reserves", bd.index], errors="coerce")).values,
+                       "TotalAssets": pd.to_numeric(bb.loc["Total", bd.index].iloc[0:len(bd)] if False else
+                                                    bb.loc[bb.index == "Total", bd.index].iloc[0], errors="coerce").values},
+                      index=pd.DatetimeIndex(bd.values))
+    A = A.join(Bs)
+    A["Company"] = firm
+    annual_rows.append(A.reset_index().rename(columns={"index": "FY_End"}))
+log(f"Screener patch filled (NA cells only): {filled}")
+if mism:
+    log(f"  {len(mism)} overlapping cells differ >3% between CSV and Screener (CSV kept): {mism[:6]}")
 log("NA counts after patch:  " + str({c: int(df[c].isna().sum()) for c in PATCH_COLS}))
+ann = pd.concat(annual_rows)
+ann = ann.sort_values(["Company", "FY_End"])
+ann["Borrowings_avg"] = ann.groupby("Company").Borrowings.transform(lambda x: (x + x.shift(1)) / 2)
+ann["Assets_avg"] = ann.groupby("Company").TotalAssets.transform(lambda x: (x + x.shift(1)) / 2)
+ann["Interest_Expense_Ratio_Pct"] = ann.Interest / ann.Borrowings_avg * 100
+ann["RoA_annual_Pct"] = ann.NetProfit / ann.Assets_avg * 100
+ann["FY"] = ann.FY_End.dt.year
+ann = ann[ann.FY.between(2021, 2026)]
+ann.to_csv(os.path.join(HERE, "screener_annual_panel.csv"), index=False)
+log(f"Saved screener_annual_panel.csv ({len(ann)} firm-years)")
 
 # ---------------------------------------------------------------- 2. Macro controls
 # quarter label -> calendar quarter start

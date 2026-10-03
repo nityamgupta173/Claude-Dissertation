@@ -119,16 +119,16 @@ def wcb_F(y, X_test, W, groups, B=B_REPS, seed=SEED):
 
 
 # ------------------------------------------------------------------ model runner
-def design(data, dv, treat, ctrl, extra_x=()):
+def design(data, dv, treat, ctrl, extra_x=(), min_obs=8):
     cols = [dv] + list(treat) + list(ctrl) + list(extra_x)
     d = data.dropna(subset=cols).copy()
     # keep only firms with >= 8 usable obs
-    d = d.groupby("Company").filter(lambda x: len(x) >= 8)
+    d = d.groupby("Company").filter(lambda x: len(x) >= min_obs)
     return d
 
 
-def run(label, data, dv, treat, ctrl=MACRO, boot=True):
-    d = design(data, dv, treat, ctrl)
+def run(label, data, dv, treat, ctrl=MACRO, boot=True, min_obs=8):
+    d = design(data, dv, treat, ctrl, min_obs=min_obs)
     p = d.set_index(["Company", "Date_End"])
     X = p[list(treat) + list(ctrl)]
     mod = PanelOLS(p[dv], X, entity_effects=True, time_effects=True, drop_absorbed=True)
@@ -203,11 +203,26 @@ keep("A1_unsecShare", run("Alt exposure (unsecured share): Unsecured growth", D,
 keep("A4_unsecShare", run("Alt exposure (unsecured share): Secured growth", D, "g_Secured", ["Post23_x_ExpU"], C))
 keep("A5_total_unsecShare", run("Alt exposure (unsecured share): Total growth", D, "g_Total", ["Post23_x_ExpU"], C))
 
-# Model 2 feasibility (interest expense ratio)
-m2 = raw.dropna(subset=["Interest_Expense_Ratio_Pct"]).groupby("Company").size()
-m2_note = (f"Model 2 (H2, borrowing cost) NOT estimated: Interest_Expense_Cr is available for only "
-           f"{(m2 >= 8).sum()} firm(s) with >=8 quarters ({int((m2>0).sum())} firms with any data, "
-           f"{int(m2.sum())} firm-quarters). Needs the Screener.in files / Bloomberg interest expense.")
+# Model 2 (H2): borrowing cost. Quarterly interest expense is only available from Mar-2024 (Screener), so the
+# DiD is run on the ANNUAL Screener panel (FY21-FY26): interest / average borrowings.
+ann = pd.read_csv(os.path.join(HERE, "screener_annual_panel.csv"), parse_dates=["FY_End"])
+orig = pd.read_csv(os.path.join(HERE, "nbfc_quarterly_data-v3.csv"))
+expo_all = orig[(orig.Fiscal_Year == "FY24") & (orig.Quarter == "Q2")].set_index("Company").Bank_Borrowing_Share_Pct
+ann["Date_End"] = ann.FY_End
+ann["Exp"] = ann.Company.map(expo_all)
+ann["PostFY24_x_Exp"] = (ann.FY >= 2024) * ann.Exp
+ann["PostFY25_x_Exp"] = (ann.FY >= 2025) * ann.Exp
+ann = ann.sort_values(["Company", "FY"])
+ann["lag_RoA"] = ann.groupby("Company").RoA_annual_Pct.shift(1)
+ann["ln_Borr_lag"] = np.log(ann.groupby("Company").Borrowings.shift(1))
+ann["Interest_Expense_Ratio_Pct"] = ann["Interest_Expense_Ratio_Pct"]
+keep("M2_annual", run("M2 Interest-expense ratio, annual, FY24 = post", ann, "Interest_Expense_Ratio_Pct",
+                      ["PostFY24_x_Exp"], ["lag_RoA", "ln_Borr_lag"], min_obs=4))
+keep("M2_annual_noFY24", run("M2 Interest-expense ratio, annual, FY24 dropped, FY25+ = post",
+                             ann[ann.FY != 2024], "Interest_Expense_Ratio_Pct", ["PostFY25_x_Exp"],
+                             ["lag_RoA", "ln_Borr_lag"], min_obs=4))
+m2_note = ("Model 2 (H2) estimated on the ANNUAL Screener panel (16 firms, FY21-FY26) because quarterly interest "
+           "expense exists only from Mar-2024.")
 print(m2_note)
 
 # ================= Robustness =================
@@ -323,10 +338,11 @@ pd.DataFrame(summary_rows).to_csv(os.path.join(OUT, "all_regression_results.csv"
 
 LABELS = {"Post23_x_Exp": "Post-Nov2023 x Bank exposure", "Post22_x_Exp": "Post-Nov2022 x Bank exposure",
           "Post25_x_Exp": "Post-Feb2025 x Bank exposure", "Post_x_Exp_x_T1": "Post x Exposure x Tier-1 (lag, centred)",
-          "Post23_x_ExpU": "Post-Nov2023 x Unsecured share"}
+          "Post23_x_ExpU": "Post-Nov2023 x Unsecured share",
+          "PostFY24_x_Exp": "Post (FY24+) x Bank exposure", "PostFY25_x_Exp": "Post (FY25+) x Bank exposure"}
 
 
-def table(tags, names, title, fname, extra_note=""):
+def table(tags, names, title, fname, extra_note="", annual=False):
     terms = []
     for t in tags:
         for c in ALL[t]["treat"]:
@@ -345,9 +361,9 @@ def table(tags, names, title, fname, extra_note=""):
             else:
                 r1.append(""); r2.append(""); r3.append("")
         body += [r1, r2, r3]
-    stat = [["Firm FE"] + ["Yes"] * len(tags), ["Quarter FE"] + ["Yes"] * len(tags),
-            ["Macro controls (repo, 5Y yield, GDP)"] + ["Absorbed by Quarter FE"] * len(tags),
-            ["Firm controls (lag RoA, lag GNPA, ln AUM)"] + ["Yes" if "lag_RoA_Pct" in ALL[t]["ctrl"] else "No" for t in tags],
+    stat = [["Firm FE"] + ["Yes"] * len(tags), ["Year FE" if annual else "Quarter FE"] + ["Yes"] * len(tags),
+            ["Macro controls (repo, 5Y yield, GDP)"] + ["n/a (absorbed by time FE)"] * len(tags),
+            ["Firm controls"] + ["Yes (lag RoA, ln lag borrowings)" if annual else ("Yes (lag RoA, lag GNPA, ln AUM)" if "lag_RoA_Pct" in ALL[t]["ctrl"] else "No") for t in tags],
             ["Observations"] + [str(ALL[t]["n"]) for t in tags], ["Firms (clusters)"] + [str(ALL[t]["firms"]) for t in tags],
             ["Adj. R-squared (LSDV)"] + [f"{ALL[t]['adj_r2']:.3f}" for t in tags],
             ["Within R-squared"] + [f"{ALL[t]['within_r2']:.3f}" for t in tags]]
@@ -384,7 +400,10 @@ table(["P2_core", "P3a_placebo_full", "P3a_placebo_pre", "P3b_MFI"],
 table(["M1", "M3", "M4a", "M4b", "M5_MFI", "M5_nonMFI"],
       ["(M1) Unsecured", "(M3) Unsecured x capital", "(M4) Secured", "(M4b) Total", "(M5) MFI", "(M5') Non-MFI consumer"],
       "Table 2. Models 1-5 (bank-funding exposure, firm-level controls)", "table2_models1to5",
-      "Model 2 (borrowing cost) not estimable with available data - see README.")
+      "Model 2 is in Table 2b (annual data).")
+table(["M2_annual", "M2_annual_noFY24"], ["(M2) FY24+ = post", "(M2b) FY24 dropped, FY25+ = post"],
+      "Table 2b. Model 2: interest-expense ratio (annual Screener panel)", "table2b_model2_annual",
+      "DV: interest expense / average borrowings (%), annual; coefficient in pp of cost per 1pp bank-funding share. Annual frequency, controls: lagged annual RoA and ln lagged borrowings.", annual=True)
 table(["A1_unsecShare", "A4_unsecShare", "A5_total_unsecShare"],
       ["Unsecured growth", "Secured growth", "Total growth"],
       "Table 3. Alternative exposure: pre-policy unsecured share of AUM (pp)", "table3_alt_exposure_unsecured_share")

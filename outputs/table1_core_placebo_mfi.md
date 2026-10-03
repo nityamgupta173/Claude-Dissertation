@@ -13,8 +13,8 @@
 |  |  |  |  | [0.421] |
 | Firm FE | Yes | Yes | Yes | Yes |
 | Quarter FE | Yes | Yes | Yes | Yes |
-| Macro controls (repo, 5Y yield, GDP) | Absorbed by Quarter FE | Absorbed by Quarter FE | Absorbed by Quarter FE | Absorbed by Quarter FE |
-| Firm controls (lag RoA, lag GNPA, ln AUM) | No | No | No | No |
+| Macro controls (repo, 5Y yield, GDP) | n/a (absorbed by time FE) | n/a (absorbed by time FE) | n/a (absorbed by time FE) | n/a (absorbed by time FE) |
+| Firm controls | No | No | No | No |
 | Observations | 184 | 184 | 104 | 69 |
 | Firms (clusters) | 8 | 8 | 8 | 3 |
 | Adj. R-squared (LSDV) | 0.002 | 0.003 | 0.129 | 0.172 |

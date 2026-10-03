@@ -13,11 +13,11 @@
 |  |  |  |  |  | [0.649] | [0.464] |
 | Firm FE | Yes | Yes | Yes | Yes | Yes | Yes |
 | Quarter FE | Yes | Yes | Yes | Yes | Yes | Yes |
-| Macro controls (repo, 5Y yield, GDP) | Absorbed by Quarter FE | Absorbed by Quarter FE | Absorbed by Quarter FE | Absorbed by Quarter FE | Absorbed by Quarter FE | Absorbed by Quarter FE |
-| Firm controls (lag RoA, lag GNPA, ln AUM) | Yes | Yes | Yes | Yes | Yes | Yes |
+| Macro controls (repo, 5Y yield, GDP) | n/a (absorbed by time FE) | n/a (absorbed by time FE) | n/a (absorbed by time FE) | n/a (absorbed by time FE) | n/a (absorbed by time FE) | n/a (absorbed by time FE) |
+| Firm controls | Yes (lag RoA, lag GNPA, ln AUM) | Yes (lag RoA, lag GNPA, ln AUM) | Yes (lag RoA, lag GNPA, ln AUM) | Yes (lag RoA, lag GNPA, ln AUM) | Yes (lag RoA, lag GNPA, ln AUM) | Yes (lag RoA, lag GNPA, ln AUM) |
 | Observations | 184 | 184 | 299 | 345 | 69 | 184 |
 | Firms (clusters) | 8 | 8 | 13 | 15 | 3 | 8 |
 | Adj. R-squared (LSDV) | -0.006 | -0.021 | -0.021 | 0.205 | 0.165 | 0.021 |
 | Within R-squared | 0.012 | 0.024 | 0.002 | 0.030 | 0.101 | 0.045 |
 
-*Dependent variables are 100 x log difference of AUM (approx. QoQ growth in percentage points). Exposure is the Q2 FY24 (Sep-2023) bank-borrowing share in % points. Estimated with linearmodels PanelOLS (firm + quarter fixed effects). Parentheses: CR1 cluster-robust SE. Square brackets: wild cluster bootstrap-t p-value (Webb weights, 19999 draws, null imposed); stars from that p-value: * p<0.1, ** p<0.05, *** p<0.01. Model 2 (borrowing cost) not estimable with available data - see README.*
+*Dependent variables are 100 x log difference of AUM (approx. QoQ growth in percentage points). Exposure is the Q2 FY24 (Sep-2023) bank-borrowing share in % points. Estimated with linearmodels PanelOLS (firm + quarter fixed effects). Parentheses: CR1 cluster-robust SE. Square brackets: wild cluster bootstrap-t p-value (Webb weights, 19999 draws, null imposed); stars from that p-value: * p<0.1, ** p<0.05, *** p<0.01. Model 2 is in Table 2b (annual data).*
