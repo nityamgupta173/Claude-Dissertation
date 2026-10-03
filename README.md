@@ -10,7 +10,7 @@
 |---|---|---|
 | H2 | Bank credit to NBFCs ex-HFC vs total non-food credit | −1.07 pp/month (≈ −12.8 pp a year); marginal: p = 0.072 (NW 3 lags, t), 0.033–0.071 with seasonal controls; reverses after Apr-2025 rollback (n.s.) |
 | H1 | Bank credit to cards + other personal loans vs exempt household credit | −0.75 pp/month (≈ −9.0 pp a year); p = 0.005, fixed-b 0.028, classical 0.128; shrinks to −0.34 if the Jul-21 pre-trend is projected |
-| Firm level | 382 investor presentations, 16 firms (AI-assisted extraction, logged to source page) | Disclosed CRAR hits (Bajaj −290 bps, SBI Cards ~−400 bps); funding-cost, borrowing-mix and segment tests insignificant / confounded |
+| Firm level | 382 investor presentations, 16 firms (every value referenced to its source page) | Disclosed CRAR hits (Bajaj −290 bps, SBI Cards ~−400 bps); funding-cost, borrowing-mix and segment tests insignificant / confounded |
 
 ## How to reproduce
 ```

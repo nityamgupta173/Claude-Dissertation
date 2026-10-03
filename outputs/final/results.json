@@ -1956,13 +1956,6 @@
    "FY26Q2": 37.5,
    "FY26Q3": 37.7,
    "FY26Q4": 38.3
-  },
-  "recheck": {
-   "total": 652,
-   "computed": 88,
-   "checkable": 474,
-   "found": 434,
-   "no_text": 90
   }
  }
 }

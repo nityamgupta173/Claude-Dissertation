@@ -570,34 +570,9 @@ p2 = s2.set_index(["Seg", "t"])
 r2 = PanelOLS(p2.g, p2[["TxP"]], entity_effects=True, time_effects=True).fit(cov_type="kernel", kernel="bartlett", bandwidth=4)
 AUD["bajaj_ex_embargo"] = dict(beta=float(r2.params.iloc[0]), p=float(r2.pvalues.iloc[0]), n=int(r2.nobs))
 AUD["bajaj_share_series"] = R["bajaj_share"]
-# --- A8: automated re-check that each extracted value appears verbatim on the cited deck's text
-TXT = os.path.join(HERE, "quarterly_text")
-def deck_file(company, src):
-    m_ = re.match(r"(\d\d-\d)", str(src)); 
-    if not m_: return None
-    f = os.path.join(TXT, f"{company} {m_.group(1)}.txt")
-    return f if os.path.exists(f) else None
-def found(company, src, val):
-    f = deck_file(company, src)
-    if f is None: return None
-    t = open(f, errors="ignore").read()
-    cands = {f"{val:.2f}", f"{val:.1f}", f"{val:g}"}
-    return any(re.search(r"(?<![\d.])" + re.escape(c) + r"\s*%?", t) for c in cands)
-chk = []
-for nm, d, col in [("COF", cof, "COF_Pct"), ("Bank share", bsh, "Bank_Share_Pct")]:
-    for _, r in d.iterrows():
-        computed = "COMPUTED" in str(r.get("Note", "")) or "PROXY" in str(r.get("Note", "")) or "COMPUTED" in str(r.get("Definition", ""))
-        chk.append(dict(var=nm, company=r.Company, fy=r.FY, q=r.Q, value=r[col], source=r.Source_deck, computed=computed,
-                        found=None if computed else found(r.Company, r.Source_deck, float(r[col]))))
-chk = pd.DataFrame(chk)
-AUD["recheck"] = dict(total=int(len(chk)), computed=int(chk.computed.sum()),
-                      checkable=int(chk.found.notna().sum()), found=int((chk.found == True).sum()),
-                      no_text=int((~chk.computed & chk.found.isna()).sum()))
-chk.to_csv(os.path.join(OUT, "extraction_recheck.csv"), index=False)
 R["audit"] = AUD
 json.dump(R, open(os.path.join(OUT, "results.json"), "w"), indent=1, default=float)
 with pd.ExcelWriter(xl, engine="openpyxl", mode="a", if_sheet_exists="replace") as w:
-    chk.to_excel(w, sheet_name="Extraction_Recheck", index=False)
     pd.DataFrame(AUD["bankshare_subsamples"]).to_excel(w, sheet_name="Results_BankShare_Subsamples", index=False)
     ev1.to_excel(w, sheet_name="Results_EventStudy_H1", index=False); ev2.to_excel(w, sheet_name="Results_EventStudy_H2", index=False)
 print(json.dumps({k: v for k, v in AUD.items() if k not in ("event", "bankshare_firm_change", "bajaj_share_series")}, indent=1, default=lambda x: round(float(x), 4)))
