@@ -1,0 +1,63 @@
+Model 2 (H2, borrowing cost) NOT estimated: Interest_Expense_Cr is available for only 2 firm(s) with >=8 quarters (11 firms with any data, 53 firm-quarters). Needs the Screener.in files / Bloomberg interest expense.
+
+Event-study joint pre-trend test (12 coefficients, k<-1): F=0.321, df=(12,129), classical p=0.9844, wild-cluster-bootstrap p=0.3716
+
+Firms in unsecured model: Arman Financial Services, Bajaj Finance, Cholamandalam Investment & Finance Company, IIFL Finance, Mahindra & Mahindra Financial Services, Poonawalla Fincorp, SBI Cards and Payment Services, Shriram Finance
+Firms in MFI model: Arman Financial Services, CreditAccess Grameen, IIFL Finance
+Firms in secured model: AAVAS Financiers, Arman Financial Services, Bajaj Finance, Can Fin Homes, Cholamandalam Investment & Finance Company, IIFL Finance, LIC Housing Finance, Mahindra & Mahindra Financial Services, Muthoot Finance, PNB Housing Finance, Poonawalla Fincorp, Repco Home Finance, Shriram Finance
+
+Absorbed controls in core model: ['Repo_Rate_Pct', 'Bond_Yield_5Y_Pct', 'GDP_Growth_YoY_Pct']
+
+Full PanelOLS output (core):
+                          PanelOLS Estimation Summary                           
+================================================================================
+Dep. Variable:            g_Unsecured   R-squared:                        0.0002
+Estimator:                   PanelOLS   R-squared (Between):              0.1690
+No. Observations:                 184   R-squared (Within):              -0.0011
+Date:                Sat, Oct 03 2026   R-squared (Overall):              0.0200
+Time:                        07:32:56   Log-likelihood                   -730.70
+Cov. Estimator:             Clustered                                           
+                                        F-statistic:                      0.0267
+Entities:                           8   P-value                           0.8705
+Avg Obs:                       23.000   Distribution:                   F(1,153)
+Min Obs:                       23.000                                           
+Max Obs:                       23.000   F-statistic (robust):             0.1460
+                                        P-value                           0.7029
+Time periods:                      23   Distribution:                   F(1,153)
+Avg Obs:                       8.0000                                           
+Min Obs:                       8.0000                                           
+Max Obs:                       8.0000                                           
+                                                                                
+                              Parameter Estimates                               
+================================================================================
+              Parameter  Std. Err.     T-stat    P-value    Lower CI    Upper CI
+--------------------------------------------------------------------------------
+Post23_x_Exp     0.0210     0.0550     0.3821     0.7029     -0.0877      0.1298
+================================================================================
+
+F-test for Poolability: 1.0474
+P-value: 0.4101
+Distribution: F(29,153)
+
+Included effects: Entity, Time
+
+Leave-one-firm-out:
+                                           dropped      coef    se_cr1     p_wcb    n  firms
+0                    Arman Financial Services Ltd.  0.056194  0.076508  0.594430  161      7
+1                               Bajaj Finance Ltd.  0.034225  0.078107  0.637432  161      7
+2  Cholamandalam Investment & Finance Company Ltd.  0.022051  0.061795  0.708285  161      7
+3                                IIFL Finance Ltd.  0.025345  0.063478  0.678084  161      7
+4      Mahindra & Mahindra Financial Services Ltd.  0.016662  0.062269  0.873744  161      7
+5                          Poonawalla Fincorp Ltd. -0.028962  0.016635  0.144857  161      7
+6              SBI Cards and Payment Services Ltd.  0.036559  0.080690  0.641082  161      7
+7                             Shriram Finance Ltd.  0.016182  0.060870  0.739637  161      7
+
+Flagged outlier quarters (|g|>25pp):
+                                             Company Fiscal_Year Quarter  g_Unsecured
+103  Cholamandalam Investment & Finance Company Ltd.        FY22      Q4    49.223997
+274                          Poonawalla Fincorp Ltd.        FY23      Q3   -28.703872
+346                             Shriram Finance Ltd.        FY23      Q3    27.368331
+350                             Shriram Finance Ltd.        FY24      Q3   -64.816279
+351                             Shriram Finance Ltd.        FY24      Q4    75.221965
+354                             Shriram Finance Ltd.        FY25      Q3   -92.741433
+355                             Shriram Finance Ltd.        FY25      Q4   101.408271

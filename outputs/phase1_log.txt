@@ -1,0 +1,9 @@
+Loaded raw panel: 16 firms, 382 rows
+NA counts before patch: {'Interest_Income_Cr': 325, 'Operating_Expenses_Cr': 320, 'Net_Profit_PAT_Cr': 112, 'Net_Worth_Cr': 0}
+!! No Screener.in Excel files found (looked in ./screener/ and repo root). P&L NAs were NOT patched. Drop the 16 files in ./screener/ and re-run.
+NA counts after patch:  {'Interest_Income_Cr': 325, 'Operating_Expenses_Cr': 320, 'Net_Profit_PAT_Cr': 112, 'Net_Worth_Cr': 0}
+GDP YoY cross-check, FRED-computed vs supplied YoY file: max abs diff = 0.000 pp
+Repo series ends 2025-12-05 at 5.25%; carried forward to Mar-2026 (no later change in file).
+Macro merge complete, no missing macro values.
+Balancing: dropped ['Home First Finance Company India Ltd.'] (has [22] of 24 quarters).
+Saved /home/user/Claude-Dissertation/master_panel_data_final.csv: 15 firms x 24 quarters = 360 rows
