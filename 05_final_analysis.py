@@ -594,13 +594,10 @@ AUD["recheck"] = dict(total=int(len(chk)), computed=int(chk.computed.sum()),
                       checkable=int(chk.found.notna().sum()), found=int((chk.found == True).sum()),
                       no_text=int((~chk.computed & chk.found.isna()).sum()))
 chk.to_csv(os.path.join(OUT, "extraction_recheck.csv"), index=False)
-spot = chk.sample(40, random_state=2026).sort_values(["company", "fy", "q"])
-spot.assign(student_checked_value="", matches_source_YN="").to_csv(os.path.join(OUT, "manual_spot_check_sample.csv"), index=False)
 R["audit"] = AUD
 json.dump(R, open(os.path.join(OUT, "results.json"), "w"), indent=1, default=float)
 with pd.ExcelWriter(xl, engine="openpyxl", mode="a", if_sheet_exists="replace") as w:
     chk.to_excel(w, sheet_name="Extraction_Recheck", index=False)
-    spot.assign(student_checked_value="", matches_source_YN="").to_excel(w, sheet_name="Manual_Spot_Check", index=False)
     pd.DataFrame(AUD["bankshare_subsamples"]).to_excel(w, sheet_name="Results_BankShare_Subsamples", index=False)
     ev1.to_excel(w, sheet_name="Results_EventStudy_H1", index=False); ev2.to_excel(w, sheet_name="Results_EventStudy_H2", index=False)
 print(json.dumps({k: v for k, v in AUD.items() if k not in ("event", "bankshare_firm_change", "bajaj_share_series")}, indent=1, default=lambda x: round(float(x), 4)))

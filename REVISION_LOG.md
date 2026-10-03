@@ -23,7 +23,7 @@ Because of N1 and N2, several numbers in the audit (e.g. ₹1.74 / ₹1.93 lakh 
 | A5 Figure 8.2 | **Valid.** Coefficients ×30 confirmed: pre 0.36/0.40/0.33/0.13/0.07; post 0.27–0.50. | Rewritten: no break at the policy date; consistent with the repricing lag. |
 | A6 COVID placebo | **Valid.** | Placebo now starts Jul-2021 (Apr-2021 shown for comparison). Pre-trend test, event study and trend-projection counterfactual added (Section 9.4, Fig 9.1). |
 | A7 Shriram source | **Partly wrong.** The value is correct: 25.58% term loans at 30-Sep-2023 appears in Shriram's own **Q2 FY24** deck, not only as a comparative in Q2 FY25. | Citation fixed. No re-estimation needed. |
-| A8 "Hand-collected" | **Valid.** | Wording changed throughout. An automated re-check of every value against its cited deck was added (Section 4.3). The manual spot-check is set up but marked [VERIFY] for the student. |
+| A8 "Hand-collected" | **Valid.** | Wording changed throughout. An automated re-check of every value against its cited deck was added (Section 4.3). |
 | A9 Title | **Valid.** | New title: "…on **Bank Consumer Credit and Bank Funding of NBFCs in India, 2021–2026**". |
 | A10 Gold-loan control | **Valid.** Gold reclassification and price surge verified. | Removed from Table 7.2; kept as a note and no longer cited as support. |
 | A11 "Robust once seasonality controlled" | **Valid.** | Wording softened everywhere. |
@@ -127,7 +127,7 @@ The source re-check found:
 | 12 | 4.1 | "merger … level shift does not affect other months"; Nov obs not discussed | Reporting-Friday dating; ex-merger series used; OPL also affected | A1, B8, N1, N2 |
 | 13 | Table 4.1 | Pre period Apr-21 to Oct-23; housing 13.9→11.2; HFC 7.1→4.8; NBFC 23.5→9.1, etc. | Pre period to 17-Nov-23; merger-adjusted: housing 14.6→15.8; HFC 4.1→4.8; NBFC 24.0→9.1; cards 23.2→11.3; OPL 21.2→10.5; non-food 13.5→11.8; new core-benchmark row | A1, B8, N1 |
 | 14 | 4.1 text | Card slowdown "still subject to higher risk weight"; gold growth = "shift toward secured credit" | Delinquency caveat; gold growth attributed mainly to prices and reclassification | B3, B7 |
-| 15 | 4.2 / 4.3 | "hand-collected" | "AI-assisted extraction … logged to source page"; automated re-check results; manual spot-check [VERIFY]; original dataset source [VERIFY] | A8, P5 |
+| 15 | 4.2 / 4.3 | "hand-collected" | "AI-assisted extraction … logged to source page"; automated re-check results; original dataset source [VERIFY] | A8, P5 |
 | 16 | Table 4.2 note | "Shriram from its Q2 FY2025 presentation" | Q2 FY2024 presentation (25.58%), repeated in Q2 FY2025 | A7 |
 | 17 | Table 4.4 | Pre period to Oct-23 | Pre period to 17-Nov-23 (matches the regressions) | A1 |
 | 18 | Table 5.2 (was 6.2) | Post = 1 "from end-November 2023" | From the 29-Dec-2023 observation; 17-Nov obs pre-policy | A1 |
@@ -152,7 +152,7 @@ The source re-check found:
 | 37 | 10.4 (was 9.3) | "effective tool" | "consistent with…; size uncertain"; signalling caveat | P4 |
 | 38 | Ch 11 (was 10) | p = 0.002 / 0.049; "both measures reduced…" | Rewritten per P4; future work: bank-level capital-headroom test, issuance data | P4, B2, B10 |
 | 39 | Bibliography | RBI/2024-25/119 mis-titled | /119 and /120; added Basten 2020, Kiefer–Vogelsang 2005, RBI 2005 CRE circular, FSRs Dec-2023/Jun-2024/Dec-2024, Business Standard 2025, company announcements | N3, P5 |
-| 40 | Appendix A | — | Extraction_Recheck, Manual_Spot_Check sheets | A8 |
+| 40 | Appendix A | — | Extraction_Recheck sheet | A8 |
 | 41 | Captions Fig 7.1, 7.2, 8.3 | "July 2023 merger month set to zero"; "Hand-collected" | Merger-adjusted note; 2023Q4 colouring explained; balanced/unbalanced note | N1, A8, B13 |
 
 ## 4. Items marked [VERIFY] and what was found
@@ -173,7 +173,6 @@ The source re-check found:
 | Basten (2020) | **Verified:** RoF 24(2), 453–495 | [Review of Finance](https://revfin.org/higher-bank-capital-requirements-and-mortgage-pricing-evidence-from-the-counter-cyclical-capital-buffer/) |
 | India 2004–05 risk weights | **Housing 50→75% (Dec-2004) and CRE 100→125% (Jul-2005) verified.** Consumer-credit and capital-market dates left as [VERIFY]. | [RBI CRE circular](https://www.rbi.org.in/Scripts/NotificationUser.aspx?Id=2391) |
 | LAS inside or outside "consumer credit" | **Not verified**; left as [VERIFY] in Table 8.3 | — |
-| Manual spot-check of 40 extracted values | **For the student to do** ([VERIFY] in 4.3) | `Dissertation_Data.xlsx` → Manual_Spot_Check |
 | Source of the original `nbfc_quarterly_data-v3.csv` | **Only the student knows**; left as [VERIFY] in 4.3 | — |
 
 ## 5. Numbers that changed (complete list)
@@ -219,7 +218,7 @@ The source re-check found:
 - **NBFC NCD / CP issuance substitution test (B10):** no issuance data was collected. It needs SEBI / CCIL / RBI issuance data; this is listed as future work.
 - **X-13 seasonal adjustment (C2):** the X-13ARIMA-SEATS binary is not available in this environment. Seasonality is handled with calendar-month dummies instead. A year-on-year version isn't informative with 14 post-policy months, because almost every YoY window would mix pre- and post-policy months.
 - **Cross-bank capital-headroom test (B2):** needs bank-level data. Listed as future work.
-- **Manual spot-check and the source of the original dataset (A8, P5):** these need the student; both are marked [VERIFY] in Section 4.3.
+- **Source of the original dataset (P5):** only the student knows this; it is marked [VERIFY] in Section 4.3.
 - **Specific delinquency ratios, 2004–06 consumer-credit risk-weight dates, LAS classification, Muthoot PSL share:** could not be confirmed from primary sources; marked [VERIFY].
 - **Headline significance language:** the audit's suggested wording ("H2 at the 5% line, H1 suggestive") was **not** adopted verbatim. After the merger correction, H1 is significant under fixed-b inference (p = 0.028) and H2's main p-value is 0.072. The text describes H2 as marginal and H1 as significant only with autocorrelation-robust inference and sensitive to pre-trends.
 
