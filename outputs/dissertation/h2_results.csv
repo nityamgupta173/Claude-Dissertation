@@ -1,10 +1,10 @@
 Specification,Term,Coefficient,CR1_SE,WCB_p,Stars,CI95_low,CI95_high,N,Firms,Adj_R2,Within_R2
-H2-1 Main,Post_x_Exposure,0.0294,0.0151,0.067,*,-0.0022,0.061,96,16,0.866,0.216
-H2-2 No controls,Post_x_Exposure,0.0312,0.0168,0.03,**,0.0022,0.0602,96,16,0.856,0.137
-H2-3 Drop Poonawalla FY21 (Magma),Post_x_Exposure,0.0331,0.0144,0.027,**,0.0039,0.0624,95,16,0.903,0.289
-H2-4 Drop COVID year FY21,Post_x_Exposure,0.0304,0.0119,0.015,**,0.0056,0.0551,80,16,0.923,0.327
-H2-5 Drop transition year FY24,Post_x_Exposure,0.029,0.0152,0.072,*,-0.0025,0.0604,80,16,0.839,0.172
-H2-6 + Exposure x Repo,Post_x_Exposure,0.0162,0.0103,0.085,*,-0.0012,0.0337,96,16,0.866,0.228
-H2-7 High/low exposure dummy,Post_x_HighExposure,0.4585,0.4365,0.27,,-0.3499,1.2669,96,16,0.851,0.127
-Placebo: fake policy FY23 (FY21-23 only),Placebo_x_Exposure,0.0112,0.0203,0.622,,-0.0213,0.0437,48,16,0.767,0.018
-Extension: total loan (AUM) growth,Post_x_Exposure,-0.0637,0.267,0.758,,-0.5361,0.4088,80,16,0.274,0.059
+H2-1 Main,Post_x_Exposure,0.0063,0.0173,0.696,,-0.0344,0.0471,96,16,0.846,0.103
+H2-2 No controls,Post_x_Exposure,0.0031,0.019,0.888,,-0.033,0.0391,96,16,0.834,0.001
+H2-3 Drop Poonawalla FY21 (Magma),Post_x_Exposure,0.01,0.0164,0.538,,-0.0281,0.0481,95,16,0.879,0.117
+H2-4 Drop COVID year FY21,Post_x_Exposure,0.0156,0.014,0.287,,-0.0191,0.0503,80,16,0.909,0.204
+H2-5 Drop transition year FY24,Post_x_Exposure,0.0069,0.0177,0.686,,-0.0323,0.046,80,16,0.819,0.067
+H2-6 + Exposure x Repo,Post_x_Exposure,0.0212,0.01,0.037,**,0.0008,0.0416,96,16,0.847,0.12
+H2-7 High/low exposure dummy,Post_x_HighExposure,0.1837,0.4303,0.661,,-0.6116,0.979,96,16,0.846,0.102
+Placebo: fake policy FY23 (FY21-23 only),Placebo_x_Exposure,-0.0176,0.0195,0.307,,-0.0474,0.0122,48,16,0.774,0.049
+Extension: total loan (AUM) growth,Post_x_Exposure,0.2505,0.2722,0.365,,-0.1847,0.6857,80,16,0.305,0.099

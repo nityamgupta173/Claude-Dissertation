@@ -196,7 +196,9 @@ assert df.groupby("Company").size().nunique() == 1
 
 # ---------------------------------------------------------------- 4. Freeze baseline exposure (Q2 FY24)
 base = df[(df.Fiscal_Year == "FY24") & (df.Quarter == "Q2")].set_index("Company")
-df["Pre_Policy_Bank_Exposure"] = df.Company.map(base["Bank_Borrowing_Share_Pct"])
+vb = pd.read_csv(os.path.join(HERE, "data_corrections", "bank_exposure_verified.csv")).set_index("Company")
+df["Pre_Policy_Bank_Exposure"] = df.Company.map(vb["Verified_Bank_Share_Sep2023_Pct"])   # verified vs Q2 FY24 filings
+df["Pre_Policy_Bank_Exposure_CSV"] = df.Company.map(base["Bank_Borrowing_Share_Pct"])
 df["Unsecured_AUM_Ratio"] = df["Unsecured_Consumer_AUM_Cr"] / df["Total_AUM_Cr"]
 df["Exposure_Unsecured_Baseline"] = df.Company.map(base["Unsecured_Consumer_AUM_Cr"] / base["Total_AUM_Cr"])
 df["Pre_Policy_Tier1_CRAR"] = df.Company.map(base["Tier_1_CRAR_Pct"])

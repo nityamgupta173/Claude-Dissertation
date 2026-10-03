@@ -29,7 +29,9 @@ base = orig[(orig.Fiscal_Year == "FY24") & (orig.Quarter == "Q2")].set_index("Co
 master = pd.read_csv(os.path.join(HERE, "master_panel_data_final.csv"), parse_dates=["Date_End"])
 
 ann["Date_End"] = ann.FY_End
-ann["Bank_Exposure"] = ann.Company.map(base.Bank_Borrowing_Share_Pct)
+vb = pd.read_csv(os.path.join(HERE, "data_corrections", "bank_exposure_verified.csv")).set_index("Company")
+ann["Bank_Exposure"] = ann.Company.map(vb.Verified_Bank_Share_Sep2023_Pct)
+ann["Bank_Exposure_CSV"] = ann.Company.map(base.Bank_Borrowing_Share_Pct)
 ann = ann.sort_values(["Company", "FY"])
 ann["lag_RoA"] = ann.groupby("Company").RoA_annual_Pct.shift(1)
 ann["ln_Borr_lag"] = np.log(ann.groupby("Company").Borrowings.shift(1))
