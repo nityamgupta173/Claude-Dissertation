@@ -1,24 +1,24 @@
 # Dissertation: RBI November 2023 risk-weight measures, consumer credit and NBFC bank funding
 
 ## Deliverables
-* **Dissertation.pdf** – final printable version (TOC filled in). Rebuild with `node 06_build_dissertation.js && python3 tools_pdf.py`.
-* **Dissertation.docx** – editable Word version (saved by tools_pdf.py with the table of contents and page numbers already filled in).
-* **Dissertation_Data.xlsx** – every dataset used, with sources (README sheet explains each sheet), plus all regression results.
+* **Dissertation.pdf** – final printable version. **Dissertation.docx** – editable Word version.
+* **Dissertation_Data_Compilation.xlsx** – every dataset used, with sources. Raw inputs in blue, derived series as live Excel formulas in black (growth rates, gaps, test-window and post-policy flags, share returns, pre/post firm periods).
 
-## Hypotheses and headline results (after the audit revision; see REVISION_LOG.md)
-| | Test | Result |
-|---|---|---|
-| H2 | Bank credit to NBFCs ex-HFC vs total non-food credit | −1.07 pp/month (≈ −12.8 pp a year); marginal: p = 0.072 (NW 3 lags, t), 0.033–0.071 with seasonal controls; reverses after Apr-2025 rollback (n.s.) |
-| H1 | Bank credit to cards + other personal loans vs exempt household credit | −0.75 pp/month (≈ −9.0 pp a year); p = 0.005, fixed-b 0.028, classical 0.128; shrinks to −0.34 if the Jul-21 pre-trend is projected |
-| Firm level | 382 investor presentations, 16 firms (every value referenced to its source page) | Disclosed CRAR hits (Bajaj −290 bps, SBI Cards ~−400 bps); funding-cost, borrowing-mix and segment tests insignificant / confounded |
+## Method (final version)
+* Bank credit (RBI DBIE Table 15, merger-adjusted, Apr-2021 to Jan-2025): Welch t-test of the monthly growth gap before vs after the circular, and OLS on a post-policy dummy with calendar-month dummies; placebo date, pre-trend, rollback and drop-one checks.
+* Share prices (Investing.com, `event_study/raw/`): market-model event study around 17-Nov-2023 and 27-Feb-2025 (`event_study/event_study.py`).
+* Firm level (investor presentations, `hand_collected/`): change in cost of funds and bank share, non-HFC NBFCs vs HFCs.
 
 ## How to reproduce
 ```
-python 05_final_analysis.py        # all results, tables, figures -> outputs/final/, Dissertation_Data.xlsx
-node 06_build_dissertation.js      # builds Dissertation.docx from outputs/final/results.json
-python3 tools_pdf.py               # Dissertation.pdf (+ re-saves the .docx with TOC and page numbers filled)
+python 05_final_analysis.py          # data preparation, descriptives, base figures -> outputs/final/
+python 07_simple_tests.py            # t-tests and dummy regressions -> outputs/final/simple_results.json
+python event_study/event_study.py    # event study -> event_study/results.json
+python 08_figures.py                 # remaining figures -> outputs/final/f_*.png
+node 06_build_dissertation.js && python3 tools_pdf.py && python3 tools_caption_pages.py && node 06_build_dissertation.js && python3 tools_pdf.py
+python 09_build_data_workbook.py && python3 tools_xlsx_recalc.py Dissertation_Data_Compilation.xlsx
 ```
-`did_tools.py` – TWFE (linearmodels PanelOLS) with wild cluster bootstrap-t.
+`tools_xlsx_recalc.py` needs LibreOffice Calc (`apt-get install libreoffice-calc`).
 
 ## Data
 * `RBI_Sectoral_Bank_Credit.xlsx` – RBI DBIE Table 15 (Jan-2019 to Jul-2026).

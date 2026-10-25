@@ -6,7 +6,7 @@ H2  RBI risk weights on bank exposures to NBFCs (Nov-2023, HFCs exempt) -> slowe
     relative to banks' total non-food credit.
 Supporting firm-level evidence from 382 hand-read investor presentations (16 listed NBFCs/HFCs).
 
-Run: python 05_final_analysis.py   -> outputs/final/*  (results.json, CSVs, PNG figures) + Dissertation_Data.xlsx
+Run: python 05_final_analysis.py   -> outputs/final/*  (results.json, CSVs, PNG figures) + outputs/final/working_results.xlsx (internal)
 """
 import json
 import os
@@ -297,7 +297,7 @@ dict_rows = [
     ("Results_*", "All regression results reported in the dissertation (Results_ModelSummary: R2, ANOVA, coefficients and diagnostics of Models 1-2; Results_Inference: p-values under alternative standard errors)", "This study"),
     ("RBI_Descriptives / RBI_Correlation", "Descriptive statistics and correlation matrix of monthly growth rates (Tables 4.4-4.5)", "This study"),
 ]
-xl = os.path.join(HERE, "Dissertation_Data.xlsx")
+xl = os.path.join(OUT, "working_results.xlsx")      # internal working file, not part of the submission
 with pd.ExcelWriter(xl, engine="openpyxl") as w:
     pd.DataFrame(dict_rows, columns=["Sheet / variable", "Definition", "Source"]).to_excel(w, sheet_name="README", index=False)
     rbi_sheet.to_excel(w, sheet_name="RBI_Monthly", index=False)
