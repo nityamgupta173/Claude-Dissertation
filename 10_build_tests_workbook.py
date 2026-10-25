@@ -755,3 +755,21 @@ wb._sheets = [wb[n] for n in ORDER_SHEETS]
 wb.active = 0
 wb.save(OUTF)
 print("saved", OUTF)
+
+# ------------------------------------------------------------------ cell locations of the headline results (used by the viva notes)
+CELLS = {}
+for sh in ["H1_Tests", "H2_Tests"]:
+    ws = wb[sh]
+    for r in range(1, ws.max_row + 1):
+        lab = ws.cell(r, 20).value
+        if lab == "p-value, two-tailed (T.TEST type 3)": CELLS[f"{sh}.welch_p"] = f"U{r}"
+        if lab == "Difference (after minus before)": CELLS[f"{sh}.welch_diff"] = f"U{r}"
+        if lab == "Coefficient on Post" and r > 40: CELLS[f"{sh}.post_b"] = f"U{r}"
+        if lab == "p-value" and r > 40 and f"{sh}.post_p" not in CELLS: CELLS[f"{sh}.post_p"] = f"U{r}"
+        if lab == "Durbin-Watson": CELLS[f"{sh}.dw"] = f"U{r}"
+for ek in ["E1", "E2"]:
+    ws = wb[f"ES_{ek}"]
+    for r in range(1, ws.max_row + 1):
+        if ws.cell(r, 1).value in ("Non-HFC NBFCs (10)", "HFCs (6, exempt)", "Non-HFC NBFCs minus HFCs"):
+            CELLS[f"ES_{ek}.{ws.cell(r, 1).value}"] = f"K{r} (CAR [0]) and S{r} (p)"
+json.dump(CELLS, open(os.path.join(HERE, "outputs", "final", "excel_cells.json"), "w"), indent=1)

@@ -1,0 +1,18 @@
+{
+ "H1_Tests.welch_diff": "U14",
+ "H1_Tests.welch_p": "U19",
+ "H1_Tests.post_b": "U50",
+ "H1_Tests.post_p": "U53",
+ "H1_Tests.dw": "U57",
+ "H2_Tests.welch_diff": "U14",
+ "H2_Tests.welch_p": "U19",
+ "H2_Tests.post_b": "U50",
+ "H2_Tests.post_p": "U53",
+ "H2_Tests.dw": "U57",
+ "ES_E1.Non-HFC NBFCs (10)": "K10 (CAR [0]) and S10 (p)",
+ "ES_E1.HFCs (6, exempt)": "K11 (CAR [0]) and S11 (p)",
+ "ES_E1.Non-HFC NBFCs minus HFCs": "K15 (CAR [0]) and S15 (p)",
+ "ES_E2.Non-HFC NBFCs (10)": "K10 (CAR [0]) and S10 (p)",
+ "ES_E2.HFCs (6, exempt)": "K11 (CAR [0]) and S11 (p)",
+ "ES_E2.Non-HFC NBFCs minus HFCs": "K15 (CAR [0]) and S15 (p)"
+}

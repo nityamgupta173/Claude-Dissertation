@@ -1,10 +1,12 @@
 """Dissertation.docx -> Dissertation.pdf, and Dissertation.docx re-saved with the table of contents and page numbers filled in (LibreOffice UNO).
-Run: python3 tools_pdf.py"""
-import os, subprocess, time, uno
+Run: python3 tools_pdf.py   (or: python3 tools_pdf.py input.docx output.pdf)"""
+import os, subprocess, sys, time, uno
 from com.sun.star.beans import PropertyValue
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 SRC, OUT = os.path.join(HERE, "Dissertation.docx"), os.path.join(HERE, "Dissertation.pdf")
+if len(sys.argv) == 3:                                   # python3 tools_pdf.py other.docx other.pdf
+    SRC, OUT = os.path.abspath(sys.argv[1]), os.path.abspath(sys.argv[2])
 
 
 def prop(n, v):
