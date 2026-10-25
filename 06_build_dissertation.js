@@ -30,8 +30,9 @@ const bullet = (text) => new Paragraph({ numbering: { reference: "bul", level: 0
   children: (Array.isArray(text) ? text : [text]).map((t) => (typeof t === "string" ? new TextRun(t) : t)) });
 const num = (text) => new Paragraph({ numbering: { reference: "num", level: 0 }, spacing: { after: 80, line: 340 },
   children: (Array.isArray(text) ? text : [text]).map((t) => (typeof t === "string" ? new TextRun(t) : t)) });
-const caption = (t) => new Paragraph({ keepNext: true, keepLines: true, alignment: AlignmentType.LEFT, spacing: { before: 120, after: 60 },
-  children: [new TextRun({ text: t, bold: true, size: 22 })] });
+const CAPS = [];
+const caption = (t) => { CAPS.push(t); return new Paragraph({ keepNext: true, keepLines: true, alignment: AlignmentType.LEFT, spacing: { before: 120, after: 60 },
+  children: [new TextRun({ text: t, bold: true, size: 22 })] }); };
 const note = (t) => new Paragraph({ alignment: AlignmentType.LEFT, spacing: { after: 200 },
   children: [new TextRun({ text: t, italics: true, size: 18 })] });
 const fig = (file, w, h, cap, src) => [caption(cap),
@@ -65,6 +66,7 @@ function table(head, rows, widths) {
 
 // ---------------------------------------------------------------- numbers used in text
 const S = JSON.parse(fs.readFileSync("outputs/final/simple_results.json", "utf8"));
+const XR = JSON.parse(fs.readFileSync("outputs/final/extra_results.json", "utf8"));
 const E = JSON.parse(fs.readFileSync("event_study/results.json", "utf8"));
 const GTc = (k) => GT[k];
 const gtCC = GT["Credit cards"], gtPL = GT["Other personal loans"], gtNB = GT["NBFCs ex-HFC"], gtNF = GT["Non-food credit"];
@@ -139,7 +141,8 @@ C.push(P([B("Keywords: "), "risk weights, capital requirements, credit supply, N
 // Table of contents
 C.push(new Paragraph({ pageBreakBefore: true, alignment: AlignmentType.CENTER, spacing: { before: 240, after: 480 }, children: [new TextRun({ text: "Table of Contents", bold: true, size: 26 })] }));
 C.push(new TableOfContents("Table of Contents", { hyperlink: true, headingStyleRange: "1-3" }));
-const FRONT_END = C.length;
+let FRONT_END = C.length;
+const LISTS_AT = C.length;
 
 // Executive summary
 C.push(Hd("Executive Summary", HeadingLevel.HEADING_1, true));
@@ -185,6 +188,9 @@ C.push(P("Chapter 2 describes the regulatory background and Chapter 3 reviews th
 C.push(Hd("2. Regulatory Background", HeadingLevel.HEADING_1));
 C.push(Hd("2.1 Risk weights and capital requirements", HeadingLevel.HEADING_2));
 C.push(P("Under the Basel framework applied in India, banks and NBFCs must hold regulatory capital equal to a minimum percentage of their risk-weighted assets (RWA). Each loan is multiplied by a risk weight; a 125 per cent risk weight means that every ₹100 lent counts as ₹125 of RWA. Raising the risk weight therefore increases the capital a lender must hold against the same loan or, if capital does not change, lowers its capital-to-risk-weighted-assets ratio (CRAR). For an NBFC that must keep its CRAR above 15 per cent, or a bank that must meet its own capital requirements, a higher risk weight raises the cost of supplying that type of credit."));
+C.push(...fig("f_capital_example.png", 560, 224, "Figure 2.1: Minimum capital needed per ₹100 of loans before and after the circular",
+  "Banks: minimum total capital of 9 per cent of risk-weighted assets plus a 2.5 per cent capital conservation buffer (11.5 per cent). NBFCs: minimum CRAR of 15 per cent. The NBFC-loan case uses an illustrative rating-based risk weight of 50 per cent."));
+C.push(P("Figure 2.1 shows what the circular meant in rupees. A bank lending ₹100 as a personal loan had to hold ₹11.50 of capital before the circular and ₹14.38 after it, a 25 per cent increase in the capital tied up in each loan. For credit card balances the requirement rose from ₹14.38 to ₹17.25. For a bank loan to an NBFC with a 50 per cent rating-based weight, the extra 25 percentage points raised the capital needed from ₹5.75 to ₹8.62, an increase of half. An NBFC making a personal loan, which must keep a CRAR of at least 15 per cent, needed ₹18.75 of capital per ₹100 instead of ₹15. Since equity is the most expensive form of funding, each of these increases raises the cost of supplying the targeted loan."));
 C.push(Hd("2.2 The November 2023 circular", HeadingLevel.HEADING_2));
 C.push(P("The RBI's circular of 16 November 2023 (“Regulatory measures towards consumer credit and bank credit to NBFCs”, RBI/2023-24/85) contained the measures summarised in Table 2.1."));
 C.push(caption("Table 2.1: Main measures, November 2023 and February 2025"));
@@ -198,11 +204,17 @@ C.push(table(["Measure", "Change", "Exemptions / notes"], [
 ], [2300, 3600, 3460]));
 C.push(note("Source: RBI circulars RBI/2023-24/85 (16 November 2023), RBI/2024-25/119 and RBI/2024-25/120 (25 February 2025)."));
 C.push(P("Three features of the circular matter for this study. The consumer-credit measure targeted unsecured personal loans and cards but left housing, vehicle and education loans untouched, so those exempt categories provide a comparison group for H1. The bank-to-NBFC measure applied to NBFCs but not to HFCs or to priority-sector on-lending (which covers much bank lending to microfinance NBFCs), so total bank credit and the HFCs provide comparison groups for H2. And the circular was a package: along with the risk weights it required limits on unsecured lending, so any effect found in the data is the effect of the package, not of the capital charge alone."));
+C.push(...fig("f_timeline.png", 600, 372, "Figure 2.2: Timeline of policy events, firm-specific events and the analysis windows",
+  "Sources: RBI circulars; company announcements; author's analysis windows. Dashed lines mark the circular (16 November 2023) and the rollback announcement (25 February 2025)."));
+C.push(P(`Figure 2.2 places the main events and the windows used in this study on one timeline. The circular came about nine months after the last repo rate increase, at a time when policy rates were steady, and the rollback was announced in February 2025, shortly before it took effect on 1 April 2025. Two firm-specific RBI actions fall inside the post-policy period and are dealt with separately in the analysis: the embargo on two of Bajaj Finance's lending products, imposed one day before the circular, and the embargo on IIFL Finance's gold-loan business in 2024. The lower half of the figure shows how the data are used. The bank credit tests compare 32 months before the circular with 14 months after it, ending before the rollback was announced, and a later window after the rollback. The event study estimates each stock's normal behaviour over 220 trading days that end about six weeks before each announcement, so that the estimate is not affected by the news itself.`));
 C.push(Hd("2.3 Macroeconomic and banking setting", HeadingLevel.HEADING_2));
 C.push(P("The policy came after the RBI had raised the repo rate by 250 basis points between May 2022 and February 2023, to 6.5 per cent, where it stayed until February 2025. Funding costs across the financial system were therefore already rising during 2022–23. Banks were well capitalised: the CRAR of scheduled commercial banks was 16.8 per cent in September 2023 (RBI, 2023b), well above the regulatory minimum. A 25-percentage-point rise in the risk weight on a few loan categories was therefore unlikely to push most banks against their capital limits. Part of its effect may have come from the signal it sent about the RBI's concerns (Section 10.2)."));
 C.push(Hd("2.4 The NBFC sector before the policy", HeadingLevel.HEADING_2));
 C.push(P("NBFCs are regulated by the RBI but, unlike banks, cannot accept demand deposits. They fund themselves through bank loans, bonds (non-convertible debentures), commercial paper, securitisation and, for some, public deposits. The default of IL&FS in 2018 showed how quickly funding can dry up for NBFCs that depend on short-term market borrowing, and banks subsequently became an even more important source of NBFC funding. In October 2021 the RBI introduced a Scale-Based Regulation framework, placing NBFCs in base, middle, upper and top layers with progressively stricter requirements; most of the firms in this study fall in the middle or upper layers."));
 C.push(P(`By October 2023 the two targeted channels were large. Outstanding bank credit was ₹${lakh(MG.cards_oct23)} lakh crore to credit cards and ₹${lakh(MG.pl_oct23)} lakh crore in other personal loans, and bank credit to NBFCs excluding HFCs stood at ₹${lakh(MG.nbfc_oct23)} lakh crore, about ${f1(100 * MG.nbfc_oct23 / MG.nonfood_oct23)} per cent of banks' total non-food credit. All three had been growing at more than 20 per cent a year (Table 4.1). The RBI series for bank credit to NBFCs also includes public financial institutions and infrastructure lenders, many of which are rated AAA or are government-owned; for these the rating-based risk weight is often low, and loans that qualify as priority-sector on-lending were exempt. The aggregate test of H2 therefore measures a diluted effect.`));
+C.push(...fig("f_credit_size.png", 560, 238, "Figure 2.3: Outstanding bank credit by category, October 2023",
+  "Source: RBI DBIE Table 15 (reported series, observation of 20 October 2023). Orange: categories targeted by the circular; blue: exempt categories."));
+C.push(P(`Figure 2.3 compares the size of the categories used in the tests. Housing is the largest exempt category (₹${f1(XR.oct23["Housing"])} lakh crore after the HDFC merger), while other personal loans (₹${f1(XR.oct23["Other personal loans"])} lakh crore) and bank credit to NBFCs (₹${f1(XR.oct23["NBFCs ex-HFC"])} lakh crore) are the two largest targeted categories. Credit cards are much smaller (₹${f1(XR.oct23["Credit cards"])} lakh crore), which partly explains why the card series is noisier and why the H1 results depend mainly on personal loans (Section 7.4).`));
 
 // ================= Chapter 3
 C.push(Hd("3. Literature Review", HeadingLevel.HEADING_1));
@@ -232,8 +244,18 @@ C.push(table(["Category", "Pre-policy (Apr-21 to mid-Nov-23)", "Post-policy (Dec
 ], [3560, 1900, 1950, 1950]));
 C.push(note("Average monthly log growth × 12. Merger month excluded; RBI figures excluding the merger used for housing, other personal loans and non-food credit from August 2023 to June 2025. The pre-policy period ends with the observation of 17 November 2023, one day after the circular. Source: RBI DBIE Table 15; author's calculations."));
 C.push(P(`Table 4.1 shows the raw pattern. Bank credit to credit cards grew ${f1(gtCC[PRE])} per cent a year before the policy and ${f1(gtCC[POST])} per cent after; other personal loans slowed from ${f1(gtPL[PRE])} to ${f1(gtPL[POST])} per cent. Exempt categories slowed much less (vehicle loans ${f1(gtV[PRE])} to ${f1(gtV[POST])}) or grew faster (housing ${f1(gtH[PRE])} to ${f1(gtH[POST])}; education ${f1(gtE[PRE])} to ${f1(gtE[POST])}). Bank credit to NBFCs excluding HFCs slowed from ${f1(gtNB[PRE])} to ${f1(gtNB[POST])} per cent, while total non-food credit eased only from ${f1(gtNF[PRE])} to ${f1(gtNF[POST])} per cent. After the April 2025 rollback, bank credit to NBFCs recovered to ${f1(gtNB[ROLL])} per cent. Card credit, whose higher risk weight was not reversed, slowed further to ${f1(gtCC[ROLL])} per cent, but rising card delinquencies over the same period (Section 10.2) mean this cannot be read as proof that the risk weight still binds. Bank gold loans grew very fast after the policy (${f1(gtG[POST])} per cent a year), but this mostly reflects higher gold prices and banks reclassifying agricultural gold loans as retail gold loans (Business Standard, 2025b), so it says little about a policy-driven shift to secured lending.`));
+C.push(...fig("f_yoy_growth.png", 600, 222, "Figure 4.1: Growth of bank credit over the previous 12 months, by category",
+  "Sum of the previous 12 monthly log growth rates (merger-adjusted). Orange lines: targeted categories; blue lines: exempt categories. Dashed lines: the circular (November 2023) and the rollback announcement (February 2025)."));
+C.push(P("Figure 4.1 shows the same pattern over time. Year-on-year growth of card and personal-loan credit peaked at around 22 to 32 per cent in 2023 and fell steadily after the circular, while housing, vehicle and education credit kept growing at broadly similar rates. Bank credit to NBFCs had been growing at more than 30 per cent a year in 2023; it slowed sharply after the circular, fell below the growth of total bank credit through 2024, and picked up again from the middle of 2025, after the rollback. The figure also shows why simple before-and-after comparisons need care: growth was already off its peak in some series before November 2023, and the monthly data behind these lines are noisy."));
 C.push(Hd("4.2 Share price data", HeadingLevel.HEADING_2));
 C.push(P(`Daily closing prices of the 16 sample companies and of the Nifty 50 and Nifty 500 indices were downloaded from Investing.com for 1 September 2022 to 28 March 2025 (${E.meta.firms} stocks, 641 trading days each). All prices are adjusted for share splits and bonus issues; this was checked by looking for one-day price changes of more than 15 per cent. There are only six such days, none on or near the event dates, and the largest (IIFL Finance, March 2024) coincides with the RBI's restriction on its gold-loan business. Daily returns are simple percentage changes in the closing price.`));
+C.push(caption("Table 4.2: Descriptive statistics of daily share returns, September 2022 to March 2025 (per cent)"));
+const RD = XR.return_desc;
+C.push(table(["Company / index", "Type", "Mean", "SD", "Min", "Max", "Days"], [...Object.keys(FN).map((f) => [FN[f], HFCS.includes(f) ? "HFC" : "NBFC", f2(RD[f].mean_pct), f2(RD[f].sd_pct), f2(RD[f].min_pct), f2(RD[f].max_pct), RD[f].n]),
+  ["Nifty 50", "Index", f2(RD.NIFTY50.mean_pct), f2(RD.NIFTY50.sd_pct), f2(RD.NIFTY50.min_pct), f2(RD.NIFTY50.max_pct), RD.NIFTY50.n],
+  ["Nifty 500", "Index", f2(RD.NIFTY500.mean_pct), f2(RD.NIFTY500.sd_pct), f2(RD.NIFTY500.min_pct), f2(RD.NIFTY500.max_pct), RD.NIFTY500.n]], [2960, 1000, 1000, 1000, 1100, 1100, 1200]));
+C.push(note("Simple daily returns. Source: Investing.com; author's calculations."));
+C.push(P(`Table 4.2 summarises the daily returns. The stocks are far more volatile than the market: the daily standard deviation of the individual stocks ranges from ${f2(Math.min(...Object.keys(FN).map((f) => RD[f].sd_pct)))} to ${f2(Math.max(...Object.keys(FN).map((f) => RD[f].sd_pct)))} per cent, against ${f2(RD.NIFTY50.sd_pct)} per cent for the Nifty 50. A single day's abnormal return of 2 to 3 per cent for one stock is therefore not unusual, which is why the event study tests portfolios of firms rather than relying on individual stocks.`));
 C.push(Hd("4.3 Firm-level data from investor presentations", HeadingLevel.HEADING_2));
 C.push(P(`The firm-level sample consists of 16 listed NBFCs and HFCs: six HFCs (AAVAS Financiers, Can Fin Homes, Home First Finance, LIC Housing Finance, PNB Housing Finance and Repco Home Finance) and ten NBFCs (Arman Financial Services, Bajaj Finance, Cholamandalam Investment & Finance, CreditAccess Grameen, IIFL Finance, Mahindra & Mahindra Financial Services, Muthoot Finance, Poonawalla Fincorp, SBI Cards and Payment Services, and Shriram Finance). For each company, all quarterly investor presentations from Q1 FY2021 to Q4 FY2026 were collected, ${cnt.decks} documents in total. The following were compiled from them, each value recorded with the presentation and page it came from:`));
 C.push(bullet([B("Cost of funds"), ` (${cnt.cof_obs} company-quarters, all 16 firms): the company's reported cost of borrowing; where not reported, annualised finance cost divided by average borrowings from the same presentation.`]));
@@ -243,7 +265,7 @@ C.push(bullet([B("Bajaj Finance segment-wise assets under management"), " (24 qu
 C.push(bullet([B("Company statements"), " on the effect of the RBI's measures on capital ratios and pricing."]));
 C.push(Hd("4.4 Data verification", HeadingLevel.HEADING_2));
 C.push(P("The project began with a pre-compiled firm-level dataset. Checking it against the companies' own filings showed that several key fields were not reported data. For five lenders, “unsecured” assets were a fixed percentage of total assets in every quarter; for Shriram Finance, the series mixed an assumed 9 per cent share with two quarters of actual personal-loan figures. Bank borrowing shares differed materially from the filings for several firms (for example Arman Financial 71 per cent in the dataset against 32 per cent in its filing; Muthoot Finance 41 against 65 per cent). Headline figures such as total assets and gross NPA ratios were generally accurate. All firm-level variables used in this dissertation were therefore re-collected from the companies' presentations, and the original dataset is not used in any result reported here."));
-C.push(caption("Table 4.2: Firm sample and pre-policy bank dependence (30 September 2023)"));
+C.push(caption("Table 4.3: Firm sample and pre-policy bank dependence (30 September 2023)"));
 const ver = [
   ["AAVAS Financiers", "HFC", "44.5", "49.6"], ["Arman Financial Services", "NBFC (MFI)", "71.0", "32.3"], ["Bajaj Finance", "NBFC", "23.0", "23.0"],
   ["Can Fin Homes", "HFC", "54.0", "57.0"], ["Cholamandalam Inv. & Fin.", "NBFC", "53.5", "60.0"], ["CreditAccess Grameen", "NBFC (MFI)", "58.0", "52.9"],
@@ -253,17 +275,17 @@ const ver = [
   ["Shriram Finance", "NBFC", "30.5", "25.6"]];
 C.push(table(["Company", "Type", "Bank share in original dataset (%)", "Bank share in company filing (%)"], ver, [3226, 1600, 2267, 2267]));
 C.push(note("Definitions follow each company's borrowing-mix slide (some include financial institutions). Source: each company's Q2 FY2024 investor presentation (30 September 2023)."));
-C.push(caption("Table 4.3: Descriptive statistics of firm-level variables"));
+C.push(caption("Table 4.4: Descriptive statistics of firm-level variables"));
 C.push(table(["Variable", "Group", "Period", "N", "Mean", "SD", "Min", "Max"], FD.map((r) => [r.Variable, r.Group, r.Period, r.N, f2(r.Mean), f2(r.SD), f2(r.Min), f2(r.Max)]), [2126, 1500, 1500, 600, 900, 900, 900, 934]));
 C.push(note("Company-quarters, Q1 FY2021 to Q4 FY2026. Pre = up to Q2 FY2024 (September 2023); Post = Q3 FY2024 onward."));
 C.push(Hd("4.5 Descriptive statistics of the bank credit series", HeadingLevel.HEADING_2));
 const SHORT = { "Credit cards": "Cards", "Other personal loans": "Oth. PL", "Housing": "Housing", "Vehicle loans": "Vehicle", "Education": "Educ.", "NBFCs ex-HFC": "NBFC ex-HFC", "HFCs": "HFCs", "Non-food credit": "Non-food" };
-C.push(caption("Table 4.4: Descriptive statistics of monthly bank credit growth (per cent per month)"));
+C.push(caption("Table 4.5: Descriptive statistics of monthly bank credit growth (per cent per month)"));
 C.push(table(["Series", "Period", "N", "Mean", "SD", "Min", "Max"], R.rbi_desc.map((r) => [r.Series, r.Period, r.N, f2(r.Mean), f2(r.SD), f2(r.Min), f2(r.Max)]),
   [2660, 1600, 700, 1100, 1100, 1100, 1100]));
 C.push(note("Monthly log growth × 100. Pre-policy: April 2021 to 17 November 2023; post-policy: 29 December 2023 to January 2025. Source: RBI DBIE Table 15."));
 C.push(P("Monthly growth of the targeted series is volatile: the standard deviation of monthly credit-card growth is larger than its mean. Much of this volatility is seasonal (festive-season card spending, quarter-end lending to NBFCs), which is why the regressions in Chapter 7 include calendar-month dummies."));
-C.push(caption("Table 4.5: Correlation matrix of monthly bank credit growth, April 2021 to January 2025"));
+C.push(caption("Table 4.6: Correlation matrix of monthly bank credit growth, April 2021 to January 2025"));
 C.push(table(["", ...R.rbi_corr.cols.map((c) => SHORT[c])], R.rbi_corr.rows.map((row, i) => [SHORT[R.rbi_corr.cols[i]], ...row.map((v) => f2(v))]),
   [1360, 1000, 1000, 1000, 1000, 1000, 1000, 1000, 1000]));
 C.push(note("Pearson correlations of monthly log growth rates."));
@@ -279,6 +301,9 @@ C.push(table(["Channel", "Mechanism", "Observable effect", "Test"], [
   ["Bank funding of NBFCs (H2)", "Higher capital per rupee lent to NBFCs (HFCs exempt) → banks slow lending to NBFCs", "Slower growth of bank credit to NBFCs than to the banking system; NBFC shares fall on the circular and rise on the rollback, HFC shares do not", "t-test, regression (Ch. 7); event study (Ch. 8)"],
   ["NBFC funding and capital", "Bank-dependent NBFCs face dearer bank loans; consumer NBFCs hold more capital", "Change in cost of funds and bank share of borrowings; company statements on capital", "Group comparisons (Ch. 9)"],
 ], [1700, 2900, 3060, 1700]));
+C.push(...fig("f_framework.png", 600, 324, "Figure 5.1: Conceptual framework linking the circular to the observable effects tested in this study",
+  "Author's framework. Each box on the right shows what should be observed if the corresponding channel operated, and the chapter in which it is tested."));
+C.push(P("Figure 5.1 draws the same framework as a diagram. The circular changed two risk weights. Each change raised the capital that lenders need for one type of credit, and each should leave a trace in two places: in the volume of bank credit, which is tested with RBI data, and in the share prices of the lenders affected, which are tested with the event study. The middle of the diagram shows the firm-level channel, through NBFCs' own capital ratios, funding costs and bank borrowing, which is examined descriptively in Chapter 9."));
 C.push(Hd("5.2 Variables", HeadingLevel.HEADING_2));
 C.push(caption("Table 5.2: Definition of variables"));
 C.push(table(["Variable", "Type", "Definition", "Source"], [
@@ -313,6 +338,9 @@ C.push(Hd("6. Research Methodology", HeadingLevel.HEADING_1));
 C.push(Hd("6.1 Research design", HeadingLevel.HEADING_2));
 C.push(P("The study compares credit that the regulation targeted with closely related credit that it left alone, before and after the circular. Working with the growth gap between the two (targeted growth minus exempt growth) removes influences that affect both, such as interest rates and overall economic growth. If the circular slowed targeted credit, the gap should be smaller after November 2023 than before. The share-price event study tests the same two channels from a different angle, using the reaction of investors on the days the news became public."));
 C.push(P(`The bank credit tests use April 2021 to January 2025, so that the post-policy period ends before the February 2025 rollback was announced. Because RBI observations refer to the last reporting Friday of each month, the November 2023 observation is dated 17 November 2023, one day after the circular, and is treated as pre-policy. The first post-policy observation is that of 29 December 2023. This gives ${W1.n_pre} pre-policy and ${W1.n_post} post-policy months for H1 (${W2.n_pre} and ${W2.n_post} for H2, which loses the merger month).`));
+C.push(...fig("f_design.png", 600, 300, "Figure 6.1: Research design: data, methods and outputs",
+  "Author's design. Each row is one strand of the analysis; the right-hand column gives the tables in which the results are reported."));
+C.push(P("Figure 6.1 summarises the research design. The study has three strands, each using a different source of data and a method suited to it. The bank credit tests use monthly aggregate data and compare growth rates before and after the circular. The event study uses daily share prices and measures the market's reaction on the days the news became public. The firm-level comparisons use quarterly data from company presentations. Because the three strands rely on different data, a finding that appears in more than one of them is harder to explain away as a quirk of any single dataset."));
 C.push(Hd("6.2 Welch t-test", HeadingLevel.HEADING_2));
 C.push(P("The first test compares the average monthly growth gap after the circular with the average before it, using a two-sample t-test that does not assume equal variances in the two periods (Welch's t-test). The difference in means is the estimated change in relative growth, in percentage points per month; multiplying by 12 gives an approximate annual figure."));
 C.push(Hd("6.3 Regression with dummy variables", HeadingLevel.HEADING_2));
@@ -339,9 +367,15 @@ C.push(table(["Gap", "Mean before", "Mean after", "Difference (pp/month)", "Per 
   wrow("H2: NBFCs minus non-food excl. NBFCs, cards, PL", S.H2_core.welch)], [2960, 900, 900, 1100, 1000, 800, 700, 1000]));
 C.push(note(`Monthly growth gaps in percentage points. Before: April 2021 to 17 November 2023 (H1 n = ${W1.n_pre}; H2 n = ${W2.n_pre}); after: 29 December 2023 to January 2025 (n = ${W1.n_post}).`));
 C.push(P(`For H1, the monthly growth gap fell from ${f2(W1.mean_pre)} to ${f2(W1.mean_post)} percentage points after the circular, a fall of ${f2(-W1.diff)} points a month or about ${ann(-W1.diff)} points a year (t = ${f2(W1.t)}, ${pe(W1.p)}). This is significant at the 10 per cent level but not at 5 per cent. For H2, the gap fell from ${f2(W2.mean_pre)} to ${f2(W2.mean_post)}, a fall of ${f2(-W2.diff)} points a month or about ${ann(-W2.diff)} points a year (${pe(W2.p)}). Against the narrower benchmark that excludes NBFCs, cards and personal loans from total credit, the fall is slightly larger (${f2(-S.H2_core.welch.diff)}, ${pe(S.H2_core.welch.p)}). Both tests point in the predicted direction, but monthly credit growth is noisy and the simple t-test does not separate the policy from seasonal swings.`));
-C.push(...fig("fig2_h1_gap.png", 560, 238, "Figure 7.2: Monthly growth gap, targeted minus exempt consumer credit (quarterly averages)",
+C.push(...fig("f_gap_boxplot.png", 560, 224, "Figure 7.2: Distribution of the monthly growth gaps before and after the circular",
+  "Boxes show the middle half of the months and the line inside each box the median; whiskers extend to 1.5 times the box height; dots are individual months; the coloured horizontal line is the mean used in the t-test."));
+C.push(P("Figure 7.2 shows the monthly gaps behind these averages. In both cases the whole distribution moved down after the circular: the median, the mean and most individual months are lower. The months before the circular are also much more spread out than the months after it, which is why the t-test that allows for unequal variances (Welch's test) is used rather than the standard version. The large overlap between the two boxes is the reason the simple t-tests are only marginally significant: monthly growth swings a lot from one month to the next."));
+C.push(...fig("fig2_h1_gap.png", 560, 238, "Figure 7.3: Monthly growth gap, targeted minus exempt consumer credit (quarterly averages)",
   "Grey bars: pre-policy quarters; orange bars: post-policy quarters. 2023Q4 (October, 17 November and 29 December observations) is shown grey. Dashed line: pre-policy average gap."));
 C.push(Hd("7.2 Regression with dummy variables", HeadingLevel.HEADING_2));
+C.push(...fig("f_seasonal.png", 560, 194, "Figure 7.4: Average monthly growth gap by calendar month, April 2021 to January 2025",
+  "Simple averages of the monthly gaps for each calendar month."));
+C.push(P(`Much of the month-to-month noise in the gaps is seasonal (Figure 7.4). For H2, the gap is strongly positive in October to December and negative in January, April, May and August, reflecting the timing of banks' lending to NBFCs around quarter-ends and the festive season. For H1, the gap is high in March, July and October and low in September. If the before and after periods contain a different mix of calendar months, these patterns can hide or exaggerate a policy effect. The regressions below therefore include a dummy for each calendar month.`));
 C.push(caption("Table 7.2: Model summary"));
 C.push(table(["Model", "Dependent variable", "R", "R²", "Adjusted R²", "Std. error of estimate", "Durbin–Watson"], [[M1, "Gap1 (H1)"], [M2, "Gap2 (H2)"]].map(([M, d], k) =>
   [String(k + 1), d, f2(Math.sqrt(M.r2)), f2(M.r2), f2(M.adj_r2), f2(Math.sqrt(M.ss_res / M.df_res)), f2(M.dw)]), [800, 1700, 900, 900, 1300, 2160, 1600]));
@@ -368,6 +402,9 @@ C.push(table(["Test", "Null hypothesis", "Model 1 statistic (p)", "Model 2 stati
   ["Largest VIF", "No serious multicollinearity (VIF < 10)", f2(M1.max_vif), f2(M2.max_vif)],
 ], [2400, 3160, 1900, 1900]));
 C.push(P(`The Durbin–Watson statistics (${f2(M1.dw)} and ${f2(M2.dw)}) are close to 2, so there is little first-order autocorrelation. Normality and constant variance are not rejected at the 5 per cent level, although with 45 to 46 observations these tests have limited power. The largest VIF is below 2, so the post-policy dummy is not confounded with the month dummies.`));
+C.push(...fig("f_residuals.png", 560, 307, "Figure 7.5: Residuals of the two regressions over time and their distribution",
+  "Left: residuals by month (dashed line: the circular). Right: histogram of residuals with a normal curve of the same standard deviation."));
+C.push(P("Figure 7.5 plots the residuals of the two regressions. They move around zero without long runs above or below it and with no visible change in spread after the circular, consistent with the Durbin–Watson and Breusch–Pagan results. The histograms are roughly bell-shaped, with a few large months in the tails, consistent with the Jarque–Bera test."));
 C.push(Hd("7.4 Checks", HeadingLevel.HEADING_2));
 C.push(caption("Table 7.6: Placebo, trend and rollback checks"));
 C.push(table(["Check", "Estimate", "p-value", "Interpretation"], [
@@ -385,7 +422,7 @@ C.push(caption("Table 7.7: H1 with one series dropped"));
 C.push(table(["Specification", "Difference (t-test)", "p-value", "δ (regression with month dummies)", "p-value"],
   S.H1.robustness.map((r) => [r.spec, f2(r.diff), p3(r.p_welch), f2(r.b_months), p3(r.p_months)]), [3760, 1400, 1100, 2000, 1100]));
 C.push(P(`The H1 result comes mainly from other personal loans, the larger of the two targeted series (${f2(rob("Other personal loans only").diff)}, ${pe(rob("Other personal loans only").p_welch)}). Credit cards on their own show a smaller, insignificant fall. The estimate is negative whichever control series is dropped.`));
-C.push(...fig("fig3_h2_gap.png", 560, 238, "Figure 7.3: Monthly growth gap, bank credit to NBFCs (ex-HFC) minus total non-food credit (quarterly averages)",
+C.push(...fig("fig3_h2_gap.png", 560, 238, "Figure 7.6: Monthly growth gap, bank credit to NBFCs (ex-HFC) minus total non-food credit (quarterly averages)",
   "Grey bars: pre-policy quarters; orange bars: post-policy quarters (including after the April 2025 rollback)."));
 C.push(Hd("7.5 Economic size", HeadingLevel.HEADING_2));
 C.push(P(`Over the ${S.H1.shortfall.months} post-policy months to January 2025, a fall of ${f2(-W1.diff)} points a month in relative growth adds up to about ${f1(S.H1.shortfall.pct)} per cent. With ₹${lakh(S.H1.shortfall.outstanding)} lakh crore of bank credit to cards and other personal loans outstanding in January 2025, this implies roughly ₹${lakh(S.H1.shortfall.amount)} lakh crore less targeted credit than if the pre-policy gap had continued. The same calculation for H2 gives about ${f1(S.H2.shortfall.pct)} per cent of ₹${lakh(S.H2.shortfall.outstanding)} lakh crore, or roughly ₹${lakh(S.H2.shortfall.amount)} lakh crore less bank credit to NBFCs. These are rough upper-end figures, since fast credit growth tends to slow on its own.`));
@@ -396,28 +433,46 @@ C.push(P(`The event study uses daily returns of the 16 stocks. Day 0 is 17 Novem
 const prow = (ek, pn, lbl) => { const d = EP(ek, pn); return [lbl, ...["[0]", "[0,+1]", "[0,+2]", "[-1,+1]"].flatMap((w) => [pcs(d[w].car), p3(d[w].p)])]; };
 const pw = [2560, 850, 750, 850, 750, 850, 750, 850, 750];
 const phead = ["Portfolio", "CAR [0] %", "p", "CAR [0,+1] %", "p", "CAR [0,+2] %", "p", "CAR [−1,+1] %", "p"];
-C.push(Hd("8.1 The November 2023 circular", HeadingLevel.HEADING_2));
-C.push(caption("Table 8.1: Cumulative abnormal returns around the circular (day 0 = 17 November 2023)"));
+C.push(Hd("8.1 Market model estimates", HeadingLevel.HEADING_2));
+C.push(caption("Table 8.1: Market model estimates for each stock (estimation windows of 220 trading days)"));
+const MM = XR.market_model;
+C.push(table(["Company", "Type", "Circular: beta", "R²", "Residual SD %", "Rollback: beta", "R²", "Residual SD %"], Object.keys(FN).map((f) =>
+  [FN[f], HFCS.includes(f) ? "HFC" : "NBFC", f2(MM.E1[f].beta), f2(MM.E1[f].r2), f2(MM.E1[f].sd_pct), f2(MM.E2[f].beta), f2(MM.E2[f].r2), f2(MM.E2[f].sd_pct)]),
+  [2560, 900, 1000, 800, 1100, 1000, 800, 1200]));
+C.push(note(`OLS of each stock's daily return on the Nifty 50 return. Estimation windows: ${XR.event_windows.E1.est_start} to ${XR.event_windows.E1.est_end} (circular) and ${XR.event_windows.E2.est_start} to ${XR.event_windows.E2.est_end} (rollback).`));
+C.push(P("Table 8.1 reports the market model for each stock. Betas range from about 0.1 to 1.7. Larger and more widely traded stocks, such as Bajaj Finance, LIC Housing Finance and Mahindra & Mahindra Financial, have the highest R², while smaller lenders such as AAVAS Financiers, Arman Financial and Home First Finance have low betas and R² values close to zero, meaning that their returns are driven mostly by company-specific news. The residual standard deviation is the typical size of a stock's daily abnormal return on an ordinary day, and it is the yardstick against which the event-day returns are judged."));
+C.push(Hd("8.2 The November 2023 circular", HeadingLevel.HEADING_2));
+C.push(caption("Table 8.2: Cumulative abnormal returns around the circular (day 0 = 17 November 2023)"));
 C.push(table(phead, [prow("E1", NH, "Non-HFC NBFCs (10)"), prow("E1", HF, "HFCs, exempt (6)"), prow("E1", CL, "Consumer lenders (3)"),
   prow("E1", DNH, "NBFCs minus HFCs"), prow("E1", DCL, "Consumer lenders minus HFCs"),
   prow("E1", "Non-HFC NBFCs excl. Bajaj (9)", "NBFCs excluding Bajaj (9)"), prow("E1", "Non-HFC NBFCs excl. MFIs (8)", "NBFCs excluding microfinance (8)")], pw));
 C.push(note("Equal-weighted portfolios; market model on the Nifty 50, estimated over trading days −250 to −31. p-values from the t-distribution."));
 C.push(P(`On the first trading day after the circular, the ten NBFCs' shares fell ${pc(-EP("E1", NH)["[0]"].car)} per cent more than the market model predicted (${pe(EP("E1", NH)["[0]"].p)}), while the HFCs' abnormal return was zero (${pcs(EP("E1", HF)["[0]"].car)} per cent, ${pe(EP("E1", HF)["[0]"].p)}). The difference between the two portfolios, ${pc(EP("E1", DNH)["[0]"].car)} per cent, is significant (${pe(EP("E1", DNH)["[0]"].p)}). Nine of the ten NBFCs fell on the day (sign test ${pe(CS("E1").sign_nonhfc.p)}), and the NBFC-minus-HFC return on day 0 was larger than on any of the ${E.E1.placebo_days[DNH].days} ordinary trading days in the estimation window.`));
-C.push(P(`The reaction was strongest for the three consumer lenders, which were hit by the consumer-credit measure directly: ${pc(EP("E1", CL)["[0]"].car)} per cent on day 0 (${pe(EP("E1", CL)["[0]"].p)}) and ${pc(EP("E1", CL)["[0,+2]"].car)} per cent over three days (${pe(EP("E1", CL)["[0,+2]"].p)}). Over those three days they fell ${pc(-EP("E1", DCL)["[0,+2]"].car)} per cent more than the HFCs (${pe(EP("E1", DCL)["[0,+2]"].p)}). The results are similar without Bajaj Finance, whose separate RBI embargo was announced the day before, and without the two microfinance lenders, whose bank borrowing was largely exempt. Over the following week the HFCs' shares also drifted down (Figure 8.1), so the clear difference between the groups is in the immediate reaction rather than over longer windows.`));
-C.push(Hd("8.2 The February 2025 rollback", HeadingLevel.HEADING_2));
-C.push(caption("Table 8.2: Cumulative abnormal returns around the rollback (day 0 = 27 February 2025)"));
+C.push(P(`The reaction was strongest for the three consumer lenders, which were hit by the consumer-credit measure directly: ${pc(EP("E1", CL)["[0]"].car)} per cent on day 0 (${pe(EP("E1", CL)["[0]"].p)}) and ${pc(EP("E1", CL)["[0,+2]"].car)} per cent over three days (${pe(EP("E1", CL)["[0,+2]"].p)}). Over those three days they fell ${pc(-EP("E1", DCL)["[0,+2]"].car)} per cent more than the HFCs (${pe(EP("E1", DCL)["[0,+2]"].p)}). The results are similar without Bajaj Finance, whose separate RBI embargo was announced the day before, and without the two microfinance lenders, whose bank borrowing was largely exempt. Over the following week the HFCs' shares also drifted down (Figure 8.3), so the clear difference between the groups is in the immediate reaction rather than over longer windows.`));
+C.push(...fig("f_daily_ar.png", 600, 216, "Figure 8.1: Daily abnormal returns of the NBFC and HFC portfolios, five days either side of each announcement",
+  "Equal-weighted portfolios; market model on the Nifty 50."));
+C.push(P("Figure 8.1 shows the day-by-day pattern behind the cumulative figures. Around the circular, the NBFC portfolio's largest abnormal return in the eleven-day window is the fall on day 0; on the days before it, NBFC and HFC returns moved in a similar, small range. Around the rollback, the NBFC portfolio's largest move is the rise on day 0, and the HFC portfolio's largest move comes a day later. In both cases the reaction is concentrated on the first trading session after the news, which is what would be expected in a market that absorbs public information quickly."));
+C.push(Hd("8.3 The February 2025 rollback", HeadingLevel.HEADING_2));
+C.push(caption("Table 8.3: Cumulative abnormal returns around the rollback (day 0 = 27 February 2025)"));
 C.push(table(phead, [prow("E2", NH, "Non-HFC NBFCs (10)"), prow("E2", HF, "HFCs, exempt (6)"), prow("E2", CL, "Consumer lenders (3)"),
   prow("E2", DNH, "NBFCs minus HFCs"), prow("E2", DCL, "Consumer lenders minus HFCs"),
   prow("E2", "Non-HFC NBFCs excl. Bajaj (9)", "NBFCs excluding Bajaj (9)"), prow("E2", "Non-HFC NBFCs excl. MFIs (8)", "NBFCs excluding microfinance (8)")], pw));
 C.push(note("As Table 8.1. The rollback was announced on the evening of 25 February 2025; the market was closed on 26 February."));
-C.push(P(`When the RBI withdrew the higher risk weight on bank loans to NBFCs, the reaction reversed. On day 0 the NBFCs' shares rose ${pc(EP("E2", NH)["[0]"].car)} per cent more than predicted (${pe(EP("E2", NH)["[0]"].p)}), while the HFCs' abnormal return was ${pcs(EP("E2", HF)["[0]"].car)} per cent (${pe(EP("E2", HF)["[0]"].p)}). The difference, ${pc(EP("E2", DNH)["[0]"].car)} per cent, is significant (${pe(EP("E2", DNH)["[0]"].p)}), nine of the ten NBFCs rose (sign test ${pe(CS("E2").sign_nonhfc.p)}), and only ${E.E2.placebo_days[DNH].days_as_large} of ${E.E2.placebo_days[DNH].days} ordinary days had a difference this large. The same day the RBI also eased the risk weight on banks' microfinance loans, which helps explain the large rise in CreditAccess Grameen (Table 8.3); without the two microfinance lenders the NBFC portfolio still rose ${pc(EP("E2", "Non-HFC NBFCs excl. MFIs (8)")["[0]"].car)} per cent (${pe(EP("E2", "Non-HFC NBFCs excl. MFIs (8)")["[0]"].p)}). The consumer lenders, whose consumer-credit risk weight was not reversed, rose by less relative to the HFCs (${pc(EP("E2", DCL)["[0]"].car)} per cent, ${pe(EP("E2", DCL)["[0]"].p)}). The difference between NBFCs and HFCs disappears from day +1, when HFC shares caught up, partly because of a large one-day rise in Home First Finance.`));
-C.push(...fig("fig7_event_car.png", 600, 228, "Figure 8.1: Cumulative abnormal returns of NBFC, HFC and consumer-lender portfolios around the two announcements",
+C.push(P(`When the RBI withdrew the higher risk weight on bank loans to NBFCs, the reaction reversed. On day 0 the NBFCs' shares rose ${pc(EP("E2", NH)["[0]"].car)} per cent more than predicted (${pe(EP("E2", NH)["[0]"].p)}), while the HFCs' abnormal return was ${pcs(EP("E2", HF)["[0]"].car)} per cent (${pe(EP("E2", HF)["[0]"].p)}). The difference, ${pc(EP("E2", DNH)["[0]"].car)} per cent, is significant (${pe(EP("E2", DNH)["[0]"].p)}), nine of the ten NBFCs rose (sign test ${pe(CS("E2").sign_nonhfc.p)}), and only ${E.E2.placebo_days[DNH].days_as_large} of ${E.E2.placebo_days[DNH].days} ordinary days had a difference this large. The same day the RBI also eased the risk weight on banks' microfinance loans, which helps explain the large rise in CreditAccess Grameen (Table 8.4); without the two microfinance lenders the NBFC portfolio still rose ${pc(EP("E2", "Non-HFC NBFCs excl. MFIs (8)")["[0]"].car)} per cent (${pe(EP("E2", "Non-HFC NBFCs excl. MFIs (8)")["[0]"].p)}). The consumer lenders, whose consumer-credit risk weight was not reversed, rose by less relative to the HFCs (${pc(EP("E2", DCL)["[0]"].car)} per cent, ${pe(EP("E2", DCL)["[0]"].p)}). The difference between NBFCs and HFCs disappears from day +1, when HFC shares caught up, partly because of a large one-day rise in Home First Finance.`));
+C.push(...fig("f_placebo_days.png", 600, 198, "Figure 8.2: Day-0 difference between NBFC and HFC abnormal returns compared with 220 ordinary trading days",
+  "Grey bars: daily abnormal return of the NBFC-minus-HFC portfolio on each day of the estimation window. Orange line: day 0."));
+C.push(P(`Figure 8.2 provides a simple check that does not rely on the t-distribution. It compares the day-0 difference between the NBFC and HFC portfolios with the same difference on each of the 220 ordinary days used to estimate the market model. After the circular, the day-0 value (${pc(E.E1.placebo_days[DNH].day0_ar)} per cent) lies outside the whole range of ordinary days. After the rollback, only ${E.E2.placebo_days[DNH].days_as_large} of the 220 ordinary days had a difference as large as on day 0 (${pcs(E.E2.placebo_days[DNH].day0_ar)} per cent), which corresponds to a probability of about ${f2(E.E2.placebo_days[DNH].empirical_p)}.`));
+C.push(...fig("fig7_event_car.png", 600, 228, "Figure 8.3: Cumulative abnormal returns of NBFC, HFC and consumer-lender portfolios around the two announcements",
   "Market model on the Nifty 50. Dashed line: between day −1 and day 0."));
-C.push(Hd("8.3 Firm-level reactions", HeadingLevel.HEADING_2));
-C.push(caption("Table 8.3: Day-0 abnormal returns by company (per cent)"));
+C.push(P("Figure 8.3 traces the cumulative abnormal returns of the three portfolios. Before the circular, the NBFC and HFC lines move together; on day 0 the NBFC and consumer-lender lines drop, and the consumer lenders keep falling for two more days. In the rollback panel, the NBFC line jumps on day 0 and stays at the higher level, while the HFC line rises more gradually over the following days."));
+
+C.push(Hd("8.4 Firm-level reactions", HeadingLevel.HEADING_2));
+C.push(caption("Table 8.4: Day-0 abnormal returns by company (per cent)"));
 const frows = Object.keys(FN).map((f) => { const a = E.E1.NIFTY50.firms[f], b = E.E2.NIFTY50.firms[f];
   return [FN[f], HFCS.includes(f) ? "HFC" : "NBFC", pcs(a["[0]"].car), p3(a["[0]"].p), pcs(b["[0]"].car), p3(b["[0]"].p)]; });
 C.push(table(["Company", "Type", "Circular, AR day 0", "p", "Rollback, AR day 0", "p"], frows, [3060, 1100, 1500, 1100, 1500, 1100]));
+C.push(...fig("f_firm_ar.png", 600, 264, "Figure 8.4: Day-0 abnormal return of each company, circular and rollback",
+  "Market model on the Nifty 50. Purple: the three consumer lenders; orange: other NBFCs; blue: HFCs."));
 C.push(P(`Among the NBFCs, the largest falls after the circular were at SBI Cards (${pc(E.E1.NIFTY50.firms.SBICARD["[0]"].car)} per cent), Arman Financial, CreditAccess Grameen, IIFL Finance, Cholamandalam and Poonawalla, and the largest rises after the rollback were at CreditAccess Grameen, Shriram Finance, Cholamandalam and Mahindra & Mahindra Financial. Within the NBFC group, the size of the reaction was not related to how much a firm borrowed from banks before the policy (${pe(E.E1.bankshare_within_nonhfc.p)} and ${p3(E.E2.bankshare_within_nonhfc.p)}): investors appear to have reacted to whether a lender was covered by the rule rather than to its exact funding mix. The results are almost identical with the Nifty 500 as the market index (Appendix C).`));
 
 // ================= Chapter 9
@@ -438,14 +493,20 @@ const frow = (lbl, F) => [lbl, f2(F.all.mean_change_nonhfc), f2(F.all.mean_chang
 C.push(table(["Variable", "Change, NBFCs", "Change, HFCs", "Difference", "p (Welch)", "p excl. MFIs", "p paired, NBFCs", "p paired, HFCs"],
   [frow("Cost of funds (pp)", FC), frow("Bank share of borrowings (pp)", FB)], [2160, 1050, 1000, 1000, 950, 1000, 1100, 1100]));
 C.push(note(`Firm averages before (to Q2 FY2024) and after (Q3 FY2024 to Q4 FY2025). Cost of funds: ${FC.all.n_nonhfc} NBFCs, ${FC.all.n_hfc} HFCs. Bank share: ${FB.all.n_nonhfc} NBFCs (Poonawalla does not disclose), ${FB.all.n_hfc} HFCs.`));
-C.push(P(`Cost of funds rose for both groups after the policy: by ${f2(FC.all.mean_change_nonhfc)} percentage points for the NBFCs and by ${f2(FC.all.mean_change_hfc)} points for the exempt HFCs. Both increases are significant within each group (paired t-test ${pe(FC["paired_Non-HFC NBFC"].p)} and ${p3(FC.paired_HFC.p)}), but the NBFCs' increase was not larger than the HFCs' (${pe(FC.all.p)}). The rise therefore reflects the general increase in interest rates, as bank loans linked to lending benchmarks repriced with a lag, rather than a policy effect specific to NBFCs (Figure 9.1).`));
-C.push(...fig("fig4_cof_halfyear.png", 560, 238, "Figure 9.1: Average cost of funds by half-year, NBFCs versus HFCs",
+C.push(...fig("f_firm_dumbbell.png", 600, 276, "Figure 9.1: Each firm's average cost of funds and bank share of borrowings, before and after the circular",
+  "Open circles: average up to Q2 FY2024; filled circles: average from Q3 FY2024 to Q4 FY2025. Orange: NBFCs; blue: HFCs. Firms are sorted by group and by the size of the change."));
+C.push(P("Figure 9.1 shows the firm-level data behind Table 9.2. Every firm's cost of funds rose, NBFCs and HFCs alike, and the size of the rise does not separate the two groups. The bank share of borrowings is more mixed: it rose for every HFC and for several NBFCs, such as SBI Cards, Mahindra & Mahindra Financial and Muthoot Finance, but fell for Bajaj Finance, Cholamandalam and Shriram Finance. With such differences within each group, a difference between the group averages would need to be large to be statistically significant."));
+C.push(P(`Cost of funds rose for both groups after the policy: by ${f2(FC.all.mean_change_nonhfc)} percentage points for the NBFCs and by ${f2(FC.all.mean_change_hfc)} points for the exempt HFCs. Both increases are significant within each group (paired t-test ${pe(FC["paired_Non-HFC NBFC"].p)} and ${p3(FC.paired_HFC.p)}), but the NBFCs' increase was not larger than the HFCs' (${pe(FC.all.p)}). The rise therefore reflects the general increase in interest rates, as bank loans linked to lending benchmarks repriced with a lag, rather than a policy effect specific to NBFCs (Figure 9.2).`));
+C.push(...fig("fig4_cof_halfyear.png", 560, 238, "Figure 9.2: Average cost of funds by half-year, NBFCs versus HFCs",
   "Simple averages across firms. Dashed line: between FY24 H1 and FY24 H2 (the circular was issued in November 2023)."));
-C.push(P(`The bank share of borrowings also rose for both groups, by ${f2(FB.all.mean_change_nonhfc)} points for NBFCs (paired ${pe(FB["paired_Non-HFC NBFC"].p)}) and ${f2(FB.all.mean_change_hfc)} points for HFCs (paired ${pe(FB.paired_HFC.p)}). The NBFCs' rise was smaller, which is consistent with banks lending relatively less to NBFCs, but the difference is not significant (${pe(FB.all.p)}). The pattern differs a lot between firms: SBI Cards, Mahindra & Mahindra Financial and Muthoot Finance borrowed more from banks after the policy, while Bajaj Finance, Cholamandalam and Shriram Finance borrowed less (Figure 9.2).`));
-C.push(...fig("fig5_bank_share.png", 560, 252, "Figure 9.2: Average bank share of borrowings, non-HFC NBFCs versus HFCs",
+C.push(P(`The bank share of borrowings also rose for both groups, by ${f2(FB.all.mean_change_nonhfc)} points for NBFCs (paired ${pe(FB["paired_Non-HFC NBFC"].p)}) and ${f2(FB.all.mean_change_hfc)} points for HFCs (paired ${pe(FB.paired_HFC.p)}). The NBFCs' rise was smaller, which is consistent with banks lending relatively less to NBFCs, but the difference is not significant (${pe(FB.all.p)}). The pattern differs a lot between firms: SBI Cards, Mahindra & Mahindra Financial and Muthoot Finance borrowed more from banks after the policy, while Bajaj Finance, Cholamandalam and Shriram Finance borrowed less (Figure 9.3).`));
+C.push(...fig("fig5_bank_share.png", 560, 252, "Figure 9.3: Average bank share of borrowings, non-HFC NBFCs versus HFCs",
   "From the borrowing-mix slides of quarterly investor presentations. Solid lines: all firms (Shriram enters in FY23, AAVAS is missing in FY26, IIFL is annual only). Dashed lines: firms observed in every half-year from FY22 to FY25."));
 C.push(Hd("9.3 Bajaj Finance", HeadingLevel.HEADING_2));
 C.push(P(`Bajaj Finance is the largest NBFC consumer lender in the sample and reports assets by business segment. Its consumer segments (sales finance and personal loans) made up ${R.audit.bajaj_share_series.FY24Q2} per cent of assets in September 2023, ${R.audit.bajaj_share_series.FY24Q4} per cent in March 2024 and ${R.audit.bajaj_share_series.FY25Q4} per cent in March 2025. This dip cannot be attributed to the risk weight: on 15 November 2023, one day before the circular, the RBI barred Bajaj Finance from lending under its “eCOM” and “Insta EMI Card” products, and lifted the restriction on 2 May 2024. The temporary fall in the consumer share matches the period of that restriction.`));
+C.push(...fig("f_bajaj_share.png", 560, 224, "Figure 9.4: Bajaj Finance, share of consumer segments covered by the circular in assets under management",
+  "Urban and rural sales finance and personal-loan (B2C) segments as a share of total AUM, by quarter. Source: Bajaj Finance investor presentations."));
+C.push(P("Figure 9.4 shows that the consumer share of Bajaj Finance's book had moved within a range of about 35 to 39 per cent since 2020. It fell during the embargo period and recovered after the restriction was lifted, returning to about 38 per cent by 2026, even though the higher consumer-credit risk weight stayed in place. This suggests that, for the largest consumer NBFC, the risk weight did not lead to a lasting shift away from consumer lending, although one firm cannot show what happened across the sector."));
 C.push(P("Taken together, the firm-level data confirm that the risk weights cut consumer NBFCs' capital ratios, but they do not show a clear effect on NBFCs' funding costs or borrowing mix. With 16 firms and large differences between them, these comparisons have limited power."));
 
 // ================= Chapter 10
@@ -547,6 +608,25 @@ C.push(table(R.app_rbi.columns.map((c) => (c === "Date" ? "Month" : SHORT[c] || 
   [1200, ...Array(R.app_rbi.columns.length - 1).fill(Math.floor(8160 / (R.app_rbi.columns.length - 1)))]));
 C.push(note("Source: RBI DBIE Table 15 (reported series). Figures from July 2023 include the effect of the HDFC merger (housing up, HFC and NBFC credit down)."));
 
+
+// ---------------------------------------------------------------- lists of figures, tables and abbreviations (front matter)
+const PAGES = fs.existsSync("outputs/final/caption_pages.json") ? JSON.parse(fs.readFileSync("outputs/final/caption_pages.json", "utf8")) : {};
+const lp = (t) => new Paragraph({ tabStops: [{ type: TabStopType.RIGHT, position: 9350, leader: "dot" }], spacing: { after: 60, line: 276 },
+  indent: { left: 1150, hanging: 1150 }, children: [new TextRun({ text: `${t}\t${PAGES[t.split(":")[0]] || ""}`, size: 21 })] });
+const LISTS = [Hd("List of Figures", HeadingLevel.HEADING_1), ...CAPS.filter((t) => t.startsWith("Figure")).map(lp),
+  Hd("List of Tables", HeadingLevel.HEADING_1), ...CAPS.filter((t) => t.startsWith("Table")).map(lp),
+  Hd("List of Abbreviations", HeadingLevel.HEADING_1),
+  table(["Abbreviation", "Meaning"], [
+    ["AR", "Abnormal return"], ["AUM", "Assets under management"], ["bps", "Basis points (one hundredth of a percentage point)"],
+    ["CAR", "Cumulative abnormal return"], ["CRAR", "Capital to risk-weighted assets ratio"], ["DBIE", "Database on Indian Economy (RBI)"],
+    ["FY", "Financial year (April to March)"], ["HFC", "Housing finance company"], ["IL&FS", "Infrastructure Leasing & Financial Services"],
+    ["MCLR", "Marginal cost of funds based lending rate"], ["MFI", "Microfinance institution"], ["NBFC", "Non-banking financial company"],
+    ["NSE", "National Stock Exchange of India"], ["OLS", "Ordinary least squares"], ["PL", "Personal loans"], ["pp", "Percentage points"],
+    ["PSL", "Priority-sector lending"], ["QIP", "Qualified institutional placement"], ["RBI", "Reserve Bank of India"],
+    ["RWA", "Risk-weighted assets"], ["SD", "Standard deviation"], ["SHG", "Self-help group"], ["VIF", "Variance inflation factor"],
+  ], [2400, 6960])];
+C.splice(LISTS_AT, 0, ...LISTS);
+FRONT_END += LISTS.length;
 
 // ---------------------------------------------------------------- document
 const PB = { style: BorderStyle.SINGLE, size: 6, color: "000000", space: 24 };
