@@ -43,7 +43,7 @@ NAMES = {"AAVAS": "AAVAS Financiers", "ARMANFIN": "Arman Financial", "BAJFINANCE
          "IIFL": "IIFL Finance", "LICHSGFIN": "LIC Housing Finance", "MMFIN": "M&M Financial Services", "MUTHOOTFIN": "Muthoot Finance",
          "PNBHOUSING": "PNB Housing Finance", "POONAWALLA": "Poonawalla Fincorp", "REPCOHOME": "Repco Home Finance",
          "SBICARD": "SBI Cards & Payment", "SHRIRAMFIN": "Shriram Finance"}
-# verified bank share of borrowings at 30-Sep-2023 (Table 4.2); Poonawalla does not disclose its borrowing mix
+# verified bank share of borrowings at 30-Sep-2023 (Table 4.3); Poonawalla does not disclose its borrowing mix
 BANKSHARE = {"AAVAS": 49.6, "ARMANFIN": 32.3, "BAJFINANCE": 23.0, "CANFINHOME": 57.0, "CHOLAFIN": 60.0, "CREDITACC": 52.9,
              "HOMEFIRST": 54.0, "IIFL": 55.3, "LICHSGFIN": 33.0, "MMFIN": 57.2, "MUTHOOTFIN": 65.4, "PNBHOUSING": 40.2,
              "REPCOHOME": 75.5, "SBICARD": 77.0, "SHRIRAMFIN": 25.6}

@@ -3,6 +3,7 @@
 ## Deliverables
 * **Dissertation.pdf** – final printable version. **Dissertation.docx** – editable Word version.
 * **Dissertation_Data_Compilation.xlsx** – every dataset used, with sources. Raw inputs in blue, derived series as live Excel formulas in black (growth rates, gaps, test-window and post-policy flags, share returns, pre/post firm periods).
+* **Dissertation_Tests.xlsx** – every test in the dissertation, one sheet per test, as live Excel formulas (T.TEST, LINEST, market model, sign test, diagnostics). Newey–West standard errors are Python output, since Excel has no function for them.
 
 ## Method (final version)
 * Bank credit (RBI DBIE Table 15, merger-adjusted, Apr-2021 to Jan-2025): Welch t-test of the monthly growth gap before vs after the circular, and OLS on a post-policy dummy with calendar-month dummies; placebo date, pre-trend, rollback and drop-one checks.
@@ -17,6 +18,7 @@ python event_study/event_study.py    # event study -> event_study/results.json
 python 08_figures.py                 # remaining figures -> outputs/final/f_*.png
 node 06_build_dissertation.js && python3 tools_pdf.py && python3 tools_caption_pages.py && node 06_build_dissertation.js && python3 tools_pdf.py
 python 09_build_data_workbook.py && python3 tools_xlsx_recalc.py Dissertation_Data_Compilation.xlsx
+python 10_build_tests_workbook.py && python3 tools_xlsx_recalc.py Dissertation_Tests.xlsx
 ```
 `tools_xlsx_recalc.py` needs LibreOffice Calc (`apt-get install libreoffice-calc`).
 
