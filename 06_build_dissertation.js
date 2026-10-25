@@ -107,6 +107,7 @@ C.push(new Paragraph({ alignment: AlignmentType.CENTER, spacing: { after: 720, l
 C.push(new Paragraph({ alignment: AlignmentType.JUSTIFIED, spacing: { after: 1200, line: 360 }, children: [new TextRun({ text: "A project report submitted in partial fulfilment of the requirements for the degree of Master of Business Administration (Full-Time) from the Faculty of Management Studies (FMS), University of Delhi.", bold: true })] }));
 C.push(twoCol(["Submitted by:", ST.name, `${ST.prog}, Batch ${ST.batch}`, `Roll no: ${ST.roll}`, `Date: ${ST.date}`],
   ["Under guidance of:", GD.name, GD.desig, GD.fac, GD.uni], { boldFirst: true }));
+C.push(new Paragraph({ pageBreakBefore: true, children: [] }));   // blank page after the cover (counted as page ii, number not shown)
 const COVER_END = C.length;
 
 // Certificate
