@@ -132,6 +132,22 @@ for ek, ev in EVENTS.items():
                          portfolios=pres, cross_section=cs,
                          market_return_day0=float(mkt.iloc[i0]))
 
+# placebo days: how often is the difference-portfolio abnormal return on an ordinary estimation-window day at least as
+# large (in absolute value) as on day 0?  And, within non-HFC NBFCs, does day-0 CAR vary with pre-policy bank share?
+for ek, ev in EVENTS.items():
+    i0 = event_index(ev["day0"]); m = RET["NIFTY50"]; sl = slice(i0 + EST[0], i0 + EST[1] + 1)
+    R[ek]["placebo_days"] = {}
+    for nm, a_ in [("Non-HFC NBFCs minus HFCs", NONHFC), ("Consumer lenders minus HFCs", CONSUMER)]:
+        diff = RET[a_].mean(axis=1) - RET[HFC].mean(axis=1)
+        f = sm.OLS(diff.iloc[sl].values, sm.add_constant(m.iloc[sl].values)).fit()
+        res = diff.iloc[sl].values - f.params[0] - f.params[1] * m.iloc[sl].values
+        obs = diff.iloc[i0] - f.params[0] - f.params[1] * m.iloc[i0]
+        R[ek]["placebo_days"][nm] = dict(day0_ar=float(obs), days=len(res), days_as_large=int((np.abs(res) >= abs(obs)).sum()),
+                                         empirical_p=float((np.abs(res) >= abs(obs)).mean()))
+    cars = pd.Series({f: R[ek]["NIFTY50"]["firms"][f]["[0]"]["car"] for f in NONHFC if f in BANKSHARE})
+    x = pd.Series(BANKSHARE)[cars.index]
+    fb = sm.OLS(cars.values, sm.add_constant(x.values)).fit()
+    R[ek]["bankshare_within_nonhfc"] = dict(n=len(cars), slope=float(fb.params[1]), p=float(fb.pvalues[1]))
 json.dump(R, open(os.path.join(HERE, "results.json"), "w"), indent=1)
 
 # ------------------------------------------------------------------ tables (CSV)
